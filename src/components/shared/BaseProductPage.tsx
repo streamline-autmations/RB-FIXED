@@ -151,7 +151,7 @@ const BaseProductPage: React.FC<BaseProductPageProps> = ({
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="pt-6 space-y-4"
               >
-                <Button to="/get-a-quote" variant="primary" size="lg" className="w-full">
+                <Button to="/contact" variant="primary" size="lg" className="w-full">
                   Get a Quote
                 </Button>
                 <Button to="/contact" variant="outline" size="lg" className="w-full">

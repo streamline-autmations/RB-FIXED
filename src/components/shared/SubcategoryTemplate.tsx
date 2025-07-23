@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Filter } from 'lucide-react';
+import { Filter, Grid3X3, Grid2X2, LayoutList } from 'lucide-react';
 import Button from '../ui/Button';
 import { Product } from '../../data/productsData';
 
@@ -21,10 +21,9 @@ const SubcategoryTemplate: React.FC<SubcategoryTemplateProps> = ({
   showFilter = false
 }) => {
   const [selectedFilter, setSelectedFilter] = useState('All');
-  
-  // For mobile: use dropdown, for desktop: use buttons
+  const [viewMode, setViewMode] = useState<'1' | '2' | '3'>('3');
   const [isMobile, setIsMobile] = useState(false);
-
+  
   React.useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -39,6 +38,18 @@ const SubcategoryTemplate: React.FC<SubcategoryTemplateProps> = ({
   const filteredProducts = selectedFilter === 'All' 
     ? products 
     : products.filter(p => p.subcategory === selectedFilter);
+
+  const getGridClasses = () => {
+    switch (viewMode) {
+      case '1':
+        return 'grid-cols-1';
+      case '2':
+        return 'grid-cols-1 md:grid-cols-2';
+      case '3':
+      default:
+        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+    }
+  };
 
   return (
     <>
@@ -65,9 +76,98 @@ const SubcategoryTemplate: React.FC<SubcategoryTemplateProps> = ({
         </div>
       </section>
 
-      {/* Filter Section */}
-      {showFilter && filters.length > 1 && (
-        <section className="py-8 bg-rb-gray-900 border-b border-rb-gray-800">
+      {/* Filter and View Toggle Section */}
+      <section className="py-6 bg-rb-gray-900 border-b border-rb-gray-800">
+        <div className="container-custom">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            {/* Filter Section */}
+            {showFilter && filters.length > 1 ? (
+              <div className="flex items-center gap-4">
+                {isMobile ? (
+                  // Mobile: Dropdown
+                  <>
+                    <Filter size={20} className="text-rb-gray-400" />
+                    <select
+                      value={selectedFilter}
+                      onChange={(e) => setSelectedFilter(e.target.value)}
+                      className="bg-rb-gray-800 text-rb-white border border-rb-gray-700 rounded-md px-4 py-2 focus:border-rb-red focus:outline-none"
+                    >
+                      {filters.map(filter => (
+                        <option key={filter} value={filter}>
+                          {filter === 'All' ? 'All Products' : filter}
+                        </option>
+                      ))}
+                    </select>
+                  </>
+                ) : (
+                  // Desktop: Pills
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Filter size={20} className="text-rb-gray-400" />
+                    {filters.map((filter, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedFilter(filter)}
+                        className={`px-4 py-2 rounded-full border font-medium text-sm transition-all duration-300 ${
+                          selectedFilter === filter 
+                            ? 'bg-rb-red text-rb-white border-rb-red' 
+                            : 'border-rb-gray-600 text-rb-gray-300 hover:border-rb-gray-400 hover:text-rb-white'
+                        }`}
+                      >
+                        {filter === 'All' ? 'All Products' : filter}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div></div>
+            )}
+
+            {/* View Toggle */}
+            <div className="flex items-center gap-2">
+              <span className="text-rb-gray-400 text-sm mr-2">View:</span>
+              <div className="flex border border-rb-gray-700 rounded-md overflow-hidden">
+                <button
+                  onClick={() => setViewMode('1')}
+                  className={`p-2 transition-colors duration-200 ${
+                    viewMode === '1' 
+                      ? 'bg-rb-red text-rb-white' 
+                      : 'bg-rb-gray-800 text-rb-gray-400 hover:text-rb-white hover:bg-rb-gray-700'
+                  }`}
+                  title="Single column"
+                >
+                  <LayoutList size={16} />
+                </button>
+                <button
+                  onClick={() => setViewMode('2')}
+                  className={`p-2 transition-colors duration-200 ${
+                    viewMode === '2' 
+                      ? 'bg-rb-red text-rb-white' 
+                      : 'bg-rb-gray-800 text-rb-gray-400 hover:text-rb-white hover:bg-rb-gray-700'
+                  }`}
+                  title="Two columns"
+                >
+                  <Grid2X2 size={16} />
+                </button>
+                <button
+                  onClick={() => setViewMode('3')}
+                  className={`p-2 transition-colors duration-200 ${
+                    viewMode === '3' 
+                      ? 'bg-rb-red text-rb-white' 
+                      : 'bg-rb-gray-800 text-rb-gray-400 hover:text-rb-white hover:bg-rb-gray-700'
+                  }`}
+                  title="Three columns"
+                >
+                  <Grid3X3 size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Products Grid */}
+      <section className="py-16 bg-rb-gray-900">
           <div className="container-custom">
             {isMobile ? (
               // Mobile: Dropdown
@@ -114,47 +214,6 @@ const SubcategoryTemplate: React.FC<SubcategoryTemplateProps> = ({
             <div className="text-center py-16">
               <h2 className="text-3xl font-bebas text-rb-white mb-4">No Products Found</h2>
               <p className="text-rb-gray-400 mb-8">
-                No products are available in this category at this time.
-              </p>
-              <Button to="/products" variant="outline" size="lg">
-                Browse All Products
-              </Button>
-            </div>
-          ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProducts.map((product, index) => (
-              <motion.div
-                key={index}
-                className="group cursor-pointer"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Link to={product.path}>
-                  <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-4">
-                    <div 
-                      className="absolute inset-0 bg-cover bg-center transform transition-transform duration-500 group-hover:scale-110"
-                      style={{ backgroundImage: `url(${product.image})` }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-rb-black to-transparent opacity-60"></div>
-                    <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <h3 className="text-2xl font-bebas text-rb-white group-hover:text-rb-red transition-colors">
-                        {product.title}
-                      </h3>
-                      {product.subcategory && (
-                        <span className="inline-block bg-rb-red px-3 py-1 rounded-sm text-rb-white text-sm mt-2">
-                          {product.subcategory}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-          )}
-        </div>
       </section>
 
       {/* CTA */}
