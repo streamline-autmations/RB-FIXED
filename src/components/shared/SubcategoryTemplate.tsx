@@ -177,7 +177,7 @@ const SubcategoryTemplate: React.FC<SubcategoryTemplateProps> = ({
             <Button to="/contact" variant="primary" size="lg">
               Get a Quote
             </Button>
-          </div>
+          </motion.div>
         </div>
       </section>
     </>
