@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/FAV_ICON.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RecklessBear | Premium Custom Sportswear</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <meta name="description" content="RecklessBear designs and manufactures elite custom sportswear for schools, teams, and athletes in South Africa. From concept to creation — Do it Reckless." />
+    <style>
+      /* Mobile-specific styles for the chatbot widget */
+      @media (max-width: 768px) {
+        #vg-widget-container {
+          transform: scale(0.85);
+          transform-origin: bottom right;
+          margin: 0 !important;
+          right: -15px !important;
+          bottom: -15px !important;
+        }
+        .vg-bubble-button {
+          padding: 12px !important;
+        }
+        .vg-bubble-button svg {
+          width: 24px !important;
+          height: 24px !important;
+        }
+        .vg-widget {
+          max-width: 320px !important;
+        }
+        .vg-messages-container {
+          font-size: 14px !important;
+        }
+        .vg-input-container {
+          padding: 8px !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-black">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <div style="width: 0; height: 0;" id="VG_OVERLAY_CONTAINER">
+        <!-- Here is where TIXAE Agents renders the widget. -->
+        <!-- Set render to 'full-width' then adjust the width and height to 500px (for example) to render the chatbot itself without the popup. -->
+    </div>
+
+    <script>
+        (function() {
+            window.VG_CONFIG = {
+                ID: "8qQvlIvdBrn1cdle8sFD", // YOUR AGENT ID
+                region: 'na', // YOUR ACCOUNT REGION 
+                render: 'bottom-right', // can be 'full-width' or 'bottom-left' or 'bottom-right'
+                // modalMode: true, // Set this to 'true' to open the widget in modal mode
+                stylesheets: [
+                    // Base TIXAE Agents CSS
+                    "https://vg-bunny-cdn.b-cdn.net/vg_live_build/styles.css",
+                    // Add your custom css stylesheets, Can also add relative URL ('/public/your-file.css)
+                ],
+            }
+            var VG_SCRIPT = document.createElement("script");
+            VG_SCRIPT.src = "https://vg-bunny-cdn.b-cdn.net/vg_live_build/vg_bundle.js";
+            VG_SCRIPT.defer = true;
+            document.body.appendChild(VG_SCRIPT);
+        })()
+    </script>
+  </body>
+</html>
