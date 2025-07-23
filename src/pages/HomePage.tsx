@@ -9,12 +9,12 @@ import FAQSection from '../components/ui/FAQSection';
 
 const HomePage: React.FC = () => {
   const categories = [
-    { name: 'School & Team Sports', image: '/School & Team Sports.png', description: 'Rugby, netball, cricket, hockey & athletics', path: '/products/category/school-team-sports' },
-    { name: 'Other Sports & Clubs', image: '/Other Sports & Clubs.png', description: 'Soccer, golf, darts & fishing gear', path: '/products/category/other-sports-clubs' },
-    { name: 'Schoolwear & Apparel', image: '/School Wear & Matric Apparel.png', description: 'Tracksuits, hoodies & school apparel', path: '/products/category/schoolwear-matric' },
-    { name: 'Corporate & Staff Apparel', image: '/Corporate & Staff Apparel.png', description: 'Staff uniforms, jackets & corporate wear', path: '/products/category/corporate-staff' },
-    { name: 'Gym & Fitness Apparel', image: '/Gym & Fitness Apparel.png', description: 'Performance wear & fitness apparel', path: '/products/category/gym-fitness' },
-    { name: 'Accessories & Branding', image: '/Accessories & Branding.png', description: 'Socks, caps, bags & branded items', path: '/products/category/accessories-branding' }
+    { name: 'School & Team Sports', image: '/School & Team Sports.png', description: 'Rugby, netball, cricket, hockey & athletics', path: '/products/school-team-sports' },
+    { name: 'Other Sports & Clubs', image: '/Other Sports & Clubs.png', description: 'Soccer, golf, darts & fishing gear', path: '/products/other-sports-clubs' },
+    { name: 'Schoolwear & Apparel', image: '/School Wear & Matric Apparel.png', description: 'Tracksuits, hoodies & school apparel', path: '/products/schoolwear-matric' },
+    { name: 'Corporate & Staff Apparel', image: '/Corporate & Staff Apparel.png', description: 'Staff uniforms, jackets & corporate wear', path: '/products/corporate-staff' },
+    { name: 'Gym & Fitness Apparel', image: '/Gym & Fitness Apparel.png', description: 'Performance wear & fitness apparel', path: '/products/gym-fitness' },
+    { name: 'Accessories & Branding', image: '/Accessories & Branding.png', description: 'Socks, caps, bags & branded items', path: '/products/accessories-branding' }
   ];
   
   return (
