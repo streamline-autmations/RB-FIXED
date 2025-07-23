@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply text-rb-white bg-rb-black font-montserrat overflow-x-hidden;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bebas tracking-wider;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-block px-6 py-3 font-bebas text-xl tracking-wider transition-all duration-300;
+  }
+  
+  .btn-primary {
+    @apply btn bg-rb-red text-rb-white hover:bg-rb-red-dark;
+  }
+  
+  .btn-secondary {
+    @apply btn border-2 border-rb-white text-rb-white hover:bg-rb-white hover:text-rb-black;
+  }
+  
+  .container-custom {
+    @apply container mx-auto px-4 md:px-8 lg:px-16;
+  }
+  
+  .nav-link {
+    @apply font-bebas text-lg tracking-wide hover:text-rb-red transition-colors duration-200;
+  }
+  
+  .section-title {
+    @apply font-bebas text-4xl md:text-5xl lg:text-6xl tracking-wider mb-8;
+  }
+  
+  .card {
+    @apply bg-rb-gray-900 p-6 rounded-lg transition-all duration-300 hover:transform hover:scale-105;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 bg-rb-gray-800 text-rb-white border border-rb-gray-700 focus:border-rb-red focus:ring-1 focus:ring-rb-red outline-none transition-all duration-200;
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+}
+
+.texture-overlay {
+  background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.pexels.com/photos/4753879/pexels-photo-4753879.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+  background-size: cover;
+  background-position: center;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #FF0000 #262626;
+}
+
+/* For Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #262626;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #FF0000;
+  border-radius: 8px;
+}
