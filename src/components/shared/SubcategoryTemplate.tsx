@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Product } from '../../data/productsData';
-import Cards from '../ui/Cards';
+import { GalleryItem } from '../ui/Cards';
 
 interface SubcategoryTemplateProps {
   title: string;
@@ -53,18 +53,15 @@ const SubcategoryTemplate: React.FC<SubcategoryTemplateProps> = ({
         {/* Products Grid */}
         {products.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <Cards
-                key={product.id}
-                id={product.id}
-                name={product.name}
-                image={product.image}
-                description={product.description}
-                price={product.price}
-                category={product.category}
-                subcategory={product.subcategory}
-                link={product.link}
-              />
+            {products.map((product, index) => (
+              <Link key={product.id} to={product.link}>
+                <GalleryItem
+                  image={product.image}
+                  title={product.name}
+                  category={product.category}
+                  index={index}
+                />
+              </Link>
             ))}
           </div>
         ) : (
