@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Share2, Facebook, Twitter } from 'lucide-react';
+import { X, Share2, Facebook, Instagram } from 'lucide-react';
 
 interface GoldenLogoModalProps {
   isOpen: boolean;
@@ -21,9 +21,11 @@ const GoldenLogoModal: React.FC<GoldenLogoModalProps> = ({ isOpen, onClose }) =>
       case 'facebook':
         shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`;
         break;
-      case 'twitter':
-        shareLink = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
-        break;
+      case 'instagram':
+        // Instagram doesn't support direct sharing via URL, so we'll copy to clipboard
+        navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+        alert('Link copied to clipboard! Share it on Instagram.');
+        return;
       case 'whatsapp':
         shareLink = `https://wa.me/?text=${encodedText} ${encodedUrl}`;
         break;
@@ -71,6 +73,9 @@ const GoldenLogoModal: React.FC<GoldenLogoModalProps> = ({ isOpen, onClose }) =>
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
+          style={{
+            boxShadow: '0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.1)'
+          }}
         >
           {/* Close Button */}
           <button
@@ -111,7 +116,7 @@ const GoldenLogoModal: React.FC<GoldenLogoModalProps> = ({ isOpen, onClose }) =>
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.6 }}
               >
-                The winner will be announced at the end of August — keep an eye on our socials.
+                A live wheelspin will be done on RecklessBear's socials on 28 August.
               </motion.p>
               <motion.p 
                 className="text-gray-300 text-base leading-relaxed mb-8"
@@ -140,11 +145,11 @@ const GoldenLogoModal: React.FC<GoldenLogoModalProps> = ({ isOpen, onClose }) =>
                   Share on Facebook
                 </button>
                 <button
-                  onClick={() => handleShare('twitter')}
-                  className="flex items-center justify-center gap-3 w-full py-3 px-6 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition-colors duration-200"
+                  onClick={() => handleShare('instagram')}
+                  className="flex items-center justify-center gap-3 w-full py-3 px-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-colors duration-200"
                 >
-                  <Twitter size={20} />
-                  Share on Twitter
+                  <Instagram size={20} />
+                  Share on Instagram
                 </button>
                 <button
                   onClick={() => handleShare('whatsapp')}
@@ -152,13 +157,6 @@ const GoldenLogoModal: React.FC<GoldenLogoModalProps> = ({ isOpen, onClose }) =>
                 >
                   <Share2 size={20} />
                   Share on WhatsApp
-                </button>
-                <button
-                  onClick={() => handleShare('generic')}
-                  className="flex items-center justify-center gap-3 w-full py-3 px-6 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
-                >
-                  <Share2 size={20} />
-                  More Share Options
                 </button>
               </div>
             </motion.div>
@@ -181,8 +179,7 @@ const GoldenLogoModal: React.FC<GoldenLogoModalProps> = ({ isOpen, onClose }) =>
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 1.4 }}
             >
-              Competition ends 31 December 2025. Winner will be contacted via email. 
-              Terms and conditions apply.
+              Competition ends 28 August 2025. A live wheelspin will be done on RecklessBear's socials on 28 August. Winner will be announced during the stream.
             </motion.p>
           </div>
         </motion.div>
