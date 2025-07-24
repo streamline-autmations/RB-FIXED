@@ -46,7 +46,6 @@ const Footer: React.FC = () => {
           
           {/* Logo and Tagline */}
           <div className="flex flex-col relative items-start"> 
-            {/* This div will contain either the full Logo component or the golden logo + text */}
             {shouldRenderGoldenLogo1 ? (
               // On homepage and not found: show golden logo + RECKLESSBEAR text
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
@@ -57,19 +56,18 @@ const Footer: React.FC = () => {
                   className={`golden-logo-image absolute z-20`} // z-20 ensures it's on top
                   onClick={handleLogo1Click}
                   // Match the size of your original RB icon and place exactly over it
-                  // These values are based on visual inspection of your footer, aiming for 40x40px
+                  // Adjusted values for pixel-perfect overlay (assuming 40x40px icon)
                   style={{
                     width: '40px', // Assuming this is the size of the RB icon
                     height: '40px', // Assuming this is the size
                     top: '0px', // Position relative to its parent div
                     left: '0px', // Position relative to its parent div
-                    opacity: 0.9, // 90% transparency (1 - 0.9 = 0.1 opacity)
-                    // You might need to adjust top/left slightly after deployment
+                    opacity: 0.1, // 90% transparency (1 - 0.9 = 0.1 opacity)
+                    // If the Logo component itself has padding/margin, these might need adjustment
                   }}
                 />
-                {/* The "RECKLESSBEAR" text that appears next to the icon */}
-                {/* This assumes your Logo component renders the text directly or in a way that can be replicated. */}
-                {/* If your Logo component is complex, you might need to adjust this. */}
+                {/* The "RECKLESSBEAR" text. Assuming it's typically rendered alongside the icon. */}
+                {/* We're adding it explicitly here to ensure it's always there on the homepage. */}
                 <span className="text-rb-white text-xl font-bebas tracking-wider ml-2" style={{ pointerEvents: 'none' }}>RECKLESSBEAR</span>
               </div>
             ) : (
