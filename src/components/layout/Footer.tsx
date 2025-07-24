@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom'; // Import useLocation
+import { Link, useLocation } from 'react-router-dom';
 import { Phone, Mail, Facebook, Instagram } from 'lucide-react';
-import Logo from './Logo';
+import Logo from './Logo'; // Assuming this is the component that renders your RB logo
 
 // Define a global type for the window object to include our custom function
-// This is necessary because we'll attach a function to window from our context
-// to allow components like Footer to trigger logo found events.
 declare global {
   interface Window {
     triggerGoldenLogoFound?: (logoId: string) => void;
@@ -14,28 +12,22 @@ declare global {
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
-  const location = useLocation(); // Get current location object
+  const location = useLocation();
 
-  // State to manage if this specific logo (golden-logo-1) is found on this device
-  // This helps in applying the 'found' class for visual feedback
   const [isLogo1Found, setIsLogo1Found] = React.useState(false);
 
-  // Check local storage on component mount to see if this logo was already found
   useEffect(() => {
     const foundLogos = JSON.parse(localStorage.getItem('recklessbear_found_logos') || '[]');
     if (foundLogos.includes('golden-logo-1')) {
       setIsLogo1Found(true);
     }
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
-  // Handle click for golden-logo-1
   const handleLogo1Click = () => {
-    // Only proceed if the logo hasn't been found yet on this device
     if (!isLogo1Found) {
-      // Call the global function provided by CompetitionProvider
       if (window.triggerGoldenLogoFound) {
         window.triggerGoldenLogoFound('golden-logo-1');
-        setIsLogo1Found(true); // Optimistically update state for immediate visual feedback
+        setIsLogo1Found(true);
       } else {
         console.warn('window.triggerGoldenLogoFound is not defined. CompetitionProvider might not be loaded.');
       }
@@ -49,24 +41,32 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-rb-gray-900 pt-16 pb-8 border-t border-rb-gray-800 relative overflow-hidden">
       <div className="container-custom">
-        {/* Golden Logo 1 - Positioned over the footer header/top edge */}
-        {shouldRenderGoldenLogo1 && (
-          <img
-            id="golden-logo-1" // Unique ID for this logo
-            src="/Golden-Logo.png" // Path to your golden logo image
-            alt="Hidden Golden Logo"
-            className="golden-logo-image absolute top-0 right-4 transform -translate-y-1/2 cursor-pointer z-20"
-            onClick={handleLogo1Click}
-            // Inline styles for initial hiding. These can be adjusted in global CSS too.
-            style={{ width: '30px', height: '30px', opacity: 0.2 }}
-          />
-        )}
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           
           {/* Logo and Tagline */}
-          <div className="flex flex-col">
-            <Logo size="small" />
+          <div className="flex flex-col relative"> {/* Added relative positioning here for the logo inside */}
+            <Logo size="small" /> {/* This is your existing RecklessBear logo component */}
+            
+            {/* Golden Logo 1 - Positioned over the RecklessBear logo in the footer */}
+            {shouldRenderGoldenLogo1 && (
+              <img
+                id="golden-logo-1" // Unique ID for this logo
+                src="/Golden-Logo.png" // Path to your golden logo image
+                alt="Hidden Golden Logo"
+                className={`golden-logo-image absolute z-20`}
+                onClick={handleLogo1Click}
+                // Adjust top, left/right, width, height, opacity for precise overlay
+                // You'll need to fine-tune these values based on the exact size and position of your <Logo /> component
+                style={{
+                  width: '25px', // Make it slightly larger than the RB logo for clickable area, but still subtle
+                  height: '25px',
+                  top: '5px', // Adjust to align with the RB logo
+                  left: '5px', // Adjust to align with the RB logo
+                  opacity: 0.2, // Initial subtle styling
+                }}
+              />
+            )}
+
             <p className="mt-4 text-rb-gray-400">ELEVATE YOUR GAME. DO IT RECKLESS.</p>
             <div className="flex mt-6 space-x-4">
               <a href="https://www.facebook.com/Recklessbearfitness01" target="_blank" rel="noopener noreferrer" 
