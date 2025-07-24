@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 import { motion } from 'framer-motion';
 import { DivideIcon as LucideIcon } from 'lucide-react';
 import Button from './Button';
+import { useLocation } from 'react-router-dom'; // Import useLocation
+
+// Define a global type for the window object to include our custom function
+declare global {
+  interface Window {
+    triggerGoldenLogoFound?: (logoId: string) => void;
+  }
+}
 
 // Consolidated card components
 interface FeatureCardProps {
@@ -58,6 +66,39 @@ interface GalleryItemProps {
 
 export const GalleryItem: React.FC<GalleryItemProps> = ({ image, title, category, index }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const location = useLocation(); // Get current location
+  const [isLogo2Found, setIsLogo2Found] = useState(false); // State for this specific logo
+
+  // Check local storage on mount to see if this logo was already found
+  useEffect(() => {
+    const foundLogos = JSON.parse(localStorage.getItem('recklessbear_found_logos') || '[]');
+    if (foundLogos.includes('golden-logo-2')) {
+      setIsLogo2Found(true);
+    }
+  }, []);
+
+  // Handle click for golden-logo-2
+  const handleLogo2Click = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent the parent card's click/link from triggering
+    if (!isLogo2Found) {
+      if (window.triggerGoldenLogoFound) {
+        window.triggerGoldenLogoFound('golden-logo-2');
+        setIsLogo2Found(true); // Optimistically update state for immediate visual feedback
+      } else {
+        console.warn('window.triggerGoldenLogoFound is not defined. CompetitionProvider might not be loaded.');
+      }
+    }
+  };
+
+  // Conditional rendering for golden-logo-2
+  // Only render if:
+  // 1. It's the "Cricket Pants" card (based on title, adjust if you have a product slug/ID)
+  // 2. The current page is '/products/school-team-sports'
+  // 3. The logo hasn't been found yet
+  const shouldRenderGoldenLogo2 = 
+    title === "CRICKET PANTS" && // Target the specific product card
+    location.pathname === '/products/school-team-sports' && // Target the specific category page
+    !isLogo2Found; // Only show if not yet found
   
   return (
     <motion.div 
@@ -75,7 +116,28 @@ export const GalleryItem: React.FC<GalleryItemProps> = ({ image, title, category
           backgroundImage: `url(${image})`,
           transform: isHovered ? 'scale(1.1)' : 'scale(1)'
         }}
-      />
+      >
+        {/* Golden Logo 2 - Positioned over the RB logo on the Cricket Pants */}
+        {shouldRenderGoldenLogo2 && (
+          <img
+            id="golden-logo-2" // Unique ID for this logo
+            src="/Golden-Logo.png" // Path to your golden logo image
+            alt="Hidden Golden Logo"
+            className={`golden-logo-image absolute z-30`} // z-index higher than overlay
+            onClick={handleLogo2Click}
+            // Fine-tuned styles for precise overlay on the RB logo on the pants image
+            // These values are estimates and might require pixel-perfect adjustment
+            // after deployment by inspecting the live site.
+            style={{
+              width: '20px', // Estimated size of the RB logo on the pants
+              height: '20px', // Estimated size
+              top: '25%', // Adjust vertically (percentage relative to image height)
+              left: '40%', // Adjust horizontally (percentage relative to image width)
+              opacity: 0.15, // Subtle transparency
+            }}
+          />
+        )}
+      </div>
       
       <motion.div 
         className="absolute inset-0 bg-gradient-to-t from-rb-black via-transparent to-transparent p-4 flex flex-col justify-end"
