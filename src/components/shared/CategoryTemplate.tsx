@@ -185,7 +185,7 @@ const CategoryTemplate: React.FC<CategoryTemplateProps> = ({
                         {product.title}
                       </h3>
                       {product.subcategory && (
-                        <span className="inline-block bg-rb-red px-3 py-1 rounded-sm text-rb-white text-sm mt-2">
+                        <span className="inline-block bg-rb-red px-2 py-1 md:px-3 md:py-1 rounded-sm text-rb-white text-xs md:text-sm mt-2 truncate text-center max-w-full">
                           {product.subcategory}
                         </span>
                       )}
