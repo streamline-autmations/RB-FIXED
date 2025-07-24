@@ -256,8 +256,8 @@ const CategoryPage: React.FC = () => {
                           style={{
                             width: '25px', // Estimated size of the RB logo on the pants
                             height: '25px', // Estimated size
-                            top: '18%', // Moved up slightly
-                            left: '42%', // Adjusted horizontally slightly
+                            top: '10%', // Moved up more aggressively
+                            left: '38%', // Adjusted horizontally more aggressively
                             opacity: 0.2, // 80% transparency (1 - 0.8 = 0.2 opacity)
                           }}
                         />
