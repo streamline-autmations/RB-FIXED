@@ -56,14 +56,14 @@ const Footer: React.FC = () => {
                 className={`golden-logo-image absolute z-20`}
                 onClick={handleLogo1Click}
                 // Fine-tuned styles for precise overlay over the existing RB logo
+                // Assuming the <Logo size="small" /> renders an image that is roughly 40px x 40px
                 style={{
-                  width: '60px', // Adjusted width based on visual inspection of your footer logo
-                  height: 'auto', // Maintain aspect ratio
-                  top: '-10px', // Adjust to align vertically (might need fine-tuning)
-                  left: '0px', // Adjust to align horizontally (might need fine-tuning)
+                  width: '40px', // Explicitly set width to match the underlying logo
+                  height: '40px', // Explicitly set height to match the underlying logo
+                  top: '0px', // Align to the top of the parent div
+                  left: '0px', // Align to the left of the parent div
                   opacity: 0.2, // Keep the transparency
-                  // Use transform to slightly adjust position if top/left aren't enough
-                  // transform: 'translateY(-5px) translateX(0px)',
+                  // No transform needed if top/left/width/height are precise
                 }}
               />
             )}
