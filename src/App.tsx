@@ -349,15 +349,7 @@ const AppContent: React.FC = () => {
       <Footer />
 
       {/* --- NEW: Competition Modals and Toast --- */}
-      {/* Remove the "Enter Comp" button from here */}
-      {/* <button 
-        onClick={openCompetitionModal} 
-        className="fixed bottom-20 right-4 bg-yellow-500 text-black p-3 rounded-full shadow-lg z-50"
-        style={{ zIndex: 1000 }}
-      >
-        Enter Comp
-      </button> */}
-
+      {/* The "Enter Comp" button is removed from here */}
       {/* Render the CompetitionModal */}
       <CompetitionModal
         isOpen={isCompetitionModalOpen}
@@ -383,8 +375,5 @@ function App() {
     </Router>
   );
 }
-
-export default App;
-
 
 export default App;
