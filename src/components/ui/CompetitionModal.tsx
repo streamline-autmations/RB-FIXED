@@ -15,11 +15,6 @@ interface FormData {
   agreeToTerms: boolean;
 }
 
-interface SubmissionResponse {
-  success?: boolean;
-  error?: string;
-}
-
 const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
@@ -29,8 +24,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
     agreeToTerms: false
   });
   
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submissionResult, setSubmissionResult] = useState<SubmissionResponse | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
 
   const validateForm = (): boolean => {
@@ -58,45 +52,24 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateForm()) {
       return;
     }
     
-    setIsSubmitting(true);
-    setSubmissionResult(null);
+    // Show success message
+    setIsSubmitted(true);
     
-    try {
-      // Placeholder API call
-      const response = await fetch('/api/submit-entry', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      
-      const result: SubmissionResponse = await response.json();
-      setSubmissionResult(result);
-      
-      // If successful, reset form
-      if (result.success) {
-        setFormData({
-          fullName: '',
-          email: '',
-          phone: '',
-          location: '',
-          agreeToTerms: false
-        });
-      }
-    } catch (error) {
-      console.error('Submission error:', error);
-      setSubmissionResult({ error: 'network' });
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Reset form
+    setFormData({
+      fullName: '',
+      email: '',
+      phone: '',
+      location: '',
+      agreeToTerms: false
+    });
   };
 
   const handleInputChange = (field: keyof FormData, value: string | boolean) => {
@@ -105,32 +78,6 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
     }
-  };
-
-  const getResultMessage = () => {
-    if (!submissionResult) return null;
-    
-    if (submissionResult.success) {
-      return (
-        <div className="text-center p-4 bg-green-900/50 border border-green-500 rounded-lg mb-6">
-          <p className="text-green-200 text-lg">🎉 You're in! Happy hunting 😉</p>
-        </div>
-      );
-    }
-    
-    if (submissionResult.error === 'duplicate') {
-      return (
-        <div className="text-center p-4 bg-red-900/50 border border-red-500 rounded-lg mb-6">
-          <p className="text-red-200 text-lg">❌ You've already entered. Only one entry allowed per person.</p>
-        </div>
-      );
-    }
-    
-    return (
-      <div className="text-center p-4 bg-red-900/50 border border-red-500 rounded-lg mb-6">
-        <p className="text-red-200 text-lg">❌ Something went wrong. Please try again.</p>
-      </div>
-    );
   };
 
   if (!isOpen) return null;
@@ -186,19 +133,29 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
               </p>
             </div>
 
-            {/* Result Message */}
-            {getResultMessage()}
+            {/* Success Message */}
+            {isSubmitted && (
+              <div className="text-center p-4 bg-green-900/50 border border-green-500 rounded-lg mb-6">
+                <p className="text-green-200 text-lg">🎉 You're in! Happy hunting 😉</p>
+              </div>
+            )}
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form 
+              action="https://usebasin.com/f/caea1c883e3b" 
+              method="POST" 
+              onSubmit={handleSubmit} 
+              className="space-y-4"
+            >
               {/* Full Name */}
               <div>
-                <label htmlFor="competition-fullName" className="block text-white text-sm font-medium mb-2">
+                <label htmlFor="fullName" className="block text-white text-sm font-medium mb-2">
                   Full Name *
                 </label>
                 <input
                   type="text"
-                  id="competition-fullName"
+                  id="fullName"
+                  name="fullName"
                   value={formData.fullName}
                   onChange={(e) => handleInputChange('fullName', e.target.value)}
                   className={`w-full px-4 py-3 bg-gray-800 text-white border rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${
@@ -216,12 +173,13 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
 
               {/* Email Address */}
               <div>
-                <label htmlFor="competition-email" className="block text-white text-sm font-medium mb-2">
+                <label htmlFor="email" className="block text-white text-sm font-medium mb-2">
                   Email Address *
                 </label>
                 <input
                   type="email"
-                  id="competition-email"
+                  id="email"
+                  name="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   className={`w-full px-4 py-3 bg-gray-800 text-white border rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${
@@ -239,12 +197,13 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
 
               {/* Phone Number */}
               <div>
-                <label htmlFor="competition-phone" className="block text-white text-sm font-medium mb-2">
+                <label htmlFor="phone" className="block text-white text-sm font-medium mb-2">
                   Phone Number *
                 </label>
                 <input
                   type="tel"
-                  id="competition-phone"
+                  id="phone"
+                  name="phone"
                   value={formData.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   className={`w-full px-4 py-3 bg-gray-800 text-white border rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${
@@ -262,12 +221,13 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
 
               {/* Location */}
               <div>
-                <label htmlFor="competition-location" className="block text-white text-sm font-medium mb-2">
+                <label htmlFor="location" className="block text-white text-sm font-medium mb-2">
                   Location
                 </label>
                 <input
                   type="text"
-                  id="competition-location"
+                  id="location"
+                  name="location"
                   value={formData.location}
                   onChange={(e) => handleInputChange('location', e.target.value)}
                   className="w-full px-4 py-3 bg-gray-800 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:border-red-600 focus:ring-red-600 transition-colors duration-200"
@@ -279,13 +239,14 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
               <div className="flex items-start space-x-3">
                 <input
                   type="checkbox"
-                  id="competition-terms"
+                  id="agreeToTerms"
+                  name="agreeToTerms"
                   checked={formData.agreeToTerms}
                   onChange={(e) => handleInputChange('agreeToTerms', e.target.checked)}
                   className="mt-1 w-4 h-4 text-red-600 bg-gray-800 border-gray-600 rounded focus:ring-red-600 focus:ring-2"
                   required
                 />
-                <label htmlFor="competition-terms" className="text-white text-sm leading-relaxed">
+                <label htmlFor="agreeToTerms" className="text-white text-sm leading-relaxed">
                   I agree to the competition terms & conditions *
                 </label>
               </div>
@@ -296,14 +257,9 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className={`w-full py-3 px-6 bg-[#8B0000] text-white font-bebas text-lg tracking-wider rounded-lg transition-all duration-300 ${
-                  isSubmitting 
-                    ? 'opacity-60 cursor-not-allowed' 
-                    : 'hover:bg-red-700 hover:shadow-lg transform hover:scale-105'
-                }`}
+                className="w-full py-3 px-6 bg-[#8B0000] text-white font-bebas text-lg tracking-wider rounded-lg transition-all duration-300 hover:bg-red-700 hover:shadow-lg transform hover:scale-105"
               >
-                {isSubmitting ? 'Submitting...' : 'Enter Competition'}
+                Enter Competition
               </button>
             </form>
 

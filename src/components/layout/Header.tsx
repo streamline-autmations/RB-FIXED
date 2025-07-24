@@ -4,6 +4,7 @@ import { Menu, X, ChevronDown, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Logo from './Logo';
 import allProducts, { getAllCategories, getAllSubcategories, getSubcategorySlug } from '../../data/productsData';
+import GoldenLogoModal from '../ui/GoldenLogoModal';
 
 interface NavItem {
   label: string;
@@ -23,6 +24,7 @@ const Header: React.FC = () => {
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const location = useLocation();
+  const [showGoldenModal, setShowGoldenModal] = useState(false);
 
   // Generate navigation items dynamically from productsData
   const generateNavItems = (): NavItem[] => {
@@ -168,6 +170,32 @@ const Header: React.FC = () => {
     }
   };
 
+  const handleGoldenLogoClick = () => {
+    // Load confetti library if not already loaded
+    if (!window.confetti) {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js';
+      script.onload = () => {
+        // Trigger confetti animation
+        window.confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      };
+      document.head.appendChild(script);
+    } else {
+      // Trigger confetti animation
+      window.confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
+    
+    setShowGoldenModal(true);
+  };
+
   const DropdownMenu: React.FC<{ item: NavItem }> = ({ item }) => {
     if (!item.children) return null;
 
@@ -228,9 +256,24 @@ const Header: React.FC = () => {
           <a 
             href="/" 
             onClick={handleLogoClick}
-            className="z-50 cursor-pointer"
+            className="z-50 cursor-pointer relative"
           >
             <Logo size="medium" />
+            {/* Hidden Golden Logo Overlay */}
+            <div
+              id="golden-logo"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleGoldenLogoClick();
+              }}
+              className="absolute top-0 left-0 w-full h-full cursor-pointer opacity-0 hover:opacity-10 transition-opacity duration-300"
+              style={{
+                background: 'radial-gradient(circle at center, rgba(255, 215, 0, 0.3) 0%, transparent 70%)',
+                zIndex: 10
+              }}
+              title="🏆 Hidden Golden Logo - Click to enter competition!"
+            />
           </a>
 
           {/* Desktop Navigation */}
@@ -370,6 +413,12 @@ const Header: React.FC = () => {
           </AnimatePresence>
         </div>
       </div>
+      
+      {/* Golden Logo Modal */}
+      <GoldenLogoModal 
+        isOpen={showGoldenModal} 
+        onClose={() => setShowGoldenModal(false)} 
+      />
     </header>
   );
 };
