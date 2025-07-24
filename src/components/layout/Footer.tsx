@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'; // CORRECTED: Changed '=> {' to 'from 'react';'
+import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Phone, Mail, Facebook, Instagram } from 'lucide-react';
 import Logo from './Logo'; // Assuming this is the component that renders your RB logo
@@ -34,9 +34,10 @@ const Footer: React.FC = () => {
     }
   };
 
-  // Conditional rendering: only show golden-logo-1 on the homepage ('/')
-  // And only if it hasn't been found yet.
-  const shouldRenderGoldenLogo1 = location.pathname === '/' && !isLogo1Found;
+  // Condition to check if we are on the homepage
+  const isOnHomepage = location.pathname === '/';
+  // Condition to render the golden logo only on homepage AND if not yet found
+  const shouldRenderGoldenLogo1 = isOnHomepage && !isLogo1Found;
 
   return (
     <footer className="bg-rb-gray-900 pt-16 pb-8 border-t border-rb-gray-800 relative overflow-hidden">
@@ -44,33 +45,28 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           
           {/* Logo and Tagline */}
-          {/* Added a wrapper div around Logo to apply relative positioning and ensure z-index */}
           <div className="flex flex-col relative items-start"> 
-            {/* The Logo component itself. We might need to add a class to it if it renders an img */}
-            <div style={{ position: 'relative', zIndex: 1, pointerEvents: 'none' }}> {/* Wrapper for Logo to control pointer-events */}
-              <Logo size="small" /> 
-            </div>
-            
-            {/* Golden Logo 1 - Positioned precisely over the RecklessBear logo in the footer */}
-            {shouldRenderGoldenLogo1 && (
+            {/* Conditional rendering for the original Logo OR the golden logo */}
+            {shouldRenderGoldenLogo1 ? (
+              // Render golden logo if on homepage and not found
               <img
                 id="golden-logo-1" // Unique ID for this logo
                 src="/Golden-Logo.png" // Using the correct Golden-Logo.png path
                 alt="Hidden Golden Logo"
                 className={`golden-logo-image absolute z-20`} // z-20 ensures it's on top
                 onClick={handleLogo1Click}
-                // Fine-tuned styles for precise overlay over the existing RB logo
-                // Adjusted 'top' and 'left' based on previous feedback
+                // Match the size of your original logo and place exactly over it
                 style={{
-                  width: '40px', // Explicitly set width to match the underlying logo
-                  height: '40px', // Explicitly set height to match the underlying logo
-                  top: '0px', // Adjusted top
-                  left: '0px', // Adjusted left
-                  opacity: 0.3, // Increased opacity for a bit brighter look
-                  // If it's still off, slight adjustments to top/left or adding transform: translate
-                  // For example: transform: 'translate(2px, 3px)',
+                  width: '40px', // Assuming this is the exact size of your small footer logo
+                  height: '40px', // Assuming this is the exact size
+                  top: '0px',
+                  left: '0px',
+                  opacity: 0.2, // Keep the transparency
                 }}
               />
+            ) : (
+              // Render original Logo component on all other pages
+              <Logo size="small" />
             )}
 
             <p className="mt-4 text-rb-gray-400">ELEVATE YOUR GAME. DO IT RECKLESS.</p>
