@@ -257,7 +257,7 @@ const CategoryPage: React.FC = () => {
                             height: '25px', // Estimated size
                             top: '10%', // Moved up
                             left: '43%', // Moved right slightly
-                            opacity: 0.1, // 90% transparency (1 - 0.9 = 0.1 opacity)
+                          
                           }}
                         />
                       )}
