@@ -88,3 +88,18 @@
   background-color: #FF0000;
   border-radius: 8px;
 }
+
+/* Competition Modal Styles */
+.competition-modal-backdrop {
+  backdrop-filter: blur(4px);
+}
+
+/* Custom checkbox styling for competition modal */
+input[type="checkbox"]:checked {
+  background-color: #8B0000;
+  border-color: #8B0000;
+}
+
+input[type="checkbox"]:focus {
+  ring-color: #8B0000;
+}

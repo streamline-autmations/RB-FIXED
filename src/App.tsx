@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import CompetitionModal from './components/ui/CompetitionModal';
+import { useCompetitionModal } from './hooks/useCompetitionModal';
 
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
@@ -168,8 +170,11 @@ const MatricCataloguePage = () => (
 );
 
 function App() {
+  const { isModalOpen, closeModal } = useCompetitionModal();
+
   return (
     <Router>
+      <CompetitionModal isOpen={isModalOpen} onClose={closeModal} />
       <Header />
       <main>
         <AnimatePresence mode="wait">
