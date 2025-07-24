@@ -139,11 +139,11 @@ const SubcategoryTemplate: React.FC<SubcategoryTemplateProps> = ({
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-rb-black to-transparent opacity-60"></div>
                       <div className="absolute bottom-0 left-0 right-0 p-6">
-                        <h3 className="text-2xl font-bebas text-rb-white group-hover:text-rb-red transition-colors">
+                        <h3 className="text-lg md:text-2xl font-bebas text-rb-white group-hover:text-rb-red transition-colors">
                           {product.title}
                         </h3>
                         {product.subcategory && (
-                          <span className="inline-block bg-rb-red px-3 py-1 rounded-sm text-rb-white text-sm mt-2">
+                          <span className="inline-block bg-rb-red px-2 py-1 md:px-3 md:py-1 rounded-sm text-rb-white text-xs md:text-sm mt-2 truncate text-center max-w-full">
                             {product.subcategory}
                           </span>
                         )}
