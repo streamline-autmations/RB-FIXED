@@ -7,7 +7,7 @@ interface CompetitionContextType {
   toastMessage: string | null;
   showCongratsModal: boolean;
   setCongratsModalOpen: (isOpen: boolean) => void;
-  resetCompetition: () => void; // For development/testing
+  resetCompetition: () => void; // Added for testing/development
 }
 
 // Create the context
@@ -16,6 +16,10 @@ const CompetitionContext = createContext<CompetitionContextType | undefined>(und
 // Local Storage Keys (re-declared for clarity in this file)
 const LS_KEY_FOUND_LOGOS = 'recklessbear_found_logos';
 const LS_KEY_COMPLETED_COMPETITION = 'recklessbear_competition_completed';
+const LS_KEY_REGISTERED = 'recklessbear_competition_registered'; // Also reset registration
+const LS_KEY_DEVICE_ID = 'recklessbear_device_id'; // Also reset device ID
+const LS_KEY_REGISTERED_EMAIL = 'recklessbear_registered_email'; // Also reset registered email
+
 const TOTAL_LOGOS_REQUIRED = 5; // Define total logos required here
 
 interface CompetitionProviderProps {
@@ -47,9 +51,8 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
       localStorage.setItem(LS_KEY_COMPLETED_COMPETITION, 'true');
       setShowCongratsModal(true);
       // --- IMPORTANT: Trigger n8n webhook for competition completion here ---
-      // You'll need the user's email or device_id from localStorage (set during registration)
-      const deviceId = localStorage.getItem('recklessbear_device_id');
-      const registeredEmail = localStorage.getItem('recklessbear_registered_email');
+      const deviceId = localStorage.getItem(LS_KEY_DEVICE_ID);
+      const registeredEmail = localStorage.getItem(LS_KEY_REGISTERED_EMAIL);
       
       console.log('All 5 logos found! Triggering n8n webhook for completion...');
       // Example fetch call (replace with your actual n8n webhook URL for completion)
@@ -72,7 +75,7 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
       */
       // --- END IMPORTANT ---
     }
-  }, [foundLogos]); // Re-run when foundLogos array changes
+  }, [foundLogos]);
 
   // --- Function to handle a logo being found ---
   const findLogo = useCallback((logoId: string) => {
@@ -111,23 +114,27 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
   // --- Function to close the congrats modal ---
   const handleCloseCongrats = useCallback(() => {
     setShowCongratsModal(false);
-    // You might want to also reset the competition state if it's a one-time thing
-    // or just let the user continue browsing.
   }, []);
 
-  // --- Function to reset competition state (for testing/development) ---
+  // --- NEW: Function to reset competition state (for testing/development) ---
   const resetCompetition = useCallback(() => {
     localStorage.removeItem(LS_KEY_FOUND_LOGOS);
     localStorage.removeItem(LS_KEY_COMPLETED_COMPETITION);
+    localStorage.removeItem(LS_KEY_REGISTERED); // Also reset registration status
+    localStorage.removeItem(LS_KEY_DEVICE_ID); // Reset device ID to get a new one on next load
+    localStorage.removeItem(LS_KEY_REGISTERED_EMAIL); // Reset registered email
+
     setFoundLogos([]);
     setFoundLogosCount(0);
     setShowCongratsModal(false);
     setToastMessage(null);
+
     // Remove 'found' class from all logos in the DOM
     document.querySelectorAll('.golden-logo-image.found').forEach(el => {
       el.classList.remove('found');
     });
     console.log('Competition state reset in localStorage and UI.');
+    window.location.reload(); // Reload the page to ensure all components re-initialize
   }, []);
 
   const contextValue = {
@@ -135,9 +142,9 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
     findLogo,
     toastMessage,
     showCongratsModal,
-    setCongratsModalOpen: setShowCongratsModal, // Expose setter for CompetitionModal to use
-    onCloseCongrats: handleCloseCongrats, // Pass the close handler
-    resetCompetition,
+    setCongratsModalOpen: setShowCongratsModal,
+    onCloseCongrats: handleCloseCongrats,
+    resetCompetition, // Expose reset function
   };
 
   return (
