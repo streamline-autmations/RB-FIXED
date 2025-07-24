@@ -1,4 +1,4 @@
-import React, { useEffect } => {
+import React, { useEffect } from 'react'; // CORRECTED: Changed '=> {' to 'from 'react';'
 import { Link, useLocation } from 'react-router-dom';
 import { Phone, Mail, Facebook, Instagram } from 'lucide-react';
 import Logo from './Logo'; // Assuming this is the component that renders your RB logo
