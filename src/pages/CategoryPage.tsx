@@ -35,6 +35,7 @@ const CategoryPage: React.FC = () => {
   // Handle click for golden-logo-2
   const handleLogo2Click = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent the parent Link/card click from triggering
+    e.preventDefault(); // NEW: Also prevent default link behavior
     if (!isLogo2Found) {
       findLogo('golden-logo-2'); // Use findLogo from context
       setIsLogo2Found(true); // Optimistically update state for immediate visual feedback
@@ -228,6 +229,7 @@ const CategoryPage: React.FC = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
+                {/* The Link component wraps the entire product card */}
                 <Link to={product.path}>
                   <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-4">
                     <div 
@@ -249,14 +251,14 @@ const CategoryPage: React.FC = () => {
                           src="/Golden-Logo.png" // Path to your golden logo image
                           alt="Hidden Golden Logo"
                           className={`golden-logo-image absolute z-30`} // z-index higher than overlay
-                          onClick={handleLogo2Click}
+                          onClick={handleLogo2Click} // This will now correctly trigger the handler
                           // Fine-tuned styles for precise overlay on the RB logo on the pants image
-                          // Adjusted values based on your feedback for 90% transparency and precise positioning
+                          // Adjusted values based on your feedback for 90% visibility and precise positioning
                           style={{
                             width: '25px', // Estimated size of the RB logo on the pants
                             height: '25px', // Estimated size
-                            top: '8%', // Moved up
-                            left: '44%', // Moved right slightly
+                            top: '15%', // Moved down slightly
+                            left: '46%', // Moved right slightly less (more left)
                             opacity: 0.1, // 90% visibility (1 - 0.9 = 0.1 opacity)
                           }}
                         />
