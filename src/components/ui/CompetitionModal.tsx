@@ -189,7 +189,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
               <X size={24} />
             </button>
             
-            <div className="p-8 text-center">
+            <div className="p-8 pt-8 text-center">
               {/* Golden Logo */}
               <div className="mb-6">
                 <img 
@@ -203,7 +203,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  🎉 You're in. Happy hunting!
+                  🏆 You're Registered!
                 </motion.h2>
                 <motion.p 
                   className="text-white text-lg leading-relaxed mb-6"
@@ -211,58 +211,17 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  You've been entered into the draw to win <span className="text-yellow-400 font-bold">R10,000!</span>
-                </motion.p>
-                <motion.p 
-                  className="text-gray-300 text-base leading-relaxed mb-8"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.6 }}
-                >
-                  Share with your friends so they can also stand a chance to win!
+                  You've successfully registered to compete. If you find all 5 golden logos hidden throughout the site, you'll be entered into our wheel spin for a chance to win R10 000!
                 </motion.p>
               </div>
-
-              {/* Social Share Buttons */}
-              <motion.div 
-                className="space-y-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.8 }}
-              >
-                You've been entered into the wheel spin to win <span className="text-yellow-400 font-bold">R10,000!</span>
-                <div className="flex flex-col gap-3">
-                  <button
-                    onClick={() => handleShareSuccess('facebook')}
-                    className="flex items-center justify-center gap-3 w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                  >
-                    <Facebook size={20} />
-                    Share on Facebook
-                  </button>
-                  <button
-                    onClick={() => handleShareSuccess('instagram')}
-                    className="flex items-center justify-center gap-3 w-full py-3 px-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-colors duration-200"
-                  >
-                    <Instagram size={20} />
-                    Share on Instagram
-                  </button>
-                  <button
-                    onClick={() => handleShareSuccess('whatsapp')}
-                    className="flex items-center justify-center gap-3 w-full py-3 px-6 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
-                  >
-                    <Share2 size={20} />
-                    Share on WhatsApp
-                  </button>
-                </div>
-              </motion.div>
 
               {/* Close Button */}
               <motion.button
                 onClick={() => setShowSuccessModal(false)}
-                className="mt-8 w-full py-3 px-6 bg-[#8B0000] text-white font-bebas text-lg tracking-wider rounded-lg transition-all duration-300 hover:bg-red-700 hover:shadow-lg transform hover:scale-105"
+                className="mt-6 w-full py-3 px-6 bg-[#8B0000] text-white font-bebas text-lg tracking-wider rounded-lg transition-all duration-300 hover:bg-red-700 hover:shadow-lg transform hover:scale-105"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 1.2 }}
+                transition={{ duration: 0.5, delay: 0.8 }}
               >
                 Continue Hunting
               </motion.button>
@@ -272,7 +231,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
                 className="text-gray-500 text-xs text-center mt-6 leading-relaxed"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 1.4 }}
+                transition={{ duration: 0.5, delay: 1.0 }}
               >
                 Competition ends 28 August 2025. A live wheelspin will be done on RecklessBear's socials on 28 August. Winner will be announced during the stream.
               </motion.p>
@@ -335,10 +294,10 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
                 className="w-16 h-16 mx-auto mb-4"
               />
               <h2 className="text-2xl md:text-3xl font-bebas text-white mb-2">
-                🏆 You're Registered!
+                Stand a chance to win R10 000!
               </h2>
               <p className="text-gray-300 text-sm md:text-base leading-relaxed">
-                You've successfully registered to compete. If you find all 5 golden logos hidden throughout the site, you'll be entered into our wheel spin for a chance to win R10 000!
+                Find all 5 golden logos hidden across the site and stand a chance to win R10 000.
               </p>
             </div>
 
