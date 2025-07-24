@@ -201,10 +201,10 @@ const CategoryPage: React.FC = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-rb-black to-transparent opacity-60"></div>
                     <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <h3 className="text-lg md:text-2xl font-bebas text-rb-white group-hover:text-rb-red transition-colors">
+                      <h3 className="text-sm md:text-lg lg:text-2xl font-bebas text-rb-white group-hover:text-rb-red transition-colors">
                         {product.title}
                       </h3>
-                      <span className="inline-block bg-rb-red px-2 py-1 md:px-3 md:py-1 rounded-sm text-rb-white text-xs md:text-sm mt-2 truncate text-center max-w-full">
+                      <span className="inline-block bg-rb-red px-1 py-0.5 md:px-2 md:py-1 lg:px-3 lg:py-1 rounded-sm text-rb-white text-xs md:text-sm mt-1 md:mt-2 truncate text-center max-w-full">
                         {product.subcategory}
                       </span>
                     </div>
