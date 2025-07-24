@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'; // Import useEffect
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { DivideIcon as LucideIcon } from 'lucide-react';
 import Button from './Button';
-import { useLocation } from 'react-router-dom'; // Import useLocation
+import { useLocation } from 'react-router-dom';
 
 // Define a global type for the window object to include our custom function
 declare global {
@@ -66,10 +66,9 @@ interface GalleryItemProps {
 
 export const GalleryItem: React.FC<GalleryItemProps> = ({ image, title, category, index }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const location = useLocation(); // Get current location
-  const [isLogo2Found, setIsLogo2Found] = useState(false); // State for this specific logo
+  const location = useLocation();
+  const [isLogo2Found, setIsLogo2Found] = useState(false);
 
-  // Check local storage on mount to see if this logo was already found
   useEffect(() => {
     const foundLogos = JSON.parse(localStorage.getItem('recklessbear_found_logos') || '[]');
     if (foundLogos.includes('golden-logo-2')) {
@@ -77,13 +76,12 @@ export const GalleryItem: React.FC<GalleryItemProps> = ({ image, title, category
     }
   }, []);
 
-  // Handle click for golden-logo-2
   const handleLogo2Click = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent the parent card's click/link from triggering
+    e.stopPropagation();
     if (!isLogo2Found) {
       if (window.triggerGoldenLogoFound) {
         window.triggerGoldenLogoFound('golden-logo-2');
-        setIsLogo2Found(true); // Optimistically update state for immediate visual feedback
+        setIsLogo2Found(true);
       } else {
         console.warn('window.triggerGoldenLogoFound is not defined. CompetitionProvider might not be loaded.');
       }
@@ -91,14 +89,11 @@ export const GalleryItem: React.FC<GalleryItemProps> = ({ image, title, category
   };
 
   // Conditional rendering for golden-logo-2
-  // Only render if:
-  // 1. It's the "Cricket Pants" card (based on title, adjust if you have a product slug/ID)
-  // 2. The current page is '/products/school-team-sports'
-  // 3. The logo hasn't been found yet
+  // Changed condition to be more flexible for "Cricket Pants" title
   const shouldRenderGoldenLogo2 = 
-    title === "CRICKET PANTS" && // Target the specific product card
-    location.pathname === '/products/school-team-sports' && // Target the specific category page
-    !isLogo2Found; // Only show if not yet found
+    title.toLowerCase().includes("cricket pants") && // More robust check for title
+    location.pathname === '/products/school-team-sports' &&
+    !isLogo2Found;
   
   return (
     <motion.div 
@@ -120,20 +115,19 @@ export const GalleryItem: React.FC<GalleryItemProps> = ({ image, title, category
         {/* Golden Logo 2 - Positioned over the RB logo on the Cricket Pants */}
         {shouldRenderGoldenLogo2 && (
           <img
-            id="golden-logo-2" // Unique ID for this logo
-            src="/Golden-Logo.png" // Path to your golden logo image
+            id="golden-logo-2"
+            src="/Golden-Logo.png"
             alt="Hidden Golden Logo"
-            className={`golden-logo-image absolute z-30`} // z-index higher than overlay
+            className={`golden-logo-image absolute z-30`}
             onClick={handleLogo2Click}
             // Fine-tuned styles for precise overlay on the RB logo on the pants image
-            // These values are estimates and might require pixel-perfect adjustment
-            // after deployment by inspecting the live site.
+            // Adjusted percentages slightly for better alignment
             style={{
-              width: '20px', // Estimated size of the RB logo on the pants
-              height: '20px', // Estimated size
-              top: '25%', // Adjust vertically (percentage relative to image height)
-              left: '40%', // Adjust horizontally (percentage relative to image width)
-              opacity: 0.15, // Subtle transparency
+              width: '25px', // Slightly larger to ensure clickability if RB logo is small
+              height: '25px',
+              top: '20%', // Adjusted vertically
+              left: '45%', // Adjusted horizontally
+              opacity: 0.15,
             }}
           />
         )}
