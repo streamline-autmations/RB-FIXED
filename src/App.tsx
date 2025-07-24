@@ -1,12 +1,8 @@
-import React, { useState } from 'react'; // Keep useState
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 
-// --- ORIGINAL IMPORTS (KEEP ALL OF THESE) ---
-import CompetitionModal from './components/ui/CompetitionModal';
-// The old useCompetitionModal hook will be removed, as the CompetitionProvider will manage this.
-// import { useCompetitionModal } from './hooks/useCompetitionModal'; // This line will be removed or commented out
-
+// Keep all your existing page and component imports.
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 
@@ -20,7 +16,6 @@ import TrackOrderPage from './pages/TrackOrderPage';
 
 import allProducts from './data/productsData';
 
-// All your existing product page imports
 import RugbyKitsPage from './pages/products/RugbyKitsPage';
 import RugbyJerseysPage from './pages/products/RugbyJerseysPage';
 import RugbyShortsPage from './pages/products/RugbyShortsPage';
@@ -65,7 +60,6 @@ import AthleticsLadiesVestPage from './pages/products/AthleticsLadiesVestPage';
 import AthleticsShortsPage from './pages/products/AthleticsShortsPage';
 import AthleticsLeggingsPage from './pages/products/AthleticsLeggingsPage';
 
-// Gym & Fitness Product Pages
 import GymShirtPage from './pages/products/GymShirtPage';
 import GymHoodiePage from './pages/products/GymHoodiePage';
 import GymVestPage from './pages/products/GymVestPage';
@@ -75,7 +69,6 @@ import GymTShirtLongPage from './pages/products/GymTShirtLongPage';
 import GymPufferJacketPage from './pages/products/GymPufferJacketPage';
 import GymTracksuitPantsPage from './pages/products/GymTracksuitPantsPage';
 
-// Schoolwear Product Pages
 import SchoolHoodiePage from './pages/products/SchoolHoodiePage';
 import SchoolPufferPage from './pages/products/SchoolPufferPage';
 import SchoolSoftshellPage from './pages/products/SchoolSoftshellPage';
@@ -123,13 +116,17 @@ import SweatbandsPage from './pages/products/SweatbandsPage';
 import ArmSleevesPage from './pages/products/ArmSleevesPage';
 import LegSleevesPage from './pages/products/LegSleevesPage';
 
-// Category Pages
 import CategoryPage from './pages/CategoryPage';
 import SubcategoryPage from './pages/SubcategoryPage';
 import GenericProductPage from './pages/products/GenericProductPage';
 
-// Catalogue Pages - using simplified structure
 import BaseCataloguePage from './components/shared/BaseCataloguePage';
+
+// NEW IMPORTS FOR COMPETITION
+import CompetitionModal from './components/ui/CompetitionModal';
+import ToastNotification from './common/ToastNotification'; // Corrected path
+import { CompetitionProvider, useCompetition } from './context/CompetitionProvider';
+// END NEW IMPORTS
 
 // Simplified catalogue pages (keep these as they are)
 const MainCataloguePage = () => (
@@ -172,43 +169,19 @@ const MatricCataloguePage = () => (
   />
 );
 
-// --- NEW IMPORTS FOR COMPETITION ---
-import ToastNotification from './common/ToastNotification'; // New component
-import { CompetitionProvider, useCompetition } from './context/CompetitionProvider'; // New context
-// --- END NEW IMPORTS ---
-
-
-// The main App component will now wrap the Router and CompetitionProvider
-function App() {
-  return (
-    <Router>
-      <CompetitionProvider> {/* Wrap the entire application with CompetitionProvider */}
-        <AppContent /> {/* All your main app content will be in AppContent */}
-      </CompetitionProvider>
-    </Router>
-  );
-}
-
-// --- NEW: AppContent component to contain your main application structure ---
-// This component will now consume the CompetitionContext
+// AppContent component to consume CompetitionContext
 const AppContent: React.FC = () => {
-  // Use the useCompetition hook to access competition state and functions
+  const [isCompetitionModalOpen, setIsCompetitionModalOpen] = useState(false);
   const { toastMessage, showCongratsModal, setCongratsModalOpen } = useCompetition();
 
-  // State to manage when to open the main competition registration modal
-  const [isCompetitionModalOpen, setIsCompetitionModalOpen] = useState(false);
-
-  // Function to open the main competition registration modal
   const openCompetitionModal = () => {
     setIsCompetitionModalOpen(true);
   };
 
-  // Function to close the main competition registration modal
   const closeCompetitionModal = () => {
     setIsCompetitionModalOpen(false);
   };
 
-  // This function will be passed to CompetitionModal to close the congrats modal
   const handleCloseCongratsModal = () => {
     setCongratsModalOpen(false);
   };
@@ -376,21 +349,21 @@ const AppContent: React.FC = () => {
       <Footer />
 
       {/* --- NEW: Competition Modals and Toast --- */}
-      {/* Example button to open competition modal (for testing, you can remove this later) */}
-      <button 
+      {/* Remove the "Enter Comp" button from here */}
+      {/* <button 
         onClick={openCompetitionModal} 
         className="fixed bottom-20 right-4 bg-yellow-500 text-black p-3 rounded-full shadow-lg z-50"
-        style={{ zIndex: 1000 }} // Ensure it's above other content
+        style={{ zIndex: 1000 }}
       >
         Enter Comp
-      </button>
+      </button> */}
 
       {/* Render the CompetitionModal */}
       <CompetitionModal
         isOpen={isCompetitionModalOpen}
         onClose={closeCompetitionModal}
-        showCongrats={showCongratsModal} // Pass the state from context
-        onCloseCongrats={handleCloseCongratsModal} // Pass the close handler
+        showCongrats={showCongratsModal}
+        onCloseCongrats={handleCloseCongratsModal}
       />
 
       {/* Render the Toast Notification */}
@@ -398,6 +371,20 @@ const AppContent: React.FC = () => {
       {/* --- END NEW --- */}
     </div>
   );
+};
+
+// Root App component that provides the Router and CompetitionContext
+function App() {
+  return (
+    <Router>
+      <CompetitionProvider>
+        <AppContent />
+      </CompetitionProvider>
+    </Router>
+  );
 }
+
+export default App;
+
 
 export default App;
