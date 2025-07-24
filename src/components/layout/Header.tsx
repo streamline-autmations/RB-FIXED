@@ -261,7 +261,7 @@ const Header: React.FC = () => {
             <Logo size="medium" />
             {/* Golden Logo Overlay */}
             <div
-              className="absolute top-0 left-0 w-full h-full flex items-center justify-center"
+              className="absolute top-0 left-0 w-full h-full flex items-center justify-start"
             >
               <img 
                 src="/Golden-Logo.png" 

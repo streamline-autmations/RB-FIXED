@@ -31,6 +31,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
   // Hide chatbot widget on mobile when modal is open
   useEffect(() => {
     const chatbotWidget = document.getElementById('vg-widget-container');
+    const chatbotButton = document.querySelector('.vg-bubble-button');
     if (chatbotWidget) {
       if (isOpen && window.innerWidth <= 768) {
         chatbotWidget.style.display = 'none';
@@ -38,11 +39,23 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
         chatbotWidget.style.display = '';
       }
     }
+    
+    // Also hide the chat button specifically
+    if (chatbotButton) {
+      if (isOpen) {
+        (chatbotButton as HTMLElement).style.display = 'none';
+      } else {
+        (chatbotButton as HTMLElement).style.display = '';
+      }
+    }
 
     // Cleanup on unmount
     return () => {
       if (chatbotWidget) {
         chatbotWidget.style.display = '';
+      }
+      if (chatbotButton) {
+        (chatbotButton as HTMLElement).style.display = '';
       }
     };
   }, [isOpen]);
@@ -217,7 +230,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.8 }}
               >
-                <h3 className="text-white font-bebas text-xl mb-4">Share the Hunt</h3>
+                You've been entered into the wheel spin to win <span className="text-yellow-400 font-bold">R10,000!</span>
                 <div className="flex flex-col gap-3">
                   <button
                     onClick={() => handleShareSuccess('facebook')}
@@ -278,7 +291,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
       <AnimatePresence>
         {isOpen && (
       <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-20"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-32"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -322,10 +335,10 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
                 className="w-16 h-16 mx-auto mb-4"
               />
               <h2 className="text-2xl md:text-3xl font-bebas text-white mb-2">
-                🏆 Win a R10,000 Prize!
+                🏆 You're Registered!
               </h2>
               <p className="text-gray-300 text-sm md:text-base leading-relaxed">
-                We've hidden 5 golden RecklessBear logos across our website. Find them all and stand a chance to win a R10,000 prize!
+                You've successfully registered to compete. If you find all 5 golden logos hidden throughout the site, you'll be entered into our wheel spin for a chance to win R10 000!
               </p>
             </div>
 

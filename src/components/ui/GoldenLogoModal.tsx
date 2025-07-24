@@ -51,7 +51,7 @@ const GoldenLogoModal: React.FC<GoldenLogoModalProps> = ({ isOpen, onClose }) =>
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-32"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -108,7 +108,7 @@ const GoldenLogoModal: React.FC<GoldenLogoModalProps> = ({ isOpen, onClose }) =>
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
-                You've been entered into the draw to win <span className="text-yellow-400 font-bold">R10,000!</span>
+                You've been entered into the wheel spin to win <span className="text-yellow-400 font-bold">R10,000!</span>
               </motion.p>
               <motion.p 
                 className="text-gray-300 text-base leading-relaxed mb-6"
@@ -169,7 +169,7 @@ const GoldenLogoModal: React.FC<GoldenLogoModalProps> = ({ isOpen, onClose }) =>
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 1.2 }}
             >
-              Continue Hunting
+              Continue to Website
             </motion.button>
 
             {/* Fine Print */}

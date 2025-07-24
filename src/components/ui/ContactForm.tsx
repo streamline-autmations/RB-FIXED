@@ -70,6 +70,26 @@ const ContactForm: React.FC = () => {
 
   // Load Tally embed script when quote or form view is active
   useEffect(() => {
+    // Hide chatbot widget when forms are active
+    const chatbotWidget = document.getElementById('vg-widget-container');
+    const chatbotButton = document.querySelector('.vg-bubble-button');
+    
+    if (chatbotWidget) {
+      if (activeView === 'quote' || activeView === 'form') {
+        chatbotWidget.style.display = 'none';
+      } else {
+        chatbotWidget.style.display = '';
+      }
+    }
+    
+    if (chatbotButton) {
+      if (activeView === 'quote' || activeView === 'form') {
+        (chatbotButton as HTMLElement).style.display = 'none';
+      } else {
+        (chatbotButton as HTMLElement).style.display = '';
+      }
+    }
+    
     if (activeView === 'quote' || activeView === 'form') {
       const script = document.createElement('script');
       script.src = "https://tally.so/widgets/embed.js";
@@ -80,6 +100,16 @@ const ContactForm: React.FC = () => {
       };
       document.body.appendChild(script);
     }
+    
+    // Cleanup function
+    return () => {
+      if (chatbotWidget) {
+        chatbotWidget.style.display = '';
+      }
+      if (chatbotButton) {
+        (chatbotButton as HTMLElement).style.display = '';
+      }
+    };
   }, [activeView]);
 
   const handleBookCall = () => {
@@ -166,7 +196,7 @@ const ContactForm: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full"
+          className="w-full mt-8"
         >
           <div className="w-full p-6 bg-rb-gray-800 rounded-2xl shadow-2xl border border-rb-gray-700">
             <div className="mb-6">
@@ -206,7 +236,7 @@ const ContactForm: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-rb-gray-800 p-8 rounded-lg text-center"
+          className="bg-rb-gray-800 p-8 rounded-lg text-center mt-8"
         >
           <h3 className="text-2xl font-bebas text-rb-white mb-4">Book Your Consultation</h3>
           <p className="text-rb-gray-300 mb-6">
@@ -233,7 +263,7 @@ const ContactForm: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full"
+          className="w-full mt-8"
         >
           <div className="w-full p-6 bg-rb-gray-800 rounded-2xl shadow-2xl border border-rb-gray-700">
             <div className="mb-6">

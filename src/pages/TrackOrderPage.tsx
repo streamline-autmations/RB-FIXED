@@ -140,7 +140,7 @@ const TrackOrderPage: React.FC = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-rb-black texture-overlay relative">
+      <section className="pt-40 pb-16 bg-rb-black texture-overlay relative">
         <div className="absolute inset-0 bg-gradient-to-b from-rb-black to-transparent opacity-80"></div>
         
         <div className="container-custom relative z-10">
