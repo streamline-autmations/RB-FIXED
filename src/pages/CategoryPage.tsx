@@ -252,14 +252,13 @@ const CategoryPage: React.FC = () => {
                           className={`golden-logo-image absolute z-30`} // z-index higher than overlay
                           onClick={handleLogo2Click}
                           // Fine-tuned styles for precise overlay on the RB logo on the pants image
-                          // These values are estimates and might require pixel-perfect adjustment
-                          // after deployment by inspecting the live site.
+                          // Adjusted values based on your feedback for 80% transparency and precise positioning
                           style={{
                             width: '25px', // Estimated size of the RB logo on the pants
                             height: '25px', // Estimated size
-                            top: '22%', // Adjusted vertically slightly
-                            left: '43%', // Adjusted horizontally slightly
-                            opacity: 0.15, // Subtle transparency
+                            top: '18%', // Moved up slightly
+                            left: '42%', // Adjusted horizontally slightly
+                            opacity: 0.2, // 80% transparency (1 - 0.8 = 0.2 opacity)
                           }}
                         />
                       )}
