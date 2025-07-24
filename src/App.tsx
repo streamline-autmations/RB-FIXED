@@ -173,7 +173,7 @@ const MatricCataloguePage = () => (
 );
 
 // --- NEW IMPORTS FOR COMPETITION ---
-import ToastNotification from './components/common/ToastNotification'; // New component
+import ToastNotification from './common/ToastNotification'; // New component
 import { CompetitionProvider, useCompetition } from './context/CompetitionProvider'; // New context
 // --- END NEW IMPORTS ---
 
