@@ -51,7 +51,7 @@ const Footer: React.FC = () => {
             {shouldRenderGoldenLogo1 && (
               <img
                 id="golden-logo-1" // Unique ID for this logo
-                src="/RB LOGO NEW.png" // Changed to your specific logo path
+                src="/Golden-Logo.png" // Changed to your specific logo path
                 alt="Hidden Golden Logo"
                 className={`golden-logo-image absolute z-20`}
                 onClick={handleLogo1Click}
