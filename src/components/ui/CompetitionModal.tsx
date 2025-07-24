@@ -544,6 +544,3 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
 };
 
 export default CompetitionModal;
-
-
-export default CompetitionModal;
