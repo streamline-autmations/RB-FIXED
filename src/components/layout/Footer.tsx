@@ -51,28 +51,19 @@ const Footer: React.FC = () => {
             {shouldRenderGoldenLogo1 && (
               <img
                 id="golden-logo-1" // Unique ID for this logo
-                src="/Golden-Logo.png" // Path to your golden logo image
+                src="/RB LOGO NEW.png" // Changed to your specific logo path
                 alt="Hidden Golden Logo"
                 className={`golden-logo-image absolute z-20`}
                 onClick={handleLogo1Click}
-                // These styles will make it overlay the existing small logo.
-                // You might need to slightly fine-tune 'top' and 'left' after deployment
-                // based on exact rendering.
+                // Fine-tuned styles for precise overlay over the existing RB logo
                 style={{
-                  width: 'auto', // Let the image size itself based on its intrinsic size or parent
-                  height: 'auto', // Let the image size itself based on its intrinsic size or parent
-                  top: '0', // Adjust to align with the top of the Logo component
-                  left: '0', // Adjust to align with the left of the Logo component
-                  right: 'auto', // Reset right
-                  bottom: 'auto', // Reset bottom
+                  width: '60px', // Adjusted width based on visual inspection of your footer logo
+                  height: 'auto', // Maintain aspect ratio
+                  top: '-10px', // Adjust to align vertically (might need fine-tuning)
+                  left: '0px', // Adjust to align horizontally (might need fine-tuning)
                   opacity: 0.2, // Keep the transparency
-                  // Ensure it covers the existing logo. These values are a starting point.
-                  // You might need to inspect the rendered Logo component's dimensions.
-                  transform: 'scale(1.0)', // Ensure it's not scaled by default
-                  // For precise overlay, you might need to match the size of the <Logo /> component.
-                  // If Logo component renders a specific width/height, match it here.
-                  // For example, if Logo renders at 40px height, use height: '40px'.
-                  // For now, 'auto' is a good start to match intrinsic size.
+                  // Use transform to slightly adjust position if top/left aren't enough
+                  // transform: 'translateY(-5px) translateX(0px)',
                 }}
               />
             )}
