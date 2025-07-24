@@ -115,7 +115,6 @@ const CategoryPage: React.FC = () => {
         
         <div className="container-custom relative z-10">
           <motion.div
-            className="text-center max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -256,8 +255,8 @@ const CategoryPage: React.FC = () => {
                           style={{
                             width: '25px', // Estimated size of the RB logo on the pants
                             height: '25px', // Estimated size
-                            top: '10%', // Moved up more
-                            left: '40%', // Moved left slightly
+                            top: '10%', // Moved up
+                            left: '43%', // Moved right slightly
                             opacity: 0.1, // 90% transparency (1 - 0.9 = 0.1 opacity)
                           }}
                         />
