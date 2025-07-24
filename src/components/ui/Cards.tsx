@@ -89,11 +89,23 @@ export const GalleryItem: React.FC<GalleryItemProps> = ({ image, title, category
   };
 
   // Conditional rendering for golden-logo-2
-  // Changed condition to be more flexible for "Cricket Pants" title
   const shouldRenderGoldenLogo2 = 
-    title.toLowerCase().includes("cricket pants") && // More robust check for title
+    title && // Ensure title is not null/undefined
+    title.toLowerCase().trim().includes("cricket pants") && // Added .trim() for robustness
     location.pathname === '/products/school-team-sports' &&
     !isLogo2Found;
+
+  // --- DEBUGGING CONSOLE LOGS ---
+  useEffect(() => {
+    console.log(`GalleryItem: Title: "${title}", Path: "${location.pathname}", isLogo2Found: ${isLogo2Found}, Should Render Logo 2: ${shouldRenderGoldenLogo2}`);
+    if (title && !title.toLowerCase().trim().includes("cricket pants")) {
+      console.log(`  - Title check failed: "${title}" does not contain "cricket pants"`);
+    }
+    if (location.pathname !== '/products/school-team-sports') {
+      console.log(`  - Path check failed: "${location.pathname}" is not "/products/school-team-sports"`);
+    }
+  }, [title, location.pathname, isLogo2Found, shouldRenderGoldenLogo2]);
+  // --- END DEBUGGING CONSOLE LOGS ---
   
   return (
     <motion.div 
@@ -123,10 +135,10 @@ export const GalleryItem: React.FC<GalleryItemProps> = ({ image, title, category
             // Fine-tuned styles for precise overlay on the RB logo on the pants image
             // Adjusted percentages slightly for better alignment
             style={{
-              width: '25px', // Slightly larger to ensure clickability if RB logo is small
+              width: '25px',
               height: '25px',
-              top: '20%', // Adjusted vertically
-              left: '45%', // Adjusted horizontally
+              top: '22%', // Adjusted vertically slightly
+              left: '43%', // Adjusted horizontally slightly
               opacity: 0.15,
             }}
           />
@@ -199,3 +211,4 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
     </div>
   </motion.div>
 );
+
