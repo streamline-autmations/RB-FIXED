@@ -5,6 +5,14 @@ import { Link } from 'react-router-dom';
 import { Filter, Grid3X3, Grid2X2, LayoutList } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { getProductsByCategory } from '../data/productsData';
+import { useCompetition } from '../context/CompetitionProvider'; // Import useCompetition
+
+// Define a global type for the window object to include our custom function
+declare global {
+  interface Window {
+    triggerGoldenLogoFound?: (logoId: string) => void;
+  }
+}
 
 const CategoryPage: React.FC = () => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
@@ -12,6 +20,27 @@ const CategoryPage: React.FC = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState('All');
   const [viewMode, setViewMode] = useState<'1' | '2' | '3'>('1');
   const [isMobile, setIsMobile] = useState(false);
+
+  // --- NEW: Competition Logo 2 State and Context ---
+  const { findLogo } = useCompetition(); // Get findLogo function from context
+  const [isLogo2Found, setIsLogo2Found] = useState(false); // State for this specific logo
+
+  useEffect(() => {
+    const foundLogos = JSON.parse(localStorage.getItem('recklessbear_found_logos') || '[]');
+    if (foundLogos.includes('golden-logo-2')) {
+      setIsLogo2Found(true);
+    }
+  }, []);
+
+  // Handle click for golden-logo-2
+  const handleLogo2Click = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent the parent Link/card click from triggering
+    if (!isLogo2Found) {
+      findLogo('golden-logo-2'); // Use findLogo from context
+      setIsLogo2Found(true); // Optimistically update state for immediate visual feedback
+    }
+  };
+  // --- END NEW ---
 
   React.useEffect(() => {
     const checkMobile = () => {
@@ -205,7 +234,37 @@ const CategoryPage: React.FC = () => {
                     <div 
                       className="absolute inset-0 bg-cover bg-center transform transition-transform duration-500 group-hover:scale-110"
                       style={{ backgroundImage: `url(${product.image})` }}
-                    />
+                    >
+                      {/* --- NEW: Golden Logo 2 --- */}
+                      {/* Conditional rendering for golden-logo-2 */}
+                      {/* Only render if:
+                          1. It's the "Cricket Pants" card (robust check for title)
+                          2. The current categorySlug is 'school-team-sports'
+                          3. The logo hasn't been found yet
+                      */}
+                      {product.title.toLowerCase().trim().includes("cricket pants") &&
+                       categorySlug === 'school-team-sports' && // Use categorySlug from useParams
+                       !isLogo2Found && (
+                        <img
+                          id="golden-logo-2" // Unique ID for this logo
+                          src="/Golden-Logo.png" // Path to your golden logo image
+                          alt="Hidden Golden Logo"
+                          className={`golden-logo-image absolute z-30`} // z-index higher than overlay
+                          onClick={handleLogo2Click}
+                          // Fine-tuned styles for precise overlay on the RB logo on the pants image
+                          // These values are estimates and might require pixel-perfect adjustment
+                          // after deployment by inspecting the live site.
+                          style={{
+                            width: '25px', // Estimated size of the RB logo on the pants
+                            height: '25px', // Estimated size
+                            top: '22%', // Adjusted vertically slightly
+                            left: '43%', // Adjusted horizontally slightly
+                            opacity: 0.15, // Subtle transparency
+                          }}
+                        />
+                      )}
+                      {/* --- END NEW --- */}
+                    </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-rb-black to-transparent opacity-60"></div>
                     <div className="absolute bottom-0 left-0 right-0 p-6">
                       <h3 className="text-sm md:text-lg lg:text-2xl font-bebas text-rb-white group-hover:text-rb-red transition-colors">
