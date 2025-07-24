@@ -15,6 +15,11 @@ interface FormData {
   agreeToTerms: boolean;
 }
 
+// Local Storage Keys
+const LS_KEY_REGISTERED = 'recklessbear_competition_registered';
+const LS_KEY_DEVICE_ID = 'recklessbear_device_id';
+const LS_KEY_REGISTERED_EMAIL = 'recklessbear_registered_email'; // New key to store registered email
+
 const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
@@ -27,6 +32,24 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [isDeviceRegistered, setIsDeviceRegistered] = useState(false); // New state to track device registration
+  const [currentDeviceId, setCurrentDeviceId] = useState<string | null>(null); // New state for persistent device ID
+
+  // --- NEW: Initialize persistent device ID and check registration status on component mount ---
+  useEffect(() => {
+    let deviceId = localStorage.getItem(LS_KEY_DEVICE_ID);
+    if (!deviceId) {
+      deviceId = crypto.randomUUID(); // Generate a truly unique ID for the device
+      localStorage.setItem(LS_KEY_DEVICE_ID, deviceId);
+    }
+    setCurrentDeviceId(deviceId); // Store it in component state
+
+    // Check if the device is already registered
+    if (localStorage.getItem(LS_KEY_REGISTERED) === 'true') {
+      setIsDeviceRegistered(true);
+      setShowSuccessModal(true); // If already registered, immediately show success modal
+    }
+  }, []); // Run only once on mount
 
   // Hide chatbot widget on mobile when modal is open
   useEffect(() => {
@@ -34,33 +57,22 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
     const chatbotButton = document.querySelector('.vg-bubble-button');
     const chatbotOverlay = document.getElementById('VG_OVERLAY_CONTAINER');
     
+    // Determine if any competition modal is open (main form or success)
+    const isAnyCompetitionModalOpen = isOpen || showSuccessModal;
+
     if (chatbotWidget) {
-      if (isOpen) {
-        chatbotWidget.style.display = 'none';
-      } else {
-        chatbotWidget.style.display = '';
-      }
+      chatbotWidget.style.display = isAnyCompetitionModalOpen ? 'none' : '';
     }
     
-    // Hide the chat button specifically
     if (chatbotButton) {
-      if (isOpen) {
-        (chatbotButton as HTMLElement).style.display = 'none';
-      } else {
-        (chatbotButton as HTMLElement).style.display = '';
-      }
+      (chatbotButton as HTMLElement).style.display = isAnyCompetitionModalOpen ? 'none' : '';
     }
 
-    // Hide the entire chatbot overlay container
     if (chatbotOverlay) {
-      if (isOpen) {
-        (chatbotOverlay as HTMLElement).style.display = 'none';
-      } else {
-        (chatbotOverlay as HTMLElement).style.display = '';
-      }
+      (chatbotOverlay as HTMLElement).style.display = isAnyCompetitionModalOpen ? 'none' : '';
     }
 
-    // Cleanup on unmount
+    // Cleanup on unmount (ensure chatbot reappears if component unmounts while hidden)
     return () => {
       if (chatbotWidget) {
         chatbotWidget.style.display = '';
@@ -72,7 +84,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
         (chatbotOverlay as HTMLElement).style.display = '';
       }
     };
-  }, [isOpen, showSuccessModal]);
+  }, [isOpen, showSuccessModal]); // Depend on isOpen and showSuccessModal to react to changes
 
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
@@ -102,24 +114,33 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Set device ID before form submission
+    // --- MODIFIED: Populate hidden device_id field with persistent ID ---
     const deviceIdField = document.getElementById('competition-device-id') as HTMLInputElement;
-    if (deviceIdField) {
-      // Generate a unique device ID
-      const deviceId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
-      deviceIdField.value = deviceId;
+    if (deviceIdField && currentDeviceId) {
+      deviceIdField.value = currentDeviceId; // Use the persistent device ID
+    } else {
+      console.error("Hidden device ID field or currentDeviceId not found.");
+      // You might want to prevent submission or handle this error
+      return; 
     }
+    // --- END MODIFIED ---
     
     if (!validateForm()) {
       return;
     }
     
+    // --- NEW: Set local storage flag for successful registration ---
+    localStorage.setItem(LS_KEY_REGISTERED, 'true');
+    localStorage.setItem(LS_KEY_REGISTERED_EMAIL, formData.email); // Store email for future use
+    setIsDeviceRegistered(true); // Update state
+    // --- END NEW ---
+
     // Show success modal and close main modal
     setIsSubmitted(true);
     setShowSuccessModal(true);
-    onClose();
+    onClose(); // Close the initial registration form modal
     
-    // Reset form
+    // Reset form data for next potential use (e.g., if modal is reused)
     setFormData({
       fullName: '',
       email: '',
@@ -152,6 +173,8 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
         break;
       case 'instagram':
         // Instagram doesn't support direct sharing via URL, so we'll copy to clipboard
+        // Note: alert() is generally not recommended in production React apps.
+        // Consider a custom toast/notification message instead.
         navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
         alert('Link copied to clipboard! Share it on Instagram.');
         return;
@@ -174,10 +197,10 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
     }
   };
 
-  // Success Modal Component
+  // Success Modal Component (This is your existing "YOU'RE REGISTERED!" modal)
   const SuccessModal = () => (
     <AnimatePresence>
-      {showSuccessModal && (
+      {showSuccessModal && ( // This state now also controls if the device is already registered
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
           initial={{ opacity: 0 }}
@@ -264,13 +287,23 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
     </AnimatePresence>
   );
 
-  if (!isOpen && !showSuccessModal) return null;
+  // --- MODIFIED: Conditional rendering based on device registration status ---
+  // If the device is already registered, and the main modal is trying to open,
+  // we want to directly show the success modal.
+  if (!isOpen && !showSuccessModal) return null; // Original check
+
+  // If main modal is trying to open (isOpen is true) AND device is already registered,
+  // then we only render the SuccessModal.
+  if (isOpen && isDeviceRegistered) {
+    return <SuccessModal />;
+  }
+  // --- END MODIFIED ---
 
   return (
     <>
-      <SuccessModal />
+      <SuccessModal /> {/* Always render SuccessModal, its own state controls visibility */}
       <AnimatePresence>
-        {isOpen && (
+        {isOpen && !isDeviceRegistered && ( // Only show main form if it's open and device is NOT registered
       <motion.div
         className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-32"
         initial={{ opacity: 0 }}
@@ -335,7 +368,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
                 type="hidden"
                 name="device_id"
                 id="competition-device-id"
-                value=""
+                value={currentDeviceId || ''} // Use the state variable for value
               />
 
               {/* Full Name */}
@@ -467,5 +500,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
     </>
   );
 };
+
+export default CompetitionModal;
 
 export default CompetitionModal;
