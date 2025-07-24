@@ -34,6 +34,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [isDeviceRegistered, setIsDeviceRegistered] = useState(false); // New state to track device registration
   const [currentDeviceId, setCurrentDeviceId] = useState<string | null>(null); // New state for persistent device ID
+  const [submissionError, setSubmissionError] = useState<string | null>(null); // New state for submission errors
 
   // --- NEW: Initialize persistent device ID and check registration status on component mount ---
   useEffect(() => {
@@ -111,16 +112,17 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => { // Made handleSubmit async
     e.preventDefault();
-    
+    setSubmissionError(null); // Clear previous errors
+
     // --- MODIFIED: Populate hidden device_id field with persistent ID ---
     const deviceIdField = document.getElementById('competition-device-id') as HTMLInputElement;
     if (deviceIdField && currentDeviceId) {
       deviceIdField.value = currentDeviceId; // Use the persistent device ID
     } else {
       console.error("Hidden device ID field or currentDeviceId not found.");
-      // You might want to prevent submission or handle this error
+      setSubmissionError("An internal error occurred. Please try again.");
       return; 
     }
     // --- END MODIFIED ---
@@ -128,26 +130,62 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
     if (!validateForm()) {
       return;
     }
-    
-    // --- NEW: Set local storage flag for successful registration ---
-    localStorage.setItem(LS_KEY_REGISTERED, 'true');
-    localStorage.setItem(LS_KEY_REGISTERED_EMAIL, formData.email); // Store email for future use
-    setIsDeviceRegistered(true); // Update state
-    // --- END NEW ---
 
-    // Show success modal and close main modal
-    setIsSubmitted(true);
-    setShowSuccessModal(true);
-    onClose(); // Close the initial registration form modal
-    
-    // Reset form data for next potential use (e.g., if modal is reused)
-    setFormData({
-      fullName: '',
-      email: '',
-      phone: '',
-      location: '',
-      agreeToTerms: false
-    });
+    // --- NEW: Send form data to Basin using fetch ---
+    const basinEndpoint = "https://usebasin.com/f/caea1c883e3b"; // Your Basin endpoint from the form action
+
+    // Create FormData object from your state
+    const dataToSend = new FormData();
+    dataToSend.append('full_name', formData.fullName);
+    dataToSend.append('email_address', formData.email);
+    dataToSend.append('phone_number', formData.phone);
+    dataToSend.append('location', formData.location);
+    dataToSend.append('terms_agreed', String(formData.agreeToTerms)); // Convert boolean to string
+    dataToSend.append('device_id', currentDeviceId); // Add the persistent device ID
+
+    try {
+      const response = await fetch(basinEndpoint, {
+        method: 'POST',
+        body: dataToSend, // Use FormData directly
+        // Basin expects form-urlencoded or multipart/form-data for standard submissions.
+        // fetch with FormData automatically sets 'Content-Type': 'multipart/form-data'
+        // If Basin is configured for JSON, you'd use JSON.stringify(formData) and 'Content-Type': 'application/json'
+      });
+
+      if (!response.ok) {
+        // Basin typically responds with a redirect or a simple status for direct POSTs.
+        // If it's configured for AJAX/JSON response, check response.json()
+        // For now, a non-OK status indicates a problem.
+        throw new Error(`Basin submission failed with status: ${response.status}`);
+      }
+
+      // --- Set local storage flag for successful registration AFTER Basin submission ---
+      localStorage.setItem(LS_KEY_REGISTERED, 'true');
+      localStorage.setItem(LS_KEY_REGISTERED_EMAIL, formData.email); // Store email for future use
+      setIsDeviceRegistered(true); // Update state
+
+      // Show success modal and close main modal
+      setIsSubmitted(true);
+      setShowSuccessModal(true);
+      onClose(); // Close the initial registration form modal
+      
+      // Reset form data for next potential use (e.g., if modal is reused)
+      setFormData({
+        fullName: '',
+        email: '',
+        phone: '',
+        location: '',
+        agreeToTerms: false
+      });
+
+    } catch (error) {
+      console.error('Error submitting form to Basin:', error);
+      setSubmissionError("Failed to register. Please check your internet connection and try again.");
+      // You might want to prevent the success modal from showing on error
+      setIsSubmitted(false);
+      setShowSuccessModal(false);
+    }
+    // --- END NEW ---
   };
 
   const handleInputChange = (field: keyof FormData, value: string | boolean) => {
@@ -175,8 +213,9 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
         // Instagram doesn't support direct sharing via URL, so we'll copy to clipboard
         // Note: alert() is generally not recommended in production React apps.
         // Consider a custom toast/notification message instead.
-        navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
-        alert('Link copied to clipboard! Share it on Instagram.');
+        document.execCommand('copy'); // Use document.execCommand for clipboard in iframes
+        // alert('Link copied to clipboard! Share it on Instagram.'); // Replace with custom message
+        console.log('Link copied to clipboard for Instagram share.');
         return;
       case 'whatsapp':
         shareLink = `https://wa.me/?text=${encodedText} ${encodedUrl}`;
@@ -477,6 +516,11 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
                 <p className="text-red-400 text-xs">{errors.agreeToTerms}</p>
               )}
 
+              {/* Submission Error Message */}
+              {submissionError && (
+                <p className="text-red-400 text-sm text-center mt-4">{submissionError}</p>
+              )}
+
               {/* Submit Button */}
               <button
                 type="submit"
@@ -500,6 +544,6 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
 };
 
 export default CompetitionModal;
-export default CompetitionModal;
+
 
 export default CompetitionModal;
