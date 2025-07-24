@@ -288,15 +288,13 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
   );
 
   // --- MODIFIED: Conditional rendering based on device registration status ---
-  // If the device is already registered, and the main modal is trying to open,
-  // we want to directly show the success modal.
-  if (!isOpen && !showSuccessModal) return null; // Original check
-
   // If main modal is trying to open (isOpen is true) AND device is already registered,
-  // then we only render the SuccessModal.
+  // we want to directly show the success modal.
   if (isOpen && isDeviceRegistered) {
     return <SuccessModal />;
   }
+  // If the main modal is not open AND the success modal is not open, then render nothing.
+  if (!isOpen && !showSuccessModal) return null;
   // --- END MODIFIED ---
 
   return (
@@ -501,6 +499,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
   );
 };
 
+export default CompetitionModal;
 export default CompetitionModal;
 
 export default CompetitionModal;
