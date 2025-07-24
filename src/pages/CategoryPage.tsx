@@ -10,12 +10,19 @@ const CategoryPage: React.FC = () => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
   const location = useLocation();
   const [selectedSubcategory, setSelectedSubcategory] = useState('All');
-  const [viewMode, setViewMode] = useState<'1' | '2' | '3'>('3');
+  const [viewMode, setViewMode] = useState<'1' | '2' | '3'>('1');
   const [isMobile, setIsMobile] = useState(false);
 
   React.useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      // Set default view mode based on screen size
+      if (mobile) {
+        setViewMode('1'); // Single column for mobile/tablet
+      } else {
+        setViewMode('3'); // Three columns for desktop
+      }
     };
     
     checkMobile();

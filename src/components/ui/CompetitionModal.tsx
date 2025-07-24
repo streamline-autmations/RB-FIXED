@@ -32,20 +32,31 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
   useEffect(() => {
     const chatbotWidget = document.getElementById('vg-widget-container');
     const chatbotButton = document.querySelector('.vg-bubble-button');
+    const chatbotOverlay = document.getElementById('VG_OVERLAY_CONTAINER');
+    
     if (chatbotWidget) {
-      if (isOpen && window.innerWidth <= 768) {
+      if (isOpen) {
         chatbotWidget.style.display = 'none';
       } else {
         chatbotWidget.style.display = '';
       }
     }
     
-    // Also hide the chat button specifically
+    // Hide the chat button specifically
     if (chatbotButton) {
       if (isOpen) {
         (chatbotButton as HTMLElement).style.display = 'none';
       } else {
         (chatbotButton as HTMLElement).style.display = '';
+      }
+    }
+
+    // Hide the entire chatbot overlay container
+    if (chatbotOverlay) {
+      if (isOpen) {
+        (chatbotOverlay as HTMLElement).style.display = 'none';
+      } else {
+        (chatbotOverlay as HTMLElement).style.display = '';
       }
     }
 
@@ -57,8 +68,11 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
       if (chatbotButton) {
         (chatbotButton as HTMLElement).style.display = '';
       }
+      if (chatbotOverlay) {
+        (chatbotOverlay as HTMLElement).style.display = '';
+      }
     };
-  }, [isOpen]);
+  }, [isOpen, showSuccessModal]);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
@@ -87,6 +101,14 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Set device ID before form submission
+    const deviceIdField = document.getElementById('competition-device-id') as HTMLInputElement;
+    if (deviceIdField) {
+      // Generate a unique device ID
+      const deviceId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+      deviceIdField.value = deviceId;
+    }
     
     if (!validateForm()) {
       return;
@@ -303,11 +325,19 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
 
             {/* Form */}
             <form 
-              action="https://usebasin.com/f/caea1c883e3b" 
+              action="https://usebasin.com/f/caea1c883e3b"
               method="POST" 
               onSubmit={handleSubmit} 
               className="space-y-4"
             >
+              {/* Hidden Device ID Field */}
+              <input
+                type="hidden"
+                name="device_id"
+                id="competition-device-id"
+                value=""
+              />
+
               {/* Full Name */}
               <div>
                 <label htmlFor="fullName" className="block text-white text-sm font-medium mb-2">
@@ -316,7 +346,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
                 <input
                   type="text"
                   id="fullName"
-                  name="fullName"
+                  name="full_name"
                   value={formData.fullName}
                   onChange={(e) => handleInputChange('fullName', e.target.value)}
                   className={`w-full px-4 py-3 bg-gray-800 text-white border rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${
@@ -340,7 +370,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
                 <input
                   type="email"
                   id="email"
-                  name="email"
+                  name="email_address"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   className={`w-full px-4 py-3 bg-gray-800 text-white border rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${
@@ -364,7 +394,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
                 <input
                   type="tel"
                   id="phone"
-                  name="phone"
+                  name="phone_number"
                   value={formData.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   className={`w-full px-4 py-3 bg-gray-800 text-white border rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${
@@ -401,7 +431,8 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
                 <input
                   type="checkbox"
                   id="agreeToTerms"
-                  name="agreeToTerms"
+                  name="terms_agreed"
+                  value="true"
                   checked={formData.agreeToTerms}
                   onChange={(e) => handleInputChange('agreeToTerms', e.target.checked)}
                   className="mt-1 w-4 h-4 text-red-600 bg-gray-800 border-gray-600 rounded focus:ring-red-600 focus:ring-2"

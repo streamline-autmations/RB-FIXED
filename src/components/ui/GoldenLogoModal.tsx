@@ -11,6 +11,52 @@ const GoldenLogoModal: React.FC<GoldenLogoModalProps> = ({ isOpen, onClose }) =>
   const shareUrl = window.location.origin;
   const shareText = "I found a hidden golden logo on RecklessBear's website and entered their R10,000 competition! 🏆 Can you find all 5 hidden logos?";
 
+  // Hide chatbot widget when modal is open
+  React.useEffect(() => {
+    const chatbotWidget = document.getElementById('vg-widget-container');
+    const chatbotButton = document.querySelector('.vg-bubble-button');
+    const chatbotOverlay = document.getElementById('VG_OVERLAY_CONTAINER');
+    
+    if (chatbotWidget) {
+      if (isOpen) {
+        chatbotWidget.style.display = 'none';
+      } else {
+        chatbotWidget.style.display = '';
+      }
+    }
+    
+    // Hide the chat button specifically
+    if (chatbotButton) {
+      if (isOpen) {
+        (chatbotButton as HTMLElement).style.display = 'none';
+      } else {
+        (chatbotButton as HTMLElement).style.display = '';
+      }
+    }
+
+    // Hide the entire chatbot overlay container
+    if (chatbotOverlay) {
+      if (isOpen) {
+        (chatbotOverlay as HTMLElement).style.display = 'none';
+      } else {
+        (chatbotOverlay as HTMLElement).style.display = '';
+      }
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (chatbotWidget) {
+        chatbotWidget.style.display = '';
+      }
+      if (chatbotButton) {
+        (chatbotButton as HTMLElement).style.display = '';
+      }
+      if (chatbotOverlay) {
+        (chatbotOverlay as HTMLElement).style.display = '';
+      }
+    };
+  }, [isOpen]);
+
   const handleShare = (platform: string) => {
     const encodedText = encodeURIComponent(shareText);
     const encodedUrl = encodeURIComponent(shareUrl);

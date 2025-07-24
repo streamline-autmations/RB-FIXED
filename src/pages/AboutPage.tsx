@@ -132,20 +132,6 @@ const AboutPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                name: 'Zander Steyn',
-                position: 'Director of Printing and Pressing',
-                email: 'zander@recklessbear.co.za',
-                phone: '082 384 1522',
-                image: null
-              },
-              {
-                name: 'Janco Tiedt',
-                position: 'Director',
-                email: 'janco@recklessbear.co.za',
-                phone: '076 689 0383',
-                image: null
-              },
-              {
                 name: 'Etienne Viljoen',
                 position: 'Brand Owner',
                 email: 'etienne@recklessbear.co.za',
@@ -157,6 +143,20 @@ const AboutPage: React.FC = () => {
                 position: 'Director',
                 email: 'alicia@recklessbear.co.za',
                 phone: '076 123 4567',
+                image: null
+              },
+              {
+                name: 'Janco Tiedt',
+                position: 'Director',
+                email: 'janco@recklessbear.co.za',
+                phone: '076 689 0383',
+                image: null
+              },
+              {
+                name: 'Zander Steyn',
+                position: 'Director of Printing and Pressing',
+                email: 'zander@recklessbear.co.za',
+                phone: '082 384 1522',
                 image: null
               }
             ].map((member, index) => (
