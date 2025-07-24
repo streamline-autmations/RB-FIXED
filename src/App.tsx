@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react'; // Keep useState
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+
+// --- ORIGINAL IMPORTS (KEEP ALL OF THESE) ---
 import CompetitionModal from './components/ui/CompetitionModal';
-import { useCompetitionModal } from './hooks/useCompetitionModal';
+// The old useCompetitionModal hook will be removed, as the CompetitionProvider will manage this.
+// import { useCompetitionModal } from './hooks/useCompetitionModal'; // This line will be removed or commented out
 
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
@@ -17,7 +20,7 @@ import TrackOrderPage from './pages/TrackOrderPage';
 
 import allProducts from './data/productsData';
 
-// Product Pages - using simplified structure
+// All your existing product page imports
 import RugbyKitsPage from './pages/products/RugbyKitsPage';
 import RugbyJerseysPage from './pages/products/RugbyJerseysPage';
 import RugbyShortsPage from './pages/products/RugbyShortsPage';
@@ -128,7 +131,7 @@ import GenericProductPage from './pages/products/GenericProductPage';
 // Catalogue Pages - using simplified structure
 import BaseCataloguePage from './components/shared/BaseCataloguePage';
 
-// Simplified catalogue pages
+// Simplified catalogue pages (keep these as they are)
 const MainCataloguePage = () => (
   <BaseCataloguePage
     title="2025–2026 Catalogue"
@@ -169,16 +172,54 @@ const MatricCataloguePage = () => (
   />
 );
 
-function App() {
-  const { isModalOpen, closeModal } = useCompetitionModal();
+// --- NEW IMPORTS FOR COMPETITION ---
+import ToastNotification from './components/common/ToastNotification'; // New component
+import { CompetitionProvider, useCompetition } from './context/CompetitionProvider'; // New context
+// --- END NEW IMPORTS ---
 
+
+// The main App component will now wrap the Router and CompetitionProvider
+function App() {
   return (
     <Router>
-      <CompetitionModal isOpen={isModalOpen} onClose={closeModal} />
+      <CompetitionProvider> {/* Wrap the entire application with CompetitionProvider */}
+        <AppContent /> {/* All your main app content will be in AppContent */}
+      </CompetitionProvider>
+    </Router>
+  );
+}
+
+// --- NEW: AppContent component to contain your main application structure ---
+// This component will now consume the CompetitionContext
+const AppContent: React.FC = () => {
+  // Use the useCompetition hook to access competition state and functions
+  const { toastMessage, showCongratsModal, setCongratsModalOpen } = useCompetition();
+
+  // State to manage when to open the main competition registration modal
+  const [isCompetitionModalOpen, setIsCompetitionModalOpen] = useState(false);
+
+  // Function to open the main competition registration modal
+  const openCompetitionModal = () => {
+    setIsCompetitionModalOpen(true);
+  };
+
+  // Function to close the main competition registration modal
+  const closeCompetitionModal = () => {
+    setIsCompetitionModalOpen(false);
+  };
+
+  // This function will be passed to CompetitionModal to close the congrats modal
+  const handleCloseCongratsModal = () => {
+    setCongratsModalOpen(false);
+  };
+
+  return (
+    <div className="flex flex-col min-h-screen">
       <Header />
       <main>
         <AnimatePresence mode="wait">
           <Routes>
+            {/* All your existing Route components go here, exactly as they were */}
             <Route path="/" element={<HomePage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
@@ -187,11 +228,8 @@ function App() {
             <Route path="/track-order" element={<TrackOrderPage />} />
             <Route path="/products" element={<ProductsPage />} />
             
-            {/* Main Category Routes */}
             <Route path="/products/:categorySlug" element={<CategoryPage />} />
             
-            {/* Subcategory Routes */}
-            {/* Dynamic Subcategory Routes - These will catch all subcategory slugs */}
             <Route path="/products/rugby" element={<SubcategoryPage />} />
             <Route path="/products/netball" element={<SubcategoryPage />} />
             <Route path="/products/cricket" element={<SubcategoryPage />} />
@@ -200,7 +238,7 @@ function App() {
             <Route path="/products/soccer" element={<SubcategoryPage />} />
             <Route path="/products/golf" element={<SubcategoryPage />} />
             <Route path="/products/fishing" element={<SubcategoryPage />} />
-            <Route path="/products/hunting" element={<SubcategoryPage />} />
+            <Route path="/products/hunting" element={<HuntingHoodiePage />} />
             <Route path="/products/cycling" element={<SubcategoryPage />} />
             <Route path="/products/darts" element={<SubcategoryPage />} />
             <Route path="/products/corporate" element={<SubcategoryPage />} />
@@ -215,7 +253,6 @@ function App() {
             <Route path="/products/warmup-training" element={<SubcategoryPage />} />
             <Route path="/products/sleeves-accessories" element={<SubcategoryPage />} />
             
-            {/* Category Routes */}
             <Route path="/products/rugby-kits" element={<RugbyKitsPage />} />
             <Route path="/products/netball-kits" element={<NetballKitsPage />} />
             <Route path="/products/hockey-kits" element={<HockeyKitsPage />} />
@@ -225,7 +262,6 @@ function App() {
             <Route path="/products/golf-apparel" element={<GolfApparelPage />} />
             <Route path="/products/staff-uniforms" element={<StaffUniformsPage />} />
             
-            {/* Gym & Fitness Product Routes */}
             <Route path="/products/gym-shirt" element={<GymShirtPage />} />
             <Route path="/products/gym-hoodie" element={<GymHoodiePage />} />
             <Route path="/products/gym-vest" element={<GymVestPage />} />
@@ -235,14 +271,12 @@ function App() {
             <Route path="/products/gym-puffer-jacket" element={<GymPufferJacketPage />} />
             <Route path="/products/gym-tracksuit-pants" element={<GymTracksuitPantsPage />} />
             
-            {/* Schoolwear Product Routes */}
             <Route path="/products/school-hoodie" element={<SchoolHoodiePage />} />
             <Route path="/products/school-puffer" element={<SchoolPufferPage />} />
             <Route path="/products/school-softshell" element={<SchoolSoftshellPage />} />
             <Route path="/products/school-tshirt-short" element={<SchoolTShirtShortPage />} />
             <Route path="/products/school-tshirt-long" element={<SchoolTShirtLongPage />} />
             
-            {/* Specific Product Routes */}
             <Route path="/products/rugby-jerseys" element={<RugbyJerseysPage />} />
             <Route path="/products/rugby-shorts" element={<RugbyShortsPage />} />
             <Route path="/products/rugby-socks" element={<RugbySocksPage />} />
@@ -263,6 +297,7 @@ function App() {
             <Route path="/products/fishing-tee-long" element={<FishingTeeLongPage />} />
             <Route path="/products/fishing-tee-short" element={<FishingTeeShortPage />} />
             <Route path="/products/fishing-zip-top" element={<FishingZipTopPage />} />
+            <Route path="/products/darts-shirts" element={<DartsShirtsPage />} />
             <Route path="/products/hunting-hoodie" element={<HuntingHoodiePage />} />
             <Route path="/products/hunting-puffer-long" element={<HuntingPufferLongPage />} />
             <Route path="/products/hunting-puffer-short" element={<HuntingPufferShortPage />} />
@@ -272,7 +307,6 @@ function App() {
             <Route path="/products/cricket-pants" element={<CricketPantsPage />} />
             <Route path="/products/tracksuits" element={<TracksuitsPage />} />
             
-            {/* Gym & Fitness Product Routes */}
             <Route path="/products/gym-shirt" element={<GymShirtPage />} />
             <Route path="/products/gym-hoodie" element={<GymHoodiePage />} />
             <Route path="/products/gym-vest" element={<GymVestPage />} />
@@ -288,7 +322,6 @@ function App() {
             <Route path="/products/corporate-softshell" element={<CorporateSoftshellPage />} />
             <Route path="/products/corporate-zip-top" element={<CorporateZipTopPage />} />
             
-            {/* Schoolwear Product Routes */}
             <Route path="/products/school-hoodie" element={<SchoolHoodiePage />} />
             <Route path="/products/school-puffer" element={<SchoolPufferPage />} />
             <Route path="/products/school-softshell" element={<SchoolSoftshellPage />} />
@@ -310,7 +343,6 @@ function App() {
             <Route path="/products/arm-sleeves" element={<ArmSleevesPage />} />
             <Route path="/products/leg-sleeves" element={<LegSleevesPage />} />
             
-            {/* Generic Product Routes - catch-all for products without specific pages */}
             <Route path="/products/rugby-warmup-short" element={<RugbyWarmupShortPage />} />
             <Route path="/products/rugby-warmup-long" element={<RugbyWarmupLongPage />} />
             
@@ -335,7 +367,6 @@ function App() {
             <Route path="/products/athletics-shorts" element={<AthleticsShortsPage />} />
             <Route path="/products/athletics-leggings" element={<AthleticsLeggingsPage />} />
             
-            {/* Catalogue Routes */}
             <Route path="/catalogues/2025" element={<MainCataloguePage />} />
             <Route path="/catalogues/matric" element={<MatricCataloguePage />} />
             <Route path="/catalogues/*" element={<MainCataloguePage />} />
@@ -343,7 +374,29 @@ function App() {
         </AnimatePresence>
       </main>
       <Footer />
-    </Router>
+
+      {/* --- NEW: Competition Modals and Toast --- */}
+      {/* Example button to open competition modal (for testing, you can remove this later) */}
+      <button 
+        onClick={openCompetitionModal} 
+        className="fixed bottom-20 right-4 bg-yellow-500 text-black p-3 rounded-full shadow-lg z-50"
+        style={{ zIndex: 1000 }} // Ensure it's above other content
+      >
+        Enter Comp
+      </button>
+
+      {/* Render the CompetitionModal */}
+      <CompetitionModal
+        isOpen={isCompetitionModalOpen}
+        onClose={closeCompetitionModal}
+        showCongrats={showCongratsModal} // Pass the state from context
+        onCloseCongrats={handleCloseCongratsModal} // Pass the close handler
+      />
+
+      {/* Render the Toast Notification */}
+      <ToastNotification message={toastMessage} />
+      {/* --- END NEW --- */}
+    </div>
   );
 }
 
