@@ -47,14 +47,14 @@ const Footer: React.FC = () => {
           {/* Logo and Tagline */}
           <div className="flex flex-col relative items-start"> 
             {shouldRenderGoldenLogo1 ? (
-              // On homepage and not found: show golden logo + RECKLESSBEAR text
-              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              // On homepage and not found: show golden logo icon + RECKLESSBEAR text
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={handleLogo1Click}>
                 <img
                   id="golden-logo-1" // Unique ID for this logo
                   src="/Golden-Logo.png" // Using the correct Golden-Logo.png path
                   alt="Hidden Golden Logo"
-                  className={`golden-logo-image absolute z-20`} // z-20 ensures it's on top
-                  onClick={handleLogo1Click}
+                  // No specific opacity here, as we want it fully visible when replacing the logo
+                  className={`golden-logo-image z-20`} // golden-logo-image class will handle 'found' state
                   // Match the size of your original RB icon and place exactly over it
                   // Adjusted values for pixel-perfect overlay (assuming 40x40px icon)
                   style={{
@@ -62,12 +62,11 @@ const Footer: React.FC = () => {
                     height: '40px', // Assuming this is the size
                     top: '0px', // Position relative to its parent div
                     left: '0px', // Position relative to its parent div
-                    opacity: 0.1, // 90% transparency (1 - 0.9 = 0.1 opacity)
-                    // If the Logo component itself has padding/margin, these might need adjustment
+                    opacity: 1, // FULLY VISIBLE when replacing the logo
+                    // You might need to adjust top/left slightly after deployment
                   }}
                 />
-                {/* The "RECKLESSBEAR" text. Assuming it's typically rendered alongside the icon. */}
-                {/* We're adding it explicitly here to ensure it's always there on the homepage. */}
+                {/* The "RECKLESSBEAR" text. Add ml-2 for spacing. */}
                 <span className="text-rb-white text-xl font-bebas tracking-wider ml-2" style={{ pointerEvents: 'none' }}>RECKLESSBEAR</span>
               </div>
             ) : (
