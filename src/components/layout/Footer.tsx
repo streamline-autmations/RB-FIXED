@@ -44,26 +44,32 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           
           {/* Logo and Tagline */}
-          <div className="flex flex-col relative items-start"> {/* Added relative and items-start for positioning context */}
-            <Logo size="small" /> {/* This is your existing RecklessBear logo component */}
+          {/* Added a wrapper div around Logo to apply relative positioning and ensure z-index */}
+          <div className="flex flex-col relative items-start"> 
+            {/* The Logo component itself. We might need to add a class to it if it renders an img */}
+            <div style={{ position: 'relative', zIndex: 1, pointerEvents: 'none' }}> {/* Wrapper for Logo to control pointer-events */}
+              <Logo size="small" /> 
+            </div>
             
-            {/* Golden Logo 1 - Positioned over the RecklessBear logo in the footer */}
+            {/* Golden Logo 1 - Positioned precisely over the RecklessBear logo in the footer */}
             {shouldRenderGoldenLogo1 && (
               <img
                 id="golden-logo-1" // Unique ID for this logo
-                src="/Golden-Logo.png" // Changed to your specific logo path
+                src="/Golden-Logo.png" // Using the correct Golden-Logo.png path
                 alt="Hidden Golden Logo"
-                className={`golden-logo-image absolute z-20`}
+                className={`golden-logo-image absolute z-20`} // z-20 ensures it's on top
                 onClick={handleLogo1Click}
                 // Fine-tuned styles for precise overlay over the existing RB logo
-                // Assuming the <Logo size="small" /> renders an image that is roughly 40px x 40px
+                // These values are based on visual estimation and common logo component output.
+                // You might need to inspect the rendered Logo component's exact dimensions and offset.
                 style={{
                   width: '40px', // Explicitly set width to match the underlying logo
                   height: '40px', // Explicitly set height to match the underlying logo
-                  top: '0px', // Align to the top of the parent div
-                  left: '0px', // Align to the left of the parent div
+                  top: '0px', // Adjust to align vertically
+                  left: '0px', // Adjust to align horizontally
                   opacity: 0.2, // Keep the transparency
-                  // No transform needed if top/left/width/height are precise
+                  // If it's still off, slight adjustments to top/left or adding transform: translate
+                  // For example: transform: 'translate(2px, 3px)',
                 }}
               />
             )}
