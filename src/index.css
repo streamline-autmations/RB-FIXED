@@ -61,7 +61,49 @@
   .rotate-y-180 {
     transform: rotateY(180deg);
   }
-}
+
+  /* Competition Modal Styles - Keep these */
+  .competition-modal-backdrop {
+    backdrop-filter: blur(4px);
+  }
+
+  /* Custom checkbox styling for competition modal - Keep these */
+  input[type="checkbox"]:checked {
+    background-color: #8B0000;
+    border-color: #8B0000;
+  }
+
+  input[type="checkbox"]:focus {
+    ring-color: #8B0000;
+  }
+
+  /* --- NEW: Golden Logo Image Styling --- */
+  .golden-logo-image {
+      /* Initial size and subtle appearance */
+      width: 30px; /* Adjust size to be discreet */
+      height: 30px; /* Adjust size to be discreet */
+      opacity: 0.2; /* Make it slightly transparent */
+      transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, filter 0.3s ease-in-out;
+      /* Ensure cursor is pointer for clickable feedback */
+      cursor: pointer;
+  }
+
+  /* Style when the logo is found */
+  .golden-logo-image.found {
+      opacity: 1; /* Fully visible */
+      filter: drop-shadow(0 0 8px gold); /* Golden glow effect */
+      transform: scale(1.1); /* Slightly larger */
+      pointer-events: none; /* Make it unclickable once found */
+  }
+
+  /* Hover effect for unfound logos */
+  .golden-logo-image:not(.found):hover {
+      transform: scale(1.05); /* Slight scale on hover */
+      opacity: 0.4; /* Slightly more visible on hover */
+  }
+  /* --- END NEW --- */
+} /* End of @layer components */
+
 
 .texture-overlay {
   background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.pexels.com/photos/4753879/pexels-photo-4753879.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
@@ -89,17 +131,33 @@
   border-radius: 8px;
 }
 
-/* Competition Modal Styles */
-.competition-modal-backdrop {
-  backdrop-filter: blur(4px);
+/* --- NEW: Confetti Animation --- */
+.confetti-particle {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background-color: gold; /* Default color, will be overridden by JS */
+    border-radius: 50%;
+    opacity: 0;
+    animation: confetti-fall 3s ease-out forwards;
+    pointer-events: none; /* Ensure confetti doesn't block clicks */
+    z-index: 1000; /* Ensure confetti is on top of everything */
 }
 
-/* Custom checkbox styling for competition modal */
-input[type="checkbox"]:checked {
-  background-color: #8B0000;
-  border-color: #8B0000;
+@keyframes confetti-fall {
+    0% { transform: translateY(-100%) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
-input[type="checkbox"]:focus {
-  ring-color: #8B0000;
+/* Optional: Sparkle animation for individual logo click */
+.animate-sparkle {
+  animation: sparkle 0.5s ease-out;
 }
+
+@keyframes sparkle {
+  0% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.2); filter: brightness(1.5) drop-shadow(0 0 10px yellow); }
+  100% { transform: scale(1.1); filter: brightness(1) drop-shadow(0 0 8px gold); }
+}
+/* --- END NEW --- */
