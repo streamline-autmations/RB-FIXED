@@ -82,8 +82,8 @@ export const GalleryItem: React.FC<GalleryItemProps> = ({ image, title, category
         initial={{ opacity: 0.7 }}
         animate={{ opacity: isHovered ? 1 : 0.7 }}
       >
-        <h3 className="text-xl font-bebas text-rb-white">{title}</h3>
-        <p className="text-sm text-rb-gray-400">{category}</p>
+        <h3 className="text-lg md:text-xl font-bebas text-rb-white truncate">{title}</h3>
+        <p className="text-xs md:text-sm text-rb-gray-400 truncate">{category}</p>
       </motion.div>
     </motion.div>
   );
