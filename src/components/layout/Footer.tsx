@@ -46,26 +46,34 @@ const Footer: React.FC = () => {
           
           {/* Logo and Tagline */}
           <div className="flex flex-col relative items-start"> 
-            {/* Conditional rendering for the original Logo OR the golden logo */}
+            {/* This div will contain either the full Logo component or the golden logo + text */}
             {shouldRenderGoldenLogo1 ? (
-              // Render golden logo if on homepage and not found
-              <img
-                id="golden-logo-1" // Unique ID for this logo
-                src="/Golden-Logo.png" // Using the correct Golden-Logo.png path
-                alt="Hidden Golden Logo"
-                className={`golden-logo-image absolute z-20`} // z-20 ensures it's on top
-                onClick={handleLogo1Click}
-                // Match the size of your original logo and place exactly over it
-                style={{
-                  width: '40px', // Assuming this is the exact size of your small footer logo
-                  height: '40px', // Assuming this is the exact size
-                  top: '0px',
-                  left: '0px',
-                  opacity: 0.2, // Keep the transparency
-                }}
-              />
+              // On homepage and not found: show golden logo + RECKLESSBEAR text
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <img
+                  id="golden-logo-1" // Unique ID for this logo
+                  src="/Golden-Logo.png" // Using the correct Golden-Logo.png path
+                  alt="Hidden Golden Logo"
+                  className={`golden-logo-image absolute z-20`} // z-20 ensures it's on top
+                  onClick={handleLogo1Click}
+                  // Match the size of your original RB icon and place exactly over it
+                  // These values are based on visual inspection of your footer, aiming for 40x40px
+                  style={{
+                    width: '40px', // Assuming this is the size of the RB icon
+                    height: '40px', // Assuming this is the size
+                    top: '0px', // Position relative to its parent div
+                    left: '0px', // Position relative to its parent div
+                    opacity: 0.9, // 90% transparency (1 - 0.9 = 0.1 opacity)
+                    // You might need to adjust top/left slightly after deployment
+                  }}
+                />
+                {/* The "RECKLESSBEAR" text that appears next to the icon */}
+                {/* This assumes your Logo component renders the text directly or in a way that can be replicated. */}
+                {/* If your Logo component is complex, you might need to adjust this. */}
+                <span className="text-rb-white text-xl font-bebas tracking-wider ml-2" style={{ pointerEvents: 'none' }}>RECKLESSBEAR</span>
+              </div>
             ) : (
-              // Render original Logo component on all other pages
+              // On other pages or if found: render original Logo component
               <Logo size="small" />
             )}
 
