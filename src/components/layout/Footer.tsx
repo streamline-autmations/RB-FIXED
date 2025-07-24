@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } => {
 import { Link, useLocation } from 'react-router-dom';
 import { Phone, Mail, Facebook, Instagram } from 'lucide-react';
 import Logo from './Logo'; // Assuming this is the component that renders your RB logo
@@ -60,14 +60,13 @@ const Footer: React.FC = () => {
                 className={`golden-logo-image absolute z-20`} // z-20 ensures it's on top
                 onClick={handleLogo1Click}
                 // Fine-tuned styles for precise overlay over the existing RB logo
-                // These values are based on visual estimation and common logo component output.
-                // You might need to inspect the rendered Logo component's exact dimensions and offset.
+                // Adjusted 'top' and 'left' based on previous feedback
                 style={{
                   width: '40px', // Explicitly set width to match the underlying logo
                   height: '40px', // Explicitly set height to match the underlying logo
-                  top: '0px', // Adjust to align vertically
-                  left: '0px', // Adjust to align horizontally
-                  opacity: 0.2, // Keep the transparency
+                  top: '0px', // Adjusted top
+                  left: '0px', // Adjusted left
+                  opacity: 0.3, // Increased opacity for a bit brighter look
                   // If it's still off, slight adjustments to top/left or adding transform: translate
                   // For example: transform: 'translate(2px, 3px)',
                 }}
