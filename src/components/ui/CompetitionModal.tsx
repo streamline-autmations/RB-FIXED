@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Facebook, Instagram, Share2 } from 'lucide-react';
-import { Link } from 'react-router-dom'; // <-- ADDED: Import Link for the T&Cs page
+import { Link } from 'react-router-dom';
+import { useCompetition } from '../context/CompetitionProvider';
 
 interface CompetitionModalProps {
   isOpen: boolean;
@@ -11,29 +12,24 @@ interface CompetitionModalProps {
 }
 
 interface FormData {
-  fullName: string;
-  email: string;
-  phone: string;
-  location: string;
-  agreeToTerms: boolean;
+  fullName: string; email: string; phone: string; location: string; agreeToTerms: boolean;
 }
 
-// Local Storage Keys
-const LS_KEY_REGISTERED = 'recklessbear_competition_registered';
 const LS_KEY_DEVICE_ID = 'recklessbear_device_id';
 const LS_KEY_REGISTERED_EMAIL = 'recklessbear_registered_email';
 
 const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, showCongrats, onCloseCongrats }) => {
+  const { isDeviceRegistered, registerDevice } = useCompetition();
+  
   const [formData, setFormData] = useState<FormData>({
     fullName: '', email: '', phone: '', location: '', agreeToTerms: false
   });
   
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
-  const [isDeviceRegistered, setIsDeviceRegistered] = useState(false);
   const [currentDeviceId, setCurrentDeviceId] = useState<string | null>(null);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
-  const [copySuccess, setCopySuccess] = useState(''); // <-- ADDED: For Instagram copy feedback
+  const [copySuccess, setCopySuccess] = useState('');
 
   useEffect(() => {
     let deviceId = localStorage.getItem(LS_KEY_DEVICE_ID);
@@ -42,9 +38,6 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       localStorage.setItem(LS_KEY_DEVICE_ID, deviceId);
     }
     setCurrentDeviceId(deviceId);
-    if (localStorage.getItem(LS_KEY_REGISTERED) === 'true') {
-      setIsDeviceRegistered(true);
-    }
   }, []);
 
   useEffect(() => {
@@ -56,9 +49,9 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
 
   useEffect(() => {
     const chatbotWidget = document.getElementById('vg-widget-container');
-    const isAnyCompetitionModalOpen = isOpen || showSuccessModal || showCongrats;
+    const isAnyModalOpen = isOpen || showSuccessModal || showCongrats;
     if (chatbotWidget) {
-      chatbotWidget.style.display = isAnyCompetitionModalOpen ? 'none' : '';
+      chatbotWidget.style.display = isAnyModalOpen ? 'none' : '';
     }
   }, [isOpen, showSuccessModal, showCongrats]);
 
@@ -77,6 +70,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
     e.preventDefault();
     setSubmissionError(null);
     if (!validateForm()) return;
+
     const basinEndpoint = "https://usebasin.com/f/caea1c883e3b";
     const dataToSend = new FormData();
     dataToSend.append('full_name', formData.fullName);
@@ -85,14 +79,17 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
     dataToSend.append('location', formData.location);
     dataToSend.append('terms_agreed', String(formData.agreeToTerms));
     if (currentDeviceId) dataToSend.append('device_id', currentDeviceId);
+
     try {
       const response = await fetch(basinEndpoint, { method: 'POST', body: dataToSend });
       if (!response.ok) throw new Error(`Basin submission failed: ${response.status}`);
-      localStorage.setItem(LS_KEY_REGISTERED, 'true');
+      
       localStorage.setItem(LS_KEY_REGISTERED_EMAIL, formData.email);
-      setIsDeviceRegistered(true);
+      registerDevice(); // Use the function from the provider
+      
       onClose();
       setShowSuccessModal(true);
+
     } catch (error) {
       console.error('Error submitting form to Basin:', error);
       setSubmissionError("Failed to register. Please check your connection and try again.");
@@ -104,7 +101,6 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
     if (errors[field]) setErrors(prev => ({ ...prev, [field]: undefined }));
   };
 
-  // --- UPDATED SHARE FUNCTION ---
   const handleShare = (platform: 'facebook' | 'whatsapp' | 'instagram') => {
     const shareUrl = window.location.origin;
     const shareText = `I've entered the RecklessBear R10,000 competition! 🏆 Find all 5 hidden golden logos to enter. Can you find them all?`;
@@ -117,39 +113,31 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
         shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`;
         window.open(shareLink, '_blank', 'width=600,height=400');
         break;
-      
       case 'whatsapp':
         shareLink = `https://wa.me/?text=${encodedText}%20${encodedUrl}`;
         window.open(shareLink, '_blank');
         break;
-
       case 'instagram':
         navigator.clipboard.writeText(`${shareText} ${shareUrl}`).then(() => {
           setCopySuccess('Copied!');
           setTimeout(() => setCopySuccess(''), 2000);
-        }).catch(() => {
-          setCopySuccess('Error!');
-          setTimeout(() => setCopySuccess(''), 2000);
-        });
+        }).catch(() => setCopySuccess('Error!'));
         break;
     }
   };
-
-  // --- MODAL COMPONENTS ---
 
   const SuccessModal = () => (
     <AnimatePresence>
       {showSuccessModal && (
         <motion.div className="fixed inset-0 z-50 flex items-center justify-center p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          <motion.div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowSuccessModal(false)} />
-          <motion.div className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-yellow-500/30" initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }}>
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowSuccessModal(false)} />
+          <motion.div className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md border border-yellow-500/30" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
             <button onClick={() => setShowSuccessModal(false)} className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500"><X size={24} /></button>
             <div className="p-8 pt-8 text-center">
-              <img src="/Golden-Logo.png" alt="Golden Logo" className="w-20 h-20 mx-auto mb-4 animate-pulse" />
-              <motion.h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4" initial={{ scale: 0.8 }} animate={{ scale: 1 }}>🏆 You're Registered!</motion.h2>
-              <motion.p className="text-white text-lg leading-relaxed mb-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>You've successfully registered to compete. If you find all 5 golden logos hidden throughout the site, you'll be entered into our wheel spin for a chance to win R10 000!</motion.p>
-              <motion.button onClick={() => setShowSuccessModal(false)} className="mt-6 w-full py-3 px-6 bg-[#8B0000] text-white font-bebas text-lg tracking-wider rounded-lg hover:bg-red-700" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>Continue Hunting</motion.button>
-              <motion.p className="text-gray-500 text-xs text-center mt-6 leading-relaxed" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>Competition ends 28 August 2025. A live wheelspin will be done on RecklessBear's socials on 28 August. Winner will be announced during the stream.</motion.p>
+              <img src="/Golden-Logo.png" alt="Golden Logo" className="w-20 h-20 mx-auto mb-4" />
+              <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">🏆 You're Registered!</h2>
+              <p className="text-white text-lg leading-relaxed mb-6">You've successfully registered to compete. Find all 5 golden logos to be entered into the final draw!</p>
+              <button onClick={() => setShowSuccessModal(false)} className="mt-6 w-full py-3 px-6 bg-[#8B0000] text-white font-bebas text-lg rounded-lg hover:bg-red-700">Continue Hunting</button>
             </div>
           </motion.div>
         </motion.div>
@@ -161,23 +149,22 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
     <AnimatePresence>
       {showCongrats && (
         <motion.div className="fixed inset-0 z-50 flex items-center justify-center p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          <motion.div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onCloseCongrats} />
-          <motion.div className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-yellow-500/30" style={{ boxShadow: '0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.1)' }} initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }}>
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onCloseCongrats} />
+          <motion.div className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md border border-yellow-500/30" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
             <button onClick={onCloseCongrats} className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500"><X size={24} /></button>
             <div className="p-8 pt-8 text-center">
               <img src="/Golden-Logo.png" alt="Golden Logo" className="w-20 h-20 mx-auto mb-4 animate-pulse" />
-              <motion.h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4" initial={{ scale: 0.8 }} animate={{ scale: 1 }}>🎉 Congratulations! 🎉</motion.h2>
-              <motion.p className="text-white text-lg leading-relaxed mb-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>You've been entered into the wheel spin to win R10,000!</motion.p>
+              <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">🎉 Congratulations! 🎉</h2>
+              <p className="text-white text-lg leading-relaxed mb-6">You've been entered into the wheel spin to win R10,000!</p>
               <p className="text-gray-300 text-sm mb-4">Share with friends so they can enter too!</p>
               <div className="flex flex-col space-y-4 mb-6">
-                <motion.button onClick={() => handleShare('facebook')} className="w-full py-3 px-6 bg-blue-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-blue-700" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}><Facebook size={20} className="mr-2" /> Share on Facebook</motion.button>
+                <button onClick={() => handleShare('facebook')} className="w-full py-3 px-6 bg-blue-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-blue-700"><Facebook size={20} className="mr-2" /> Share on Facebook</button>
                 <div className="relative w-full">
-                  <motion.button onClick={() => handleShare('instagram')} className="w-full py-3 px-6 bg-pink-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-pink-700" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}><Instagram size={20} className="mr-2" /> Share on Instagram</motion.button>
+                  <button onClick={() => handleShare('instagram')} className="w-full py-3 px-6 bg-pink-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-pink-700"><Instagram size={20} className="mr-2" /> Share on Instagram</button>
                   {copySuccess && <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-white bg-black/50 px-2 py-1 rounded">{copySuccess}</span>}
                 </div>
-                <motion.button onClick={() => handleShare('whatsapp')} className="w-full py-3 px-6 bg-green-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-green-700" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}><Share2 size={20} className="mr-2" /> Share on WhatsApp</motion.button>
+                <button onClick={() => handleShare('whatsapp')} className="w-full py-3 px-6 bg-green-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-green-700"><Share2 size={20} className="mr-2" /> Share on WhatsApp</button>
               </div>
-              <motion.p className="text-gray-500 text-xs text-center mt-6 leading-relaxed" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.0 }}>Competition ends 28 August 2025.</motion.p>
             </div>
           </motion.div>
         </motion.div>
@@ -190,18 +177,19 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       <CongratsModal />
       <SuccessModal />
       <AnimatePresence>
-        {isOpen && (
-          <motion.div className="fixed inset-0 z-40 flex items-center justify-center p-4 pt-32" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <motion.div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-            <motion.div className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-yellow-500/30" initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }}>
+        {isOpen && !isDeviceRegistered && (
+          <motion.div className="fixed inset-0 z-40 flex items-center justify-center p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+            <motion.div className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-yellow-500/30" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
               <button onClick={onClose} className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500"><X size={24} /></button>
               <div className="p-8">
                 <div className="text-center mb-6">
                   <img src="/Golden-Logo.png" alt="Golden Logo" className="w-16 h-16 mx-auto mb-4" />
                   <h2 className="text-2xl md:text-3xl font-bebas text-white mb-2">Stand a chance to win R10 000!</h2>
-                  <p className="text-gray-300 text-sm md:text-base leading-relaxed">Find all 5 golden logos hidden across the site and stand a chance to win R10 000.</p>
+                  <p className="text-gray-300 text-sm md:text-base leading-relaxed">Find all 5 golden logos hidden across the site to enter the draw.</p>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Form inputs are preserved */}
                   <input type="hidden" name="device_id" id="competition-device-id" value={currentDeviceId || ''} />
                   <div>
                     <label htmlFor="fullName" className="block text-white text-sm font-medium mb-2">Full Name *</label>
@@ -217,7 +205,6 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
                   </div>
                   <div className="flex items-start space-x-3">
                     <input type="checkbox" id="agreeToTerms" checked={formData.agreeToTerms} onChange={(e) => handleInputChange('agreeToTerms', e.target.checked)} className="mt-1 h-4 w-4 text-red-600 bg-gray-800 border-gray-600 rounded focus:ring-red-600" required />
-                    {/* --- UPDATED T&Cs LINK --- */}
                     <label htmlFor="agreeToTerms" className="text-white text-sm leading-relaxed">
                       I agree to the{' '}
                       <Link to="/competition-rules" target="_blank" rel="noopener noreferrer" className="underline hover:text-yellow-400 transition-colors">
@@ -230,7 +217,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
                   {submissionError && <p className="text-red-400 text-sm text-center">{submissionError}</p>}
                   <button type="submit" className="w-full py-3 px-6 bg-[#8B0000] text-white font-bebas text-lg rounded-lg hover:bg-red-700">Enter Competition</button>
                 </form>
-                <p className="text-gray-500 text-xs text-center mt-6 leading-relaxed">Competition ends 28 August 2025. A live wheelspin will be done on RecklessBear's socials on 28 August. Winner will be announced during the stream.</p>
+                <p className="text-gray-500 text-xs text-center mt-6 leading-relaxed">Competition ends 28 August 2025.</p>
               </div>
             </motion.div>
           </motion.div>
@@ -241,3 +228,4 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
 };
 
 export default CompetitionModal;
+
