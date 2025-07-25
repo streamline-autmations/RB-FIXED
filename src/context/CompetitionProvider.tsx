@@ -8,15 +8,19 @@ interface CompetitionContextType {
   showCongratsModal: boolean;
   setCongratsModalOpen: (isOpen: boolean) => void;
   resetCompetition: () => void;
-  isCompetitionCompleted: boolean; // <-- ADDED
+  isCompetitionCompleted: boolean;
+  isDeviceRegistered: boolean;
+  registerDevice: () => void;
+  isRegistrationModalOpen: boolean;
+  openRegistrationModal: () => void;
+  setRegistrationModalOpen: (isOpen: boolean) => void;
 }
 
-// Create the context
 const CompetitionContext = createContext<CompetitionContextType | undefined>(undefined);
 
 // Local Storage Keys
 const LS_KEY_FOUND_LOGOS = 'recklessbear_found_logos';
-const LS_KEY_COMPLETED_COMPETITION = 'recklessbear_competition_completed'; // This is the key for the new logic
+const LS_KEY_COMPLETED_COMPETITION = 'recklessbear_competition_completed';
 const LS_KEY_REGISTERED = 'recklessbear_competition_registered';
 const LS_KEY_DEVICE_ID = 'recklessbear_device_id';
 const LS_KEY_REGISTERED_EMAIL = 'recklessbear_registered_email';
@@ -31,39 +35,30 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
   const [foundLogos, setFoundLogos] = useState<string[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [showCongratsModal, setShowCongratsModal] = useState(false);
+  const [isCompetitionCompleted, setCompetitionCompleted] = useState(false);
+  const [isDeviceRegistered, setDeviceRegistered] = useState(false);
+  const [isRegistrationModalOpen, setRegistrationModalOpen] = useState(false);
 
-  // --- NEW: State to track if the competition has been permanently completed ---
-  const [isCompetitionCompleted, setCompetitionCompleted] = useState<boolean>(() => {
-    return localStorage.getItem(LS_KEY_COMPLETED_COMPETITION) === 'true';
-  });
-
-  // --- Initialize state from localStorage on mount ---
   useEffect(() => {
-    const storedFoundLogos = JSON.parse(localStorage.getItem(LS_KEY_FOUND_LOGOS) || '[]');
-    setFoundLogos(storedFoundLogos);
+    setFoundLogos(JSON.parse(localStorage.getItem(LS_KEY_FOUND_LOGOS) || '[]'));
+    setDeviceRegistered(localStorage.getItem(LS_KEY_REGISTERED) === 'true');
+    setCompetitionCompleted(localStorage.getItem(LS_KEY_COMPLETED_COMPETITION) === 'true');
   }, []);
 
-  // --- Effect to check for completion ---
   useEffect(() => {
-    // Check if 5 logos are found AND the competition hasn't been marked as completed yet
     if (foundLogos.length === TOTAL_LOGOS_REQUIRED && !isCompetitionCompleted) {
       console.log("Competition complete! Showing congrats modal for the first time.");
+      localStorage.setItem(LS_KEY_COMPLETED_COMPETITION, 'true');
+      setCompetitionCompleted(true);
+      setShowCongratsModal(true);
       
-      localStorage.setItem(LS_KEY_COMPLETED_COMPETITION, 'true'); // Permanently mark as completed
-      setCompetitionCompleted(true); // Update the state
-      setShowCongratsModal(true); // Show the modal this one time
-      
-      // --- IMPORTANT: Trigger n8n webhook for competition completion here ---
       const deviceId = localStorage.getItem(LS_KEY_DEVICE_ID);
       const registeredEmail = localStorage.getItem(LS_KEY_REGISTERED_EMAIL);
       const N8N_COMPLETION_WEBHOOK_URL = 'https://dockerfile-1n82.onrender.com/webhook/competision-completed';
-
       console.log('Triggering n8n webhook for completion...');
       fetch(N8N_COMPLETION_WEBHOOK_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           device_id: deviceId,
           email: registeredEmail,
@@ -75,14 +70,18 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
       .then(data => console.log('Completion status sent to n8n:', data))
       .catch(error => console.error('Error sending completion status to n8n:', error));
     }
-  }, [foundLogos, isCompetitionCompleted]); // Re-run when foundLogos or completion status changes
+  }, [foundLogos, isCompetitionCompleted]);
 
-  // --- Function to handle a logo being found ---
   const findLogo = useCallback((logoId: string) => {
-    // No changes needed in this function
-    if (!foundLogos.includes(logoId)) {
-        const newFoundLogos = [...foundLogos, logoId];
-        setFoundLogos(newFoundLogos);
+    if (!isDeviceRegistered) {
+      console.log("User not registered. Opening registration modal.");
+      setRegistrationModalOpen(true);
+      return;
+    }
+
+    setFoundLogos(prevFoundLogos => {
+      if (!prevFoundLogos.includes(logoId)) {
+        const newFoundLogos = [...prevFoundLogos, logoId];
         localStorage.setItem(LS_KEY_FOUND_LOGOS, JSON.stringify(newFoundLogos));
         setToastMessage(`Golden Logo Found! (${newFoundLogos.length}/${TOTAL_LOGOS_REQUIRED} found)`);
         setTimeout(() => setToastMessage(null), 3000);
@@ -90,33 +89,36 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
         if (logoElement) {
           logoElement.classList.add('found');
         }
-    }
-  }, [foundLogos]);
+        return newFoundLogos;
+      }
+      return prevFoundLogos;
+    });
+  }, [isDeviceRegistered]);
 
-  // --- Expose findLogo globally ---
   useEffect(() => {
     window.triggerGoldenLogoFound = findLogo;
-    return () => {
-      delete window.triggerGoldenLogoFound;
-    };
+    return () => { delete window.triggerGoldenLogoFound; };
   }, [findLogo]);
 
-  // --- Function to reset competition state (for testing) ---
+  const registerDevice = useCallback(() => {
+    setDeviceRegistered(true);
+  }, []);
+
+  const openRegistrationModal = useCallback(() => {
+    if (!isCompetitionCompleted) {
+      setRegistrationModalOpen(true);
+    }
+  }, [isCompetitionCompleted]);
+
   const resetCompetition = useCallback(() => {
-    // No changes needed here, it correctly removes the new key
     localStorage.removeItem(LS_KEY_FOUND_LOGOS);
     localStorage.removeItem(LS_KEY_COMPLETED_COMPETITION);
     localStorage.removeItem(LS_KEY_REGISTERED);
     localStorage.removeItem(LS_KEY_DEVICE_ID);
     localStorage.removeItem(LS_KEY_REGISTERED_EMAIL);
-    setFoundLogos([]);
-    setShowCongratsModal(false);
-    setCompetitionCompleted(false); // Reset the state
-    console.log('Competition state reset. Reloading page.');
     window.location.reload();
   }, []);
-  
-  // --- Define the context value to be passed down ---
+
   const contextValue = {
     foundLogosCount: foundLogos.length,
     findLogo,
@@ -124,7 +126,12 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
     showCongratsModal,
     setCongratsModalOpen: setShowCongratsModal,
     resetCompetition,
-    isCompetitionCompleted, // <-- Expose the new state
+    isCompetitionCompleted,
+    isDeviceRegistered,
+    registerDevice,
+    isRegistrationModalOpen,
+    openRegistrationModal,
+    setRegistrationModalOpen,
   };
 
   return (
@@ -134,7 +141,6 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
   );
 };
 
-// Custom hook to use the competition context
 export const useCompetition = () => {
   const context = useContext(CompetitionContext);
   if (context === undefined) {
