@@ -66,7 +66,7 @@ const Footer: React.FC = () => {
                 <img
                   src="/rb_text_f.png" // Path to your text logo image
                   alt="RECKLESSBEAR"
-                  style={{ height: '30px', marginLeft: '8px', pointerEvents: 'none' }} // Adjust height and margin as needed
+                  style={{ height: '40px', marginLeft: '10px', pointerEvents: 'none' }} // Adjust height and margin as needed
                 />
               </div>
             ) : (
