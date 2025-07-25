@@ -170,10 +170,53 @@ const MatricCataloguePage = () => (
   />
 );
 
-// AppContent component to consume CompetitionContext
 const AppContent: React.FC = () => {
   const [isCompetitionModalOpen, setIsCompetitionModalOpen] = useState(false);
-  const { toastMessage, showCongratsModal, setCongratsModalOpen, resetCompetition } = useCompetition(); // Destructure resetCompetition
+  const { toastMessage, showCongratsModal, setCongratsModalOpen } = useCompetition();
+
+  // --- Code to ADD: useEffect to trigger modal after 5 seconds ---
+  useEffect(() => {
+    // Only trigger if the modal is not already open and not showing congrats
+    // This prevents it from re-opening if the user closes it manually
+    if (!isCompetitionModalOpen && !showCongratsModal) {
+      const timer = setTimeout(() => {
+        setIsCompetitionModalOpen(true); // Open the modal after 5 seconds
+      }, 5000); // 5000 milliseconds = 5 seconds
+
+      // Cleanup the timer if the component unmounts before 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [isCompetitionModalOpen, showCongratsModal]); // Re-run if these states change
+  // --- END Code to ADD ---
+
+  // --- Code to ADD: useEffect to trigger modal after 5 seconds ---
+  useEffect(() => {
+    // Only trigger if the modal is not already open and not showing congrats
+    // This prevents it from re-opening if the user closes it manually
+    if (!isCompetitionModalOpen && !showCongratsModal) {
+      const timer = setTimeout(() => {
+        setIsCompetitionModalOpen(true); // Open the modal after 5 seconds
+      }, 5000); // 5000 milliseconds = 5 seconds
+
+      // Cleanup the timer if the component unmounts before 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [isCompetitionModalOpen, showCongratsModal]); // Re-run if these states change
+  // --- END Code to ADD ---
+
+  // Function to open the main competition registration modal
+  const openCompetitionModal = () => {
+    setIsCompetitionModalOpen(true);
+  };
+
+  // ... rest of your AppContent component ...
+};
+      {/* Render the Toast Notification */}
+      <ToastNotification message={toastMessage} />
+      {/* --- END NEW --- */}
+    </div>
+  );
+};
 
   // Function to open the main competition registration modal
   const openCompetitionModal = () => {
@@ -363,53 +406,7 @@ const AppContent: React.FC = () => {
         showCongrats={showCongratsModal}
         onCloseCongrats={handleCloseCongratsModal}
       />
-const AppContent: React.FC = () => {
-  const [isCompetitionModalOpen, setIsCompetitionModalOpen] = useState(false);
-  const { toastMessage, showCongratsModal, setCongratsModalOpen } = useCompetition();
 
-  // --- Code to ADD: useEffect to trigger modal after 5 seconds ---
-  useEffect(() => {
-    // Only trigger if the modal is not already open and not showing congrats
-    // This prevents it from re-opening if the user closes it manually
-    if (!isCompetitionModalOpen && !showCongratsModal) {
-      const timer = setTimeout(() => {
-        setIsCompetitionModalOpen(true); // Open the modal after 5 seconds
-      }, 5000); // 5000 milliseconds = 5 seconds
-
-      // Cleanup the timer if the component unmounts before 5 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [isCompetitionModalOpen, showCongratsModal]); // Re-run if these states change
-  // --- END Code to ADD ---
-
-  // --- Code to ADD: useEffect to trigger modal after 5 seconds ---
-  useEffect(() => {
-    // Only trigger if the modal is not already open and not showing congrats
-    // This prevents it from re-opening if the user closes it manually
-    if (!isCompetitionModalOpen && !showCongratsModal) {
-      const timer = setTimeout(() => {
-        setIsCompetitionModalOpen(true); // Open the modal after 5 seconds
-      }, 5000); // 5000 milliseconds = 5 seconds
-
-      // Cleanup the timer if the component unmounts before 5 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [isCompetitionModalOpen, showCongratsModal]); // Re-run if these states change
-  // --- END Code to ADD ---
-
-  // Function to open the main competition registration modal
-  const openCompetitionModal = () => {
-    setIsCompetitionModalOpen(true);
-  };
-
-  // ... rest of your AppContent component ...
-};
-      {/* Render the Toast Notification */}
-      <ToastNotification message={toastMessage} />
-      {/* --- END NEW --- */}
-    </div>
-  );
-};
 
 // Root App component that provides the Router and CompetitionContext
 function App() {
