@@ -190,7 +190,7 @@ const AboutPage: React.FC = () => {
               },
               {
                 name: 'Alicia',
-                position: 'Director',
+                position: 'Financial Director',
                 email: 'alicia@recklessbear.co.za',
                 phone: '076 123 4567',
                 image: null
