@@ -1,4 +1,4 @@
-import React, { useState, useEffect } => { // Import useState and useEffect
+import React, { useState, useEffect } from 'react'; // CORRECTED: Changed '=> {' to 'from 'react';'
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import Button from '../components/ui/Button';
