@@ -319,8 +319,8 @@ const TrackOrderPage: React.FC = () => {
                                   className="golden-logo-image absolute"
                                   onClick={handleLogo4Click}
                                   style={{
-                                    width: '25px',
-                                    height: '25px',
+                                    width: '32px',
+                                    height: '32px',
                                     top: '50%',
                                     left: '50%',
                                     transform: 'translate(-50%, -50%)',
