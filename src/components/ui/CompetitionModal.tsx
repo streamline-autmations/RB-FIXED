@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Facebook, Instagram, Share2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useCompetition } from '../context/CompetitionProvider';
+import { useCompetition } from '../../context/CompetitionProvider'; // <-- THIS IS THE FIX
 
 interface CompetitionModalProps {
   isOpen: boolean;
@@ -228,4 +228,3 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
 };
 
 export default CompetitionModal;
-
