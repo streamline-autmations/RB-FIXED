@@ -84,9 +84,9 @@ const GymPufferJacketPage: React.FC = () => {
                   className="golden-logo-image absolute z-30"
                   onClick={handleLogo3Click}
                   style={{
-                    width: '20px',
-                    height: '20px',
-                    top: '38%',
+                    width: '22px',
+                    height: '22px',
+                    top: '36%',
                     left: '40%',
                     opacity: 1,
                     cursor: 'pointer'
