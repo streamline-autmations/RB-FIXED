@@ -377,8 +377,8 @@ const TrackOrderPage: React.FC = () => {
                                 style={{
                                   width: '32px', // Smaller for mobile
                                   height: '32px', // Smaller for mobile
-                                  top: '55%',
-                                  left: '15%',
+                                  top: '52%',
+                                  left: '12%',
                                   transform: 'translate(-50%, -50%)',
                                   opacity: 1,
                                   cursor: 'pointer',
