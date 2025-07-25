@@ -310,7 +310,7 @@ const TrackOrderPage: React.FC = () => {
                               ) : (
                                 <StageIcon size={20} />
                               )}
-                              {/* Golden Logo 4 - Only on Delivered stage when not found */}
+                              {/* Golden Logo 4 - Only on Delivered stage when not not found */}
                               {isDeliveredStage && !isLogo4Found && (
                                 <img
                                   id="golden-logo-4"
@@ -350,9 +350,10 @@ const TrackOrderPage: React.FC = () => {
                     {orderStages.map((stage, index) => {
                       const status = getStageStatus(index, currentStageIndex);
                       const StageIcon = stage.icon;
+                      const isDeliveredStage = stage.id === 'delivered'; // Added for mobile
                       
                       return (
-                        <div key={stage.id} className="flex items-start">
+                        <div key={stage.id} className="flex items-start relative"> {/* Added relative for positioning */}
                           <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 mr-4 flex-shrink-0 transition-all duration-500 ${
                             status === 'completed' 
                               ? 'bg-green-500 border-green-500 text-white' 
@@ -364,6 +365,25 @@ const TrackOrderPage: React.FC = () => {
                               <CheckCircle size={16} />
                             ) : (
                               <StageIcon size={16} />
+                            )}
+                            {/* Golden Logo 4 - Mobile - Only on Delivered stage when not found */}
+                            {isDeliveredStage && !isLogo4Found && (
+                              <img
+                                id="golden-logo-4-mobile" // Unique ID for mobile version if needed, or just golden-logo-4
+                                src="/Golden-Logo.png"
+                                alt="Hidden Golden Logo"
+                                className="golden-logo-image absolute z-10" // z-index for mobile
+                                onClick={handleLogo4Click}
+                                style={{
+                                  width: '20px', // Smaller for mobile
+                                  height: '20px', // Smaller for mobile
+                                  top: '50%',
+                                  left: '50%',
+                                  transform: 'translate(-50%, -50%)',
+                                  opacity: 1,
+                                  cursor: 'pointer',
+                                }}
+                              />
                             )}
                           </div>
                           <div className="flex-1">
