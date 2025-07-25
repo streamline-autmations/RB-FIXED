@@ -2,8 +2,39 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import { useCompetition } from '../../context/CompetitionProvider';
+
+// Define a global type for the window object to include our custom function
+declare global {
+  interface Window {
+    triggerGoldenLogoFound?: (logoId: string) => void;
+  }
+}
 
 const GymPufferJacketPage: React.FC = () => {
+  const { findLogo } = useCompetition();
+  const [isLogo3Found, setIsLogo3Found] = React.useState(false);
+
+  React.useEffect(() => {
+    const foundLogos = JSON.parse(localStorage.getItem('recklessbear_found_logos') || '[]');
+    if (foundLogos.includes('golden-logo-3')) {
+      setIsLogo3Found(true);
+    }
+  }, []);
+
+  const handleLogo3Click = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (!isLogo3Found) {
+      if (window.triggerGoldenLogoFound) {
+        window.triggerGoldenLogoFound('golden-logo-3');
+        setIsLogo3Found(true);
+      } else {
+        console.warn('window.triggerGoldenLogoFound is not defined. CompetitionProvider might not be loaded.');
+      }
+    }
+  };
+
   return (
     <>
       {/* Hero Section */}
@@ -44,6 +75,24 @@ const GymPufferJacketPage: React.FC = () => {
                 alt="Gym Puffer Jacket"
                 className="w-full h-full object-cover"
               />
+              {/* Golden Logo 3 - Positioned over the RB logo on the jacket chest */}
+              {!isLogo3Found && (
+                <img
+                  id="golden-logo-3"
+                  src="/Golden-Logo.png"
+                  alt="Hidden Golden Logo"
+                  className="golden-logo-image absolute z-30"
+                  onClick={handleLogo3Click}
+                  style={{
+                    width: '25px',
+                    height: '25px',
+                    top: '35%',
+                    left: '45%',
+                    opacity: 1,
+                    cursor: 'pointer'
+                  }}
+                />
+              )}
             </motion.div>
 
             {/* Product Info */}

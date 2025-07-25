@@ -214,7 +214,7 @@ const AppContent: React.FC = () => {
             <Route path="/products/soccer" element={<SubcategoryPage />} />
             <Route path="/products/golf" element={<SubcategoryPage />} />
             <Route path="/products/fishing" element={<SubcategoryPage />} />
-            <Route path="/products/hunting" element={<HuntingHoodiePage />} />
+            <Route path="/products/hunting" element={<SubcategoryPage />} />
             <Route path="/products/cycling" element={<SubcategoryPage />} />
             <Route path="/products/darts" element={<SubcategoryPage />} />
             <Route path="/products/corporate" element={<SubcategoryPage />} />
