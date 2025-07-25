@@ -91,11 +91,11 @@ const AboutPage: React.FC = () => {
                     className="golden-logo-image absolute z-10"
                     onClick={handleLogo5Click}
                     style={{
-                      width: '15px',
-                      height: '15px',
+                      width: '25px',
+                      height: '25px',
                       top: '0px',
                       right: '0px',
-                      opacity: 0.5,
+                      opacity: 0.8,
                       cursor: 'pointer'
                     }}
                   />
