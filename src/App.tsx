@@ -351,24 +351,9 @@ const AppContent: React.FC = () => {
       </main>
       <Footer />
 
-      {/* --- NEW: Competition Modals and Toast --- */}
-      {/* This button is for testing/development. You can remove it when done. */}
-      <button 
-        onClick={openCompetitionModal} 
-        className="fixed bottom-20 right-4 bg-yellow-500 text-black p-3 rounded-full shadow-lg z-50"
-        style={{ zIndex: 1000 }} // Ensure it's above other content
-      >
-        Open Comp Modal
-      </button>
+     
 
-      {/* This button is for resetting competition state in localStorage (for testing). Remove in production. */}
-      <button 
-        onClick={resetCompetition} // Call the reset function from context
-        className="fixed bottom-32 right-4 bg-red-600 text-white p-3 rounded-full shadow-lg z-50"
-        style={{ zIndex: 1000 }} // Ensure it's above other content
-      >
-        Reset Comp
-      </button>
+     
 
       {/* Render the CompetitionModal */}
       <CompetitionModal
