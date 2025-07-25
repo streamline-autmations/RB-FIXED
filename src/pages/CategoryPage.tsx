@@ -271,8 +271,8 @@ const CategoryPage: React.FC = () => {
                             // No onClick here, as it's handled by the WrapperElement
                             // Fine-tuned styles for precise overlay on the RB logo on the pants image
                             style={{
-                              width: '25px', // Estimated size of the RB logo on the pants
-                              height: '25px', // Estimated size
+                              width: '22px', // Estimated size of the RB logo on the pants
+                              height: '22px', // Estimated size
                               top: '18%', // Moved down slightly
                               left: '42%', // Moved left slightly
                               opacity: 1, // FULLY VISIBLE
