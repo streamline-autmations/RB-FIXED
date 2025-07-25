@@ -71,7 +71,7 @@ const GymPufferJacketPage: React.FC = () => {
               className="relative aspect-square rounded-lg overflow-hidden bg-rb-gray-800"
             >
               <img
-                src="/puffer-jacket-frontback.png"
+                src="/puffer-jacket-frontback-logo.png"
                 alt="Gym Puffer Jacket"
                 className="w-full h-full object-cover"
               />
