@@ -5,6 +5,9 @@ import { X, Facebook, Instagram, Share2 } from 'lucide-react';
 interface CompetitionModalProps {
   isOpen: boolean;
   onClose: () => void;
+  // --- IMPORTANT: This prop is crucial for triggering the Congrats modal ---
+  showCongrats: boolean; 
+  onCloseCongrats: () => void; // Callback when congrats modal is closed
 }
 
 interface FormData {
@@ -18,9 +21,9 @@ interface FormData {
 // Local Storage Keys
 const LS_KEY_REGISTERED = 'recklessbear_competition_registered';
 const LS_KEY_DEVICE_ID = 'recklessbear_device_id';
-const LS_KEY_REGISTERED_EMAIL = 'recklessbear_registered_email'; // New key to store registered email
+const LS_KEY_REGISTERED_EMAIL = 'recklessbear_registered_email';
 
-const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) => {
+const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, showCongrats, onCloseCongrats }) => {
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
     email: '',
@@ -30,36 +33,40 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
   });
   
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false); // This state controls the "You're Registered!" modal
   const [errors, setErrors] = useState<Partial<FormData>>({});
-  const [isDeviceRegistered, setIsDeviceRegistered] = useState(false); // New state to track device registration
-  const [currentDeviceId, setCurrentDeviceId] = useState<string | null>(null); // New state for persistent device ID
-  const [submissionError, setSubmissionError] = useState<string | null>(null); // New state for submission errors
+  const [isDeviceRegistered, setIsDeviceRegistered] = useState(false);
+  const [currentDeviceId, setCurrentDeviceId] = useState<string | null>(null);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
 
-  // --- NEW: Initialize persistent device ID and check registration status on component mount ---
+  // --- Initialize persistent device ID and check registration status on component mount ---
   useEffect(() => {
     let deviceId = localStorage.getItem(LS_KEY_DEVICE_ID);
     if (!deviceId) {
-      deviceId = crypto.randomUUID(); // Generate a truly unique ID for the device
+      deviceId = crypto.randomUUID();
       localStorage.setItem(LS_KEY_DEVICE_ID, deviceId);
     }
-    setCurrentDeviceId(deviceId); // Store it in component state
+    setCurrentDeviceId(deviceId);
 
-    // Check if the device is already registered
     if (localStorage.getItem(LS_KEY_REGISTERED) === 'true') {
       setIsDeviceRegistered(true);
-      setShowSuccessModal(true); // If already registered, immediately show success modal
+      // If already registered, and the 'showCongrats' prop is not true, show the "You're Registered" modal
+      // If 'showCongrats' is true, the CongratsModal will take precedence.
+      if (!showCongrats) { 
+        setShowSuccessModal(true); 
+      }
+      console.log('CompetitionModal: Initializing, device already registered.');
     }
-  }, []); // Run only once on mount
+    console.log(`CompetitionModal: Initializing with showCongrats prop: ${showCongrats}`);
+  }, [showCongrats]); // Depend on showCongrats to react if it changes externally
 
-  // Hide chatbot widget on mobile when modal is open
+  // Hide chatbot widget when any competition modal is open
   useEffect(() => {
     const chatbotWidget = document.getElementById('vg-widget-container');
     const chatbotButton = document.querySelector('.vg-bubble-button');
     const chatbotOverlay = document.getElementById('VG_OVERLAY_CONTAINER');
     
-    // Determine if any competition modal is open (main form or success)
-    const isAnyCompetitionModalOpen = isOpen || showSuccessModal;
+    const isAnyCompetitionModalOpen = isOpen || showSuccessModal || showCongrats; // Include showCongrats
 
     if (chatbotWidget) {
       chatbotWidget.style.display = isAnyCompetitionModalOpen ? 'none' : '';
@@ -73,7 +80,6 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
       (chatbotOverlay as HTMLElement).style.display = isAnyCompetitionModalOpen ? 'none' : '';
     }
 
-    // Cleanup on unmount (ensure chatbot reappears if component unmounts while hidden)
     return () => {
       if (chatbotWidget) {
         chatbotWidget.style.display = '';
@@ -85,7 +91,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
         (chatbotOverlay as HTMLElement).style.display = '';
       }
     };
-  }, [isOpen, showSuccessModal]); // Depend on isOpen and showSuccessModal to react to changes
+  }, [isOpen, showSuccessModal, showCongrats]); // Depend on all modal states
 
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
@@ -112,64 +118,51 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => { // Made handleSubmit async
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmissionError(null); // Clear previous errors
+    setSubmissionError(null);
 
-    // --- MODIFIED: Populate hidden device_id field with persistent ID ---
     const deviceIdField = document.getElementById('competition-device-id') as HTMLInputElement;
     if (deviceIdField && currentDeviceId) {
-      deviceIdField.value = currentDeviceId; // Use the persistent device ID
+      deviceIdField.value = currentDeviceId;
     } else {
-      console.error("Hidden device ID field or currentDeviceId not found.");
+      console.error("CompetitionModal: Hidden device ID field or currentDeviceId not found.");
       setSubmissionError("An internal error occurred. Please try again.");
       return; 
     }
-    // --- END MODIFIED ---
     
     if (!validateForm()) {
       return;
     }
 
-    // --- NEW: Send form data to Basin using fetch ---
-    const basinEndpoint = "https://usebasin.com/f/caea1c883e3b"; // Your Basin endpoint from the form action
+    const basinEndpoint = "https://usebasin.com/f/caea1c883e3b";
 
-    // Create FormData object from your state
     const dataToSend = new FormData();
     dataToSend.append('full_name', formData.fullName);
     dataToSend.append('email_address', formData.email);
     dataToSend.append('phone_number', formData.phone);
     dataToSend.append('location', formData.location);
-    dataToSend.append('terms_agreed', String(formData.agreeToTerms)); // Convert boolean to string
-    dataToSend.append('device_id', currentDeviceId); // Add the persistent device ID
+    dataToSend.append('terms_agreed', String(formData.agreeToTerms));
+    dataToSend.append('device_id', currentDeviceId);
 
     try {
       const response = await fetch(basinEndpoint, {
         method: 'POST',
-        body: dataToSend, // Use FormData directly
-        // Basin expects form-urlencoded or multipart/form-data for standard submissions.
-        // fetch with FormData automatically sets 'Content-Type': 'multipart/form-data'
-        // If Basin is configured for JSON, you'd use JSON.stringify(formData) and 'Content-Type': 'application/json'
+        body: dataToSend,
       });
 
       if (!response.ok) {
-        // Basin typically responds with a redirect or a simple status for direct POSTs.
-        // If it's configured for AJAX/JSON response, check response.json()
-        // For now, a non-OK status indicates a problem.
         throw new Error(`Basin submission failed with status: ${response.status}`);
       }
 
-      // --- Set local storage flag for successful registration AFTER Basin submission ---
       localStorage.setItem(LS_KEY_REGISTERED, 'true');
-      localStorage.setItem(LS_KEY_REGISTERED_EMAIL, formData.email); // Store email for future use
-      setIsDeviceRegistered(true); // Update state
+      localStorage.setItem(LS_KEY_REGISTERED_EMAIL, formData.email);
+      setIsDeviceRegistered(true);
 
-      // Show success modal and close main modal
       setIsSubmitted(true);
-      setShowSuccessModal(true);
-      onClose(); // Close the initial registration form modal
+      setShowSuccessModal(true); // Show "You're Registered!" modal
+      onClose(); // Close the main form modal
       
-      // Reset form data for next potential use (e.g., if modal is reused)
       setFormData({
         fullName: '',
         email: '',
@@ -177,20 +170,18 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
         location: '',
         agreeToTerms: false
       });
+      console.log('CompetitionModal: Form submitted successfully to Basin. Showing success modal.');
 
     } catch (error) {
-      console.error('Error submitting form to Basin:', error);
+      console.error('CompetitionModal: Error submitting form to Basin:', error);
       setSubmissionError("Failed to register. Please check your internet connection and try again.");
-      // You might want to prevent the success modal from showing on error
       setIsSubmitted(false);
       setShowSuccessModal(false);
     }
-    // --- END NEW ---
   };
 
   const handleInputChange = (field: keyof FormData, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
     }
@@ -210,12 +201,8 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
         shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`;
         break;
       case 'instagram':
-        // Instagram doesn't support direct sharing via URL, so we'll copy to clipboard
-        // Note: alert() is generally not recommended in production React apps.
-        // Consider a custom toast/notification message instead.
-        document.execCommand('copy'); // Use document.execCommand for clipboard in iframes
-        // alert('Link copied to clipboard! Share it on Instagram.'); // Replace with custom message
-        console.log('Link copied to clipboard for Instagram share.');
+        document.execCommand('copy');
+        console.log('CompetitionModal: Link copied to clipboard for Instagram share.');
         return;
       case 'whatsapp':
         shareLink = `https://wa.me/?text=${encodedText} ${encodedUrl}`;
@@ -237,9 +224,10 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
   };
 
   // Success Modal Component (This is your existing "YOU'RE REGISTERED!" modal)
+  // This modal is shown after initial registration OR if device is already registered
   const SuccessModal = () => (
     <AnimatePresence>
-      {showSuccessModal && ( // This state now also controls if the device is already registered
+      {showSuccessModal && (
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
           initial={{ opacity: 0 }}
@@ -326,221 +314,348 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose }) 
     </AnimatePresence>
   );
 
-  // --- MODIFIED: Conditional rendering based on device registration status ---
-  // If main modal is trying to open (isOpen is true) AND device is already registered,
-  // we want to directly show the success modal.
-  if (isOpen && isDeviceRegistered) {
-    return <SuccessModal />;
-  }
-  // If the main modal is not open AND the success modal is not open, then render nothing.
-  if (!isOpen && !showSuccessModal) return null;
-  // --- END MODIFIED ---
-
-  return (
-    <>
-      <SuccessModal /> {/* Always render SuccessModal, its own state controls visibility */}
-      <AnimatePresence>
-        {isOpen && !isDeviceRegistered && ( // Only show main form if it's open and device is NOT registered
-      <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-32"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        {/* Backdrop */}
+  // --- NEW: Congrats Modal Component (This is your existing "CONGRATULATIONS!" modal) ---
+  // This modal is specifically shown when all 5 logos are found.
+  const CongratsModal = () => (
+    <AnimatePresence>
+      {showCongrats && ( // This is controlled by the `showCongrats` prop from CompetitionProvider
         <motion.div
-          className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={onClose}
-        />
-        
-        {/* Modal */}
-        <motion.div
-          className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-yellow-500/30"
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          style={{
-            boxShadow: '0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.1)'
-          }}
+          transition={{ duration: 0.3 }}
         >
-          {/* Close Button */}
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500 transition-colors duration-200"
-            aria-label="Close modal"
-          >
-            <X size={24} />
-          </button>
+          {/* Backdrop */}
+          <motion.div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onCloseCongrats} // Use the provided onCloseCongrats callback
+          />
           
-          <div className="p-8">
-            {/* Golden Logo */}
-            <div className="text-center mb-6">
-              <img 
-                src="/Golden-Logo.png" 
-                alt="Golden RecklessBear Logo" 
-                className="w-16 h-16 mx-auto mb-4"
-              />
-              <h2 className="text-2xl md:text-3xl font-bebas text-white mb-2">
-                Stand a chance to win R10 000!
-              </h2>
-              <p className="text-gray-300 text-sm md:text-base leading-relaxed">
-                Find all 5 golden logos hidden across the site and stand a chance to win R10 000.
+          {/* Modal */}
+          <motion.div
+            className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-yellow-500/30"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            style={{
+              boxShadow: '0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.1)'
+            }}
+          >
+            {/* Close Button */}
+            <button
+              onClick={onCloseCongrats} // Use the provided onCloseCongrats callback
+              className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500 transition-colors duration-200"
+              aria-label="Close modal"
+            >
+              <X size={24} />
+            </button>
+            
+            <div className="p-8 pt-8 text-center">
+              {/* Golden Logo */}
+              <div className="mb-6">
+                <img 
+                  src="/Golden-Logo.png" // Your golden logo image
+                  alt="Golden RecklessBear Logo" 
+                  className="w-20 h-20 mx-auto mb-4 animate-pulse"
+                />
+                <motion.h2 
+                  className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4"
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  🎉 Congratulations! 🎉
+                </motion.h2>
+                <motion.p 
+                  className="text-white text-lg leading-relaxed mb-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                >
+                  You've found all 5 golden logos and been entered into our wheel spin for a chance to win R10 000!
+                </motion.p>
+              </div>
+
+              {/* Share Buttons - REMOVED as per your request "All share buttons removed." */}
+              {/* <div className="flex flex-col space-y-4 mb-6">
+                <motion.button
+                  onClick={() => handleShareSuccess('facebook')}
+                  className="w-full py-3 px-6 bg-blue-600 text-white font-bebas text-lg tracking-wider rounded-lg transition-all duration-300 hover:bg-blue-700 hover:shadow-lg transform hover:scale-105 flex items-center justify-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.6 }}
+                >
+                  <Facebook size={20} className="mr-2" /> Share on Facebook
+                </motion.button>
+                <motion.button
+                  onClick={() => handleShareSuccess('instagram')}
+                  className="w-full py-3 px-6 bg-pink-600 text-white font-bebas text-lg tracking-wider rounded-lg transition-all duration-300 hover:bg-pink-700 hover:shadow-lg transform hover:scale-105 flex items-center justify-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.7 }}
+                >
+                  <Instagram size={20} className="mr-2" /> Share on Instagram
+                </motion.button>
+                <motion.button
+                  onClick={() => handleShareSuccess('whatsapp')}
+                  className="w-full py-3 px-6 bg-green-600 text-white font-bebas text-lg tracking-wider rounded-lg transition-all duration-300 hover:bg-green-700 hover:shadow-lg transform hover:scale-105 flex items-center justify-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.8 }}
+                >
+                  <Share2 size={20} className="mr-2" /> Share on WhatsApp
+                </motion.button>
+              </div> */}
+
+              {/* Fine Print */}
+              <motion.p 
+                className="text-gray-500 text-xs text-center mt-6 leading-relaxed"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 1.0 }}
+              >
+                Competition ends 28 August 2025. A live wheelspin will be done on RecklessBear's socials on 28 August. Winner will be announced during the stream.
+              </motion.p>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+  // --- END NEW ---
+
+  // Main rendering logic for CompetitionModal
+  // If showCongrats is true, render only the CongratsModal.
+  // Otherwise, if isOpen is true and device is not registered, render the main form.
+  // If neither, render null.
+  if (showCongrats) {
+    console.log('CompetitionModal: showCongrats is TRUE. Rendering CongratsModal.');
+    return <CongratsModal />;
+  }
+
+  // If main modal is trying to open (isOpen is true) AND device is already registered,
+  // we want to directly show the success modal (You're Registered!).
+  if (isOpen && isDeviceRegistered) {
+    console.log('CompetitionModal: isOpen is TRUE and device is registered. Rendering SuccessModal.');
+    return <SuccessModal />;
+  }
+  
+  // If neither congrats nor registration/already registered is active, render the main form if isOpen
+  if (isOpen && !isDeviceRegistered) {
+    console.log('CompetitionModal: isOpen is TRUE and device not registered. Rendering main form.');
+    return (
+      <>
+        <SuccessModal /> {/* Still render SuccessModal, its own state controls visibility */}
+        <AnimatePresence>
+          {isOpen && !isDeviceRegistered && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-32"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {/* Backdrop */}
+          <motion.div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
+          
+          {/* Modal */}
+          <motion.div
+            className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-yellow-500/30"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            style={{
+              boxShadow: '0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.1)'
+            }}
+          >
+            {/* Close Button */}
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500 transition-colors duration-200"
+              aria-label="Close modal"
+            >
+              <X size={24} />
+            </button>
+            
+            <div className="p-8">
+              {/* Golden Logo */}
+              <div className="text-center mb-6">
+                <img 
+                  src="/Golden-Logo.png" 
+                  alt="Golden RecklessBear Logo" 
+                  className="w-16 h-16 mx-auto mb-4"
+                />
+                <h2 className="text-2xl md:text-3xl font-bebas text-white mb-2">
+                  Stand a chance to win R10 000!
+                </h2>
+                <p className="text-gray-300 text-sm md:text-base leading-relaxed">
+                  Find all 5 golden logos hidden across the site and stand a chance to win R10 000.
+                </p>
+              </div>
+
+              {/* Form */}
+              <form 
+                action="https://usebasin.com/f/caea1c883e3b"
+                method="POST" 
+                onSubmit={handleSubmit} 
+                className="space-y-4"
+              >
+                {/* Hidden Device ID Field */}
+                <input
+                  type="hidden"
+                  name="device_id"
+                  id="competition-device-id"
+                  value={currentDeviceId || ''}
+                />
+
+                {/* Full Name */}
+                <div>
+                  <label htmlFor="fullName" className="block text-white text-sm font-medium mb-2">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="fullName"
+                    name="full_name"
+                    value={formData.fullName}
+                    onChange={(e) => handleInputChange('fullName', e.target.value)}
+                    className={`w-full px-4 py-3 bg-gray-800 text-white border rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${
+                      errors.fullName 
+                        ? 'border-red-500 focus:ring-red-500' 
+                        : 'border-gray-600 focus:border-red-600 focus:ring-red-600'
+                    }`}
+                    placeholder="Enter your full name"
+                    required
+                  />
+                  {errors.fullName && (
+                    <p className="text-red-400 text-xs mt-1">{errors.fullName}</p>
+                  )}
+                </div>
+
+                {/* Email Address */}
+                <div>
+                  <label htmlFor="email" className="block text-white text-sm font-medium mb-2">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email_address"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    className={`w-full px-4 py-3 bg-gray-800 text-white border rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${
+                      errors.email 
+                        ? 'border-red-500 focus:ring-red-500' 
+                        : 'border-gray-600 focus:border-red-600 focus:ring-red-600'
+                    }`}
+                    placeholder="Enter your email address"
+                    required
+                  />
+                  {errors.email && (
+                    <p className="text-red-400 text-xs mt-1">{errors.email}</p>
+                  )}
+                </div>
+
+                {/* Phone Number */}
+                <div>
+                  <label htmlFor="phone" className="block text-white text-sm font-medium mb-2">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone_number"
+                    value={formData.phone}
+                    onChange={(e) => handleInputChange('phone', e.target.value)}
+                    className={`w-full px-4 py-3 bg-gray-800 text-white border rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${
+                      errors.phone 
+                        ? 'border-red-500 focus:ring-red-500' 
+                        : 'border-gray-600 focus:border-red-600 focus:ring-red-600'
+                    }`}
+                    placeholder="Enter your phone number"
+                    required
+                  />
+                  {errors.phone && (
+                    <p className="text-red-400 text-xs mt-1">{errors.phone}</p>
+                  )}
+                </div>
+
+                {/* Location */}
+                <div>
+                  <label htmlFor="location" className="block text-white text-sm font-medium mb-2">
+                    Location
+                  </label>
+                  <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    value={formData.location}
+                    onChange={(e) => handleInputChange('location', e.target.value)}
+                    className="w-full px-4 py-3 bg-gray-800 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:border-red-600 focus:ring-red-600 transition-colors duration-200"
+                    placeholder="Enter your location (optional)"
+                  />
+                </div>
+
+                {/* Terms Checkbox */}
+                <div className="flex items-start space-x-3">
+                  <input
+                    type="checkbox"
+                    id="agreeToTerms"
+                    name="terms_agreed"
+                    value="true"
+                    checked={formData.agreeToTerms}
+                    onChange={(e) => handleInputChange('agreeToTerms', e.target.checked)}
+                    className="mt-1 w-4 h-4 text-red-600 bg-gray-800 border-gray-600 rounded focus:ring-red-600 focus:ring-2"
+                    required
+                  />
+                  <label htmlFor="agreeToTerms" className="text-white text-sm leading-relaxed">
+                    I agree to the competition terms & conditions *
+                  </label>
+                </div>
+                {errors.agreeToTerms && (
+                  <p className="text-red-400 text-xs">{errors.agreeToTerms}</p>
+                )}
+
+                {/* Submission Error Message */}
+                {submissionError && (
+                  <p className="text-red-400 text-sm text-center mt-4">{submissionError}</p>
+                )}
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  className="w-full py-3 px-6 bg-[#8B0000] text-white font-bebas text-lg tracking-wider rounded-lg transition-all duration-300 hover:bg-red-700 hover:shadow-lg transform hover:scale-105"
+                >
+                  Enter Competition
+                </button>
+              </form>
+
+              {/* Fine Print */}
+              <p className="text-gray-500 text-xs text-center mt-6 leading-relaxed">
+                Competition ends 28 August 2025. A live wheelspin will be done on RecklessBear's socials on 28 August. Winner will be announced during the stream.
               </p>
             </div>
-
-            {/* Form */}
-            <form 
-              action="https://usebasin.com/f/caea1c883e3b"
-              method="POST" 
-              onSubmit={handleSubmit} 
-              className="space-y-4"
-            >
-              {/* Hidden Device ID Field */}
-              <input
-                type="hidden"
-                name="device_id"
-                id="competition-device-id"
-                value={currentDeviceId || ''} // Use the state variable for value
-              />
-
-              {/* Full Name */}
-              <div>
-                <label htmlFor="fullName" className="block text-white text-sm font-medium mb-2">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  id="fullName"
-                  name="full_name"
-                  value={formData.fullName}
-                  onChange={(e) => handleInputChange('fullName', e.target.value)}
-                  className={`w-full px-4 py-3 bg-gray-800 text-white border rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${
-                    errors.fullName 
-                      ? 'border-red-500 focus:ring-red-500' 
-                      : 'border-gray-600 focus:border-red-600 focus:ring-red-600'
-                  }`}
-                  placeholder="Enter your full name"
-                  required
-                />
-                {errors.fullName && (
-                  <p className="text-red-400 text-xs mt-1">{errors.fullName}</p>
-                )}
-              </div>
-
-              {/* Email Address */}
-              <div>
-                <label htmlFor="email" className="block text-white text-sm font-medium mb-2">
-                  Email Address *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email_address"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  className={`w-full px-4 py-3 bg-gray-800 text-white border rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${
-                    errors.email 
-                      ? 'border-red-500 focus:ring-red-500' 
-                      : 'border-gray-600 focus:border-red-600 focus:ring-red-600'
-                  }`}
-                  placeholder="Enter your email address"
-                  required
-                />
-                {errors.email && (
-                  <p className="text-red-400 text-xs mt-1">{errors.email}</p>
-                )}
-              </div>
-
-              {/* Phone Number */}
-              <div>
-                <label htmlFor="phone" className="block text-white text-sm font-medium mb-2">
-                  Phone Number *
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone_number"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  className={`w-full px-4 py-3 bg-gray-800 text-white border rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${
-                    errors.phone 
-                      ? 'border-red-500 focus:ring-red-500' 
-                      : 'border-gray-600 focus:border-red-600 focus:ring-red-600'
-                  }`}
-                  placeholder="Enter your phone number"
-                  required
-                />
-                {errors.phone && (
-                  <p className="text-red-400 text-xs mt-1">{errors.phone}</p>
-                )}
-              </div>
-
-              {/* Location */}
-              <div>
-                <label htmlFor="location" className="block text-white text-sm font-medium mb-2">
-                  Location
-                </label>
-                <input
-                  type="text"
-                  id="location"
-                  name="location"
-                  value={formData.location}
-                  onChange={(e) => handleInputChange('location', e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-800 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:border-red-600 focus:ring-red-600 transition-colors duration-200"
-                  placeholder="Enter your location (optional)"
-                />
-              </div>
-
-              {/* Terms Checkbox */}
-              <div className="flex items-start space-x-3">
-                <input
-                  type="checkbox"
-                  id="agreeToTerms"
-                  name="terms_agreed"
-                  value="true"
-                  checked={formData.agreeToTerms}
-                  onChange={(e) => handleInputChange('agreeToTerms', e.target.checked)}
-                  className="mt-1 w-4 h-4 text-red-600 bg-gray-800 border-gray-600 rounded focus:ring-red-600 focus:ring-2"
-                  required
-                />
-                <label htmlFor="agreeToTerms" className="text-white text-sm leading-relaxed">
-                  I agree to the competition terms & conditions *
-                </label>
-              </div>
-              {errors.agreeToTerms && (
-                <p className="text-red-400 text-xs">{errors.agreeToTerms}</p>
-              )}
-
-              {/* Submission Error Message */}
-              {submissionError && (
-                <p className="text-red-400 text-sm text-center mt-4">{submissionError}</p>
-              )}
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                className="w-full py-3 px-6 bg-[#8B0000] text-white font-bebas text-lg tracking-wider rounded-lg transition-all duration-300 hover:bg-red-700 hover:shadow-lg transform hover:scale-105"
-              >
-                Enter Competition
-              </button>
-            </form>
-
-            {/* Fine Print */}
-            <p className="text-gray-500 text-xs text-center mt-6 leading-relaxed">
-              Competition ends 28 August 2025. A live wheelspin will be done on RecklessBear's socials on 28 August. Winner will be announced during the stream.
-            </p>
-          </div>
+          </motion.div>
         </motion.div>
-      </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
+          )}
+        </AnimatePresence>
+      </>
+    );
+  }
+
+  return null; // If no modal should be open, render nothing
 };
 
 export default CompetitionModal;
