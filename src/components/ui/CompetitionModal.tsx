@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Facebook, Instagram, Share2 } from 'lucide-react';
+import { X, Facebook, Instagram, Share2 } from 'lucide-react'; // Ensure Share2 is imported
 
 interface CompetitionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  // --- IMPORTANT: This prop is crucial for triggering the Congrats modal ---
   showCongrats: boolean; 
-  onCloseCongrats: () => void; // Callback when congrats modal is closed
+  onCloseCongrats: () => void;
 }
 
 interface FormData {
@@ -33,13 +32,12 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
   });
   
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false); // This state controls the "You're Registered!" modal
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [isDeviceRegistered, setIsDeviceRegistered] = useState(false);
   const [currentDeviceId, setCurrentDeviceId] = useState<string | null>(null);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
 
-  // --- Initialize persistent device ID and check registration status on component mount ---
   useEffect(() => {
     let deviceId = localStorage.getItem(LS_KEY_DEVICE_ID);
     if (!deviceId) {
@@ -50,23 +48,18 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
 
     if (localStorage.getItem(LS_KEY_REGISTERED) === 'true') {
       setIsDeviceRegistered(true);
-      // If already registered, and the 'showCongrats' prop is not true, show the "You're Registered" modal
-      // If 'showCongrats' is true, the CongratsModal will take precedence.
       if (!showCongrats) { 
         setShowSuccessModal(true); 
       }
-      console.log('CompetitionModal: Initializing, device already registered.');
     }
-    console.log(`CompetitionModal: Initializing with showCongrats prop: ${showCongrats}`);
-  }, [showCongrats]); // Depend on showCongrats to react if it changes externally
+  }, [showCongrats]);
 
-  // Hide chatbot widget when any competition modal is open
   useEffect(() => {
     const chatbotWidget = document.getElementById('vg-widget-container');
     const chatbotButton = document.querySelector('.vg-bubble-button');
     const chatbotOverlay = document.getElementById('VG_OVERLAY_CONTAINER');
     
-    const isAnyCompetitionModalOpen = isOpen || showSuccessModal || showCongrats; // Include showCongrats
+    const isAnyCompetitionModalOpen = isOpen || showSuccessModal || showCongrats;
 
     if (chatbotWidget) {
       chatbotWidget.style.display = isAnyCompetitionModalOpen ? 'none' : '';
@@ -91,7 +84,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
         (chatbotOverlay as HTMLElement).style.display = '';
       }
     };
-  }, [isOpen, showSuccessModal, showCongrats]); // Depend on all modal states
+  }, [isOpen, showSuccessModal, showCongrats]);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
@@ -160,8 +153,8 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       setIsDeviceRegistered(true);
 
       setIsSubmitted(true);
-      setShowSuccessModal(true); // Show "You're Registered!" modal
-      onClose(); // Close the main form modal
+      setShowSuccessModal(true);
+      onClose();
       
       setFormData({
         fullName: '',
@@ -170,7 +163,6 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
         location: '',
         agreeToTerms: false
       });
-      console.log('CompetitionModal: Form submitted successfully to Basin. Showing success modal.');
 
     } catch (error) {
       console.error('CompetitionModal: Error submitting form to Basin:', error);
@@ -187,6 +179,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
     }
   };
 
+  // --- MODIFIED: handleShareSuccess to match original logic ---
   const handleShareSuccess = (platform: string) => {
     const shareUrl = window.location.origin;
     const shareText = "I found a hidden golden logo on RecklessBear's website and entered their R10,000 competition! 🏆 Can you find all 5 hidden logos?";
@@ -201,13 +194,16 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
         shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`;
         break;
       case 'instagram':
-        document.execCommand('copy');
+        // For Instagram, copy to clipboard as direct sharing via URL is not supported
+        document.execCommand('copy'); 
         console.log('CompetitionModal: Link copied to clipboard for Instagram share.');
-        return;
+        // You might want to add a custom toast/notification here instead of alert
+        return; 
       case 'whatsapp':
         shareLink = `https://wa.me/?text=${encodedText} ${encodedUrl}`;
         break;
       default:
+        // Fallback for generic web share API
         if (navigator.share) {
           navigator.share({
             title: 'RecklessBear Golden Logo Competition',
@@ -222,9 +218,9 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       window.open(shareLink, '_blank', 'width=600,height=400');
     }
   };
+  // --- END MODIFIED ---
 
   // Success Modal Component (This is your existing "YOU'RE REGISTERED!" modal)
-  // This modal is shown after initial registration OR if device is already registered
   const SuccessModal = () => (
     <AnimatePresence>
       {showSuccessModal && (
@@ -314,7 +310,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
     </AnimatePresence>
   );
 
-  // --- NEW: Congrats Modal Component (This is your existing "CONGRATULATIONS!" modal) ---
+  // --- MODIFIED: Congrats Modal Component (RESTORED ORIGINAL STRUCTURE) ---
   // This modal is specifically shown when all 5 logos are found.
   const CongratsModal = () => (
     <AnimatePresence>
@@ -377,12 +373,15 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  You've found all 5 golden logos and been entered into our wheel spin for a chance to win R10 000!
+                  You've been entered into the wheel spin to win R10,000!
                 </motion.p>
               </div>
 
-              {/* Share Buttons - REMOVED as per your request "All share buttons removed." */}
-              {/* <div className="flex flex-col space-y-4 mb-6">
+              {/* Share Buttons - RESTORED based on your original screenshot */}
+              <p className="text-rb-gray-300 text-sm mb-4">
+                Share with your friends so they can also stand a chance to win!
+              </p>
+              <div className="flex flex-col space-y-4 mb-6">
                 <motion.button
                   onClick={() => handleShareSuccess('facebook')}
                   className="w-full py-3 px-6 bg-blue-600 text-white font-bebas text-lg tracking-wider rounded-lg transition-all duration-300 hover:bg-blue-700 hover:shadow-lg transform hover:scale-105 flex items-center justify-center"
@@ -410,7 +409,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
                 >
                   <Share2 size={20} className="mr-2" /> Share on WhatsApp
                 </motion.button>
-              </div> */}
+              </div>
 
               {/* Fine Print */}
               <motion.p 
@@ -427,7 +426,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       )}
     </AnimatePresence>
   );
-  // --- END NEW ---
+  // --- END MODIFIED ---
 
   // Main rendering logic for CompetitionModal
   // If showCongrats is true, render only the CongratsModal.
@@ -659,3 +658,4 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
 };
 
 export default CompetitionModal;
+
