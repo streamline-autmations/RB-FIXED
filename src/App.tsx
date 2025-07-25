@@ -171,18 +171,22 @@ const MatricCataloguePage = () => (
 // AppContent component contains the main layout and modal logic
 const AppContent: React.FC = () => {
   const [isCompetitionModalOpen, setIsCompetitionModalOpen] = useState(false);
-  const { toastMessage, showCongratsModal, setCongratsModalOpen } = useCompetition();
+  
+  // --- GET THE NEW STATE FROM THE CONTEXT ---
+  const { toastMessage, showCongratsModal, setCongratsModalOpen, isCompetitionCompleted } = useCompetition();
 
-  // --- THIS IS THE CORRECTED 5-SECOND TIMER ---
-  // It runs only ONCE when the app loads, thanks to the empty dependency array [].
+  // --- THIS IS THE UPDATED 5-SECOND TIMER ---
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsCompetitionModalOpen(true); // Open the modal after 5 seconds
-    }, 5000); // 5000 milliseconds = 5 seconds
+    // Only set the timer if the user has NOT completed the competition
+    if (!isCompetitionCompleted) {
+      const timer = setTimeout(() => {
+        setIsCompetitionModalOpen(true); // Open the modal after 5 seconds
+      }, 5000);
 
-    // Cleanup the timer if the component unmounts
-    return () => clearTimeout(timer);
-  }, []); 
+      // Cleanup the timer if the component unmounts
+      return () => clearTimeout(timer);
+    }
+  }, [isCompetitionCompleted]); // Dependency array updated
   // --- END TIMER ---
 
   // Function to close the main competition registration modal
