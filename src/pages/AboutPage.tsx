@@ -80,10 +80,10 @@ const AboutPage: React.FC = () => {
                     style={{
                       width: '20px', // Set to 20px
                       height: '20px', // Set to 20px
-                      top: '40%', // Adjusted top position
-                      left: '8%', // Adjusted left position
+                      top: '39%', // Adjusted top position
+                      left: '7%', // Adjusted left position
                       transform: 'translate(-50%, -50%)', // Adjust for exact center
-                      opacity: 0.8, // Set to 0.5 for 50% visibility
+                      opacity: 1, // Set to 0.5 for 50% visibility
                     }}
                   />
                 )}
