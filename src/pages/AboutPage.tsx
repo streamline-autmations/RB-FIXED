@@ -2,8 +2,41 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import Button from '../components/ui/Button';
+import { useCompetition } from '../context/CompetitionProvider';
+
+// Define a global type for the window object to include our custom function
+declare global {
+  interface Window {
+    triggerGoldenLogoFound?: (logoId: string) => void;
+  }
+}
 
 const AboutPage: React.FC = () => {
+  // --- NEW: Competition Logo 5 State and Context ---
+  const { findLogo } = useCompetition();
+  const [isLogo5Found, setIsLogo5Found] = React.useState(false);
+
+  React.useEffect(() => {
+    const foundLogos = JSON.parse(localStorage.getItem('recklessbear_found_logos') || '[]');
+    if (foundLogos.includes('golden-logo-5')) {
+      setIsLogo5Found(true);
+    }
+  }, []);
+
+  const handleLogo5Click = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (!isLogo5Found) {
+      if (window.triggerGoldenLogoFound) {
+        window.triggerGoldenLogoFound('golden-logo-5');
+        setIsLogo5Found(true);
+      } else {
+        console.warn('window.triggerGoldenLogoFound is not defined. CompetitionProvider might not be loaded.');
+      }
+    }
+  };
+  // --- END NEW ---
+
   return (
     <>
       {/* About Hero */}
@@ -37,6 +70,25 @@ const AboutPage: React.FC = () => {
                   src="/rb-about.png" 
                   alt="RecklessBear Team" 
                   className="w-full h-full object-cover"
+                {/* Golden Logo 5 - Hidden within the text area */}
+                {!isLogo5Found && (
+                  <img
+                    id="golden-logo-5"
+                    src="/Golden-Logo.png"
+                    alt="Hidden Golden Logo"
+                    className="golden-logo-image absolute"
+                    onClick={handleLogo5Click}
+                    style={{
+                      width: '10px',
+                      height: '10px',
+                      top: '120px',
+                      right: '20px',
+                      opacity: 0.05,
+                      cursor: 'pointer',
+                      zIndex: 10
+                    }}
+                  />
+                )}
                 />
               </div>
             </motion.div>
@@ -46,7 +98,7 @@ const AboutPage: React.FC = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-            >
+              className="space-y-10 relative"
               <h2 className="section-title">Our Story</h2>
               <p className="text-rb-gray-300 mb-6 text-lg">
                 RecklessBear is more than a clothing brand. We're driven by passion for sport, gym culture, and performance.

@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Package, Clock, CheckCircle, Truck, AlertCircle, CreditCard, Printer, Scissors, Gift } from 'lucide-react';
 import Button from '../components/ui/Button';
+import { useCompetition } from '../context/CompetitionProvider';
+
+// Define a global type for the window object to include our custom function
+declare global {
+  interface Window {
+    triggerGoldenLogoFound?: (logoId: string) => void;
+  }
+}
 
 interface OrderStage {
   id: string;
@@ -20,6 +28,31 @@ const TrackOrderPage: React.FC = () => {
   const [currentStatus, setCurrentStatus] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // --- NEW: Competition Logo 4 State and Context ---
+  const { findLogo } = useCompetition();
+  const [isLogo4Found, setIsLogo4Found] = useState(false);
+
+  React.useEffect(() => {
+    const foundLogos = JSON.parse(localStorage.getItem('recklessbear_found_logos') || '[]');
+    if (foundLogos.includes('golden-logo-4')) {
+      setIsLogo4Found(true);
+    }
+  }, []);
+
+  const handleLogo4Click = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (!isLogo4Found) {
+      if (window.triggerGoldenLogoFound) {
+        window.triggerGoldenLogoFound('golden-logo-4');
+        setIsLogo4Found(true);
+      } else {
+        console.warn('window.triggerGoldenLogoFound is not defined. CompetitionProvider might not be loaded.');
+      }
+    }
+  };
+  // --- END NEW ---
 
   const orderStages: OrderStage[] = [
     {
@@ -261,6 +294,7 @@ const TrackOrderPage: React.FC = () => {
                       {orderStages.map((stage, index) => {
                         const status = getStageStatus(index, currentStageIndex);
                         const StageIcon = stage.icon;
+                        const isDeliveredStage = stage.id === 'delivered';
                         
                         return (
                           <div key={stage.id} className="flex flex-col items-center relative z-10">
@@ -270,11 +304,31 @@ const TrackOrderPage: React.FC = () => {
                                 : status === 'current'
                                 ? 'bg-rb-red border-rb-red text-white animate-pulse'
                                 : 'bg-rb-gray-700 border-rb-gray-600 text-rb-gray-400'
-                            }`}>
+                            } relative`}>
                               {status === 'completed' ? (
                                 <CheckCircle size={20} />
                               ) : (
                                 <StageIcon size={20} />
+                              )}
+                              {/* Golden Logo 4 - Only on Delivered stage when not found */}
+                              {isDeliveredStage && !isLogo4Found && (
+                                <img
+                                  id="golden-logo-4"
+                                  src="/Golden-Logo.png"
+                                  alt="Hidden Golden Logo"
+                                  className="golden-logo-image absolute"
+                                  onClick={handleLogo4Click}
+                                  style={{
+                                    width: '15px',
+                                    height: '15px',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    opacity: 1,
+                                    cursor: 'pointer',
+                                    zIndex: 10
+                                  }}
+                                />
                               )}
                             </div>
                             <div className="mt-3 text-center max-w-24">
