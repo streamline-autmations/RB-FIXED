@@ -86,7 +86,7 @@ const GymPufferJacketPage: React.FC = () => {
                   style={{
                     width: '22px',
                     height: '22px',
-                    top: '36%',
+                    top: '37%',
                     left: '40%',
                     opacity: 1,
                     cursor: 'pointer'
