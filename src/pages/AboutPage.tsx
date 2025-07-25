@@ -1,9 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react'; // Import useState and useEffect
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import Button from '../components/ui/Button';
+import { useCompetition } from '../context/CompetitionProvider'; // Import useCompetition
+
+// Define a global type for the window object to include our custom function
+declare global {
+  interface Window {
+    triggerGoldenLogoFound?: (logoId: string) => void;
+  }
+}
 
 const AboutPage: React.FC = () => {
+  // --- NEW: Competition Logo 5 State and Context ---
+  const { findLogo } = useCompetition(); // Get findLogo function from context
+  const [isLogo5Found, setIsLogo5Found] = useState(false); // State for this specific logo
+
+  useEffect(() => {
+    const foundLogos = JSON.parse(localStorage.getItem('recklessbear_found_logos') || '[]');
+    if (foundLogos.includes('golden-logo-5')) {
+      setIsLogo5Found(true);
+    }
+  }, []);
+
+  // Handle click for golden-logo-5
+  const handleLogo5Click = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event from bubbling up
+    e.preventDefault(); // Prevent default link behavior if applicable
+    if (!isLogo5Found) {
+      findLogo('golden-logo-5'); // Use findLogo from context
+      setIsLogo5Found(true); // Optimistically update state for immediate visual feedback
+    }
+  };
+  // --- END NEW ---
+
   return (
     <>
       {/* About Hero */}
@@ -51,8 +81,27 @@ const AboutPage: React.FC = () => {
               <p className="text-rb-gray-300 mb-6 text-lg">
                 RecklessBear is more than a clothing brand. We're driven by passion for sport, gym culture, and performance.
               </p>
-              <p className="text-rb-gray-400 mb-6">
+              <p className="text-rb-gray-400 mb-6 relative"> {/* Added relative for logo positioning */}
                 From design to manufacturing, everything happens in-house. Based in Johannesburg, we serve clients across South Africa with pride.
+                {/* --- NEW: Golden Logo 5 --- */}
+                {/* Placed within the text, subtle and small */}
+                {!isLogo5Found && (
+                  <img
+                    id="golden-logo-5" // Unique ID for this logo
+                    src="/Golden-Logo.png" // Path to your golden logo image
+                    alt="Hidden Golden Logo"
+                    className={`golden-logo-image absolute z-10`} // z-index to be clickable
+                    onClick={handleLogo5Click}
+                    style={{
+                      width: '10px', // Very small
+                      height: '10px', // Very small
+                      top: '10px', // Adjust vertically
+                      right: '10px', // Adjust horizontally (from right edge of parent p)
+                      opacity: 0.05, // Very low visibility (5% visible)
+                    }}
+                  />
+                )}
+                {/* --- END NEW --- */}
               </p>
               <p className="text-rb-gray-400 mb-8">
                 We started with a simple belief: athletes, teams, and fitness enthusiasts deserve custom sportswear that performs as good as it looks. 
@@ -131,20 +180,7 @@ const AboutPage: React.FC = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              {
-                name: 'Zander Steyn',
-                position: 'Director of Printing and Pressing',
-                email: 'zander@recklessbear.co.za',
-                phone: '082 384 1522',
-                image: null
-              },
-              {
-                name: 'Janco Tiedt',
-                position: 'Director',
-                email: 'janco@recklessbear.co.za',
-                phone: '076 689 0383',
-                image: null
-              },
+              // --- REORDERED TEAM MEMBERS ---
               {
                 name: 'Etienne Viljoen',
                 position: 'Brand Owner',
@@ -158,7 +194,22 @@ const AboutPage: React.FC = () => {
                 email: 'alicia@recklessbear.co.za',
                 phone: '076 123 4567',
                 image: null
+              },
+              {
+                name: 'Janco Tiedt',
+                position: 'Director',
+                email: 'janco@recklessbear.co.za',
+                phone: '076 689 0383',
+                image: null
+              },
+              {
+                name: 'Zander Steyn',
+                position: 'Director of Printing and Pressing',
+                email: 'zander@recklessbear.co.za',
+                phone: '082 384 1522',
+                image: null
               }
+              // --- END REORDERED TEAM MEMBERS ---
             ].map((member, index) => (
               <motion.div
                 key={index}
@@ -214,7 +265,7 @@ const AboutPage: React.FC = () => {
                   <div>
                     <h3 className="text-xl font-bebas text-rb-white mb-1">Opening Hours</h3>
                     <p className="text-rb-gray-400">Monday - Friday: 09AM - 05PM</p>
-                    <p className="text-rb-gray-400">Saturday - Sunday: Closed</p>
+                    <p className="text-rb-400">Saturday - Sunday: Closed</p>
                   </div>
                 </div>
 
