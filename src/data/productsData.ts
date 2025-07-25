@@ -99,7 +99,7 @@ const allProducts: Product[] = [
   },
   {
     title: 'Cricket Pants',
-    image: '/cricket-pants-frontback.png',
+    image: '/cricket-pants-frontback-logo.png',
     category: 'School & Team Sports',
     subcategory: 'Cricket',
     path: '/products/cricket-pants'
