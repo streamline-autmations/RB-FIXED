@@ -41,15 +41,20 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
     // If competition was already completed on this device, show congrats modal directly
     if (localStorage.getItem(LS_KEY_COMPLETED_COMPETITION) === 'true') {
       setShowCongratsModal(true);
+      console.log('CompetitionProvider: Initializing, competition already completed. Setting showCongratsModal to TRUE.');
     }
   }, []);
 
   // --- Effect to update foundLogosCount and check for completion ---
   useEffect(() => {
     setFoundLogosCount(foundLogos.length);
+    console.log(`CompetitionProvider: Logos found count updated to ${foundLogos.length}`);
+
     if (foundLogos.length === TOTAL_LOGOS_REQUIRED && localStorage.getItem(LS_KEY_COMPLETED_COMPETITION) !== 'true') {
       localStorage.setItem(LS_KEY_COMPLETED_COMPETITION, 'true');
-      setShowCongratsModal(true);
+      setShowCongratsModal(true); // <--- This is the line that should trigger the modal
+      console.log('CompetitionProvider: All 5 logos found! Setting showCongratsModal to TRUE.');
+
       // --- IMPORTANT: Trigger n8n webhook for competition completion here ---
       const deviceId = localStorage.getItem(LS_KEY_DEVICE_ID);
       const registeredEmail = localStorage.getItem(LS_KEY_REGISTERED_EMAIL);
@@ -75,7 +80,7 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
       */
       // --- END IMPORTANT ---
     }
-  }, [foundLogos]);
+  }, [foundLogos]); // Re-run when foundLogos array changes
 
   // --- Function to handle a logo being found ---
   const findLogo = useCallback((logoId: string) => {
@@ -83,6 +88,7 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
       if (!prevFoundLogos.includes(logoId)) {
         const newFoundLogos = [...prevFoundLogos, logoId];
         localStorage.setItem(LS_KEY_FOUND_LOGOS, JSON.stringify(newFoundLogos));
+        console.log(`CompetitionProvider: Logo ${logoId} found. New count: ${newFoundLogos.length}`);
 
         // Trigger toast message
         setToastMessage(`Golden Logo Found! (${newFoundLogos.length}/${TOTAL_LOGOS_REQUIRED} found)`);
@@ -99,6 +105,7 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
 
         return newFoundLogos;
       }
+      console.log(`CompetitionProvider: Logo ${logoId} already found.`);
       return prevFoundLogos; // Logo already found
     });
   }, []);
@@ -114,6 +121,7 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
   // --- Function to close the congrats modal ---
   const handleCloseCongrats = useCallback(() => {
     setShowCongratsModal(false);
+    console.log('CompetitionProvider: Congrats modal closed.');
   }, []);
 
   // --- NEW: Function to reset competition state (for testing/development) ---
@@ -122,7 +130,7 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
     localStorage.removeItem(LS_KEY_COMPLETED_COMPETITION);
     localStorage.removeItem(LS_KEY_REGISTERED); // Also reset registration status
     localStorage.removeItem(LS_KEY_DEVICE_ID); // Reset device ID to get a new one on next load
-    localStorage.removeItem(LS_KEY_REGISTERED_EMAIL); // Reset registered email
+    localStorage.removeItem(LS_KEY_KEY_REGISTERED_EMAIL); // Reset registered email
 
     setFoundLogos([]);
     setFoundLogosCount(0);
@@ -133,7 +141,7 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
     document.querySelectorAll('.golden-logo-image.found').forEach(el => {
       el.classList.remove('found');
     });
-    console.log('Competition state reset in localStorage and UI.');
+    console.log('Competition state reset in localStorage and UI. Reloading page.');
     window.location.reload(); // Reload the page to ensure all components re-initialize
   }, []);
 
@@ -142,8 +150,8 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
     findLogo,
     toastMessage,
     showCongratsModal,
-    setCongratsModalOpen: setShowCongratsModal,
-    onCloseCongrats: handleCloseCongrats,
+    setCongratsModalOpen: setShowCongratsModal, // Expose setter for CompetitionModal to use
+    onCloseCongrats: handleCloseCongrats, // Pass the close handler
     resetCompetition, // Expose reset function
   };
 
