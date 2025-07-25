@@ -80,7 +80,7 @@ const AboutPage: React.FC = () => {
                     style={{
                       width: '20px', // Set to 20px
                       height: '20px', // Set to 20px
-                      top: '50%', // Centered vertically on the image
+                      top: '10%', // Centered vertically on the image
                       left: '50%', // Centered horizontally on the image
                       transform: 'translate(-50%, -50%)', // Adjust for exact center
                       opacity: 1, // Set to 0.5 for 50% visibility
