@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Facebook, Instagram, Share2 } from 'lucide-react'; // Ensure Share2 is imported
+import { X, Facebook, Instagram, Share2 } from 'lucide-react';
 
 interface CompetitionModalProps {
   isOpen: boolean;
@@ -32,7 +32,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
   });
   
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false); // This state controls the "You're Registered!" modal
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [isDeviceRegistered, setIsDeviceRegistered] = useState(false);
   const [currentDeviceId, setCurrentDeviceId] = useState<string | null>(null);
@@ -46,14 +46,25 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
     }
     setCurrentDeviceId(deviceId);
 
+    // Initial check for device registration status
     if (localStorage.getItem(LS_KEY_REGISTERED) === 'true') {
       setIsDeviceRegistered(true);
-      if (!showCongrats) { 
-        setShowSuccessModal(true); 
-      }
     }
-  }, [showCongrats]);
+  }, []); // Run only once on mount
 
+  // Effect to manage showing the "You're Registered!" modal based on device registration
+  useEffect(() => {
+    if (isOpen && isDeviceRegistered && !showCongrats) { // If modal is triggered, device registered, and not showing congrats
+      setShowSuccessModal(true);
+      onClose(); // Close the main form if it was trying to open
+    } else if (!isOpen && !isDeviceRegistered && !showCongrats) {
+      // Reset success modal state if main modal is closed and device is not registered
+      setShowSuccessModal(false);
+    }
+  }, [isOpen, isDeviceRegistered, showCongrats, onClose]);
+
+
+  // Hide chatbot widget when any competition modal is open
   useEffect(() => {
     const chatbotWidget = document.getElementById('vg-widget-container');
     const chatbotButton = document.querySelector('.vg-bubble-button');
@@ -153,8 +164,8 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       setIsDeviceRegistered(true);
 
       setIsSubmitted(true);
-      setShowSuccessModal(true);
-      onClose();
+      setShowSuccessModal(true); // Show "You're Registered!" modal
+      onClose(); // Close the main form modal
       
       setFormData({
         fullName: '',
@@ -163,6 +174,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
         location: '',
         agreeToTerms: false
       });
+      console.log('CompetitionModal: Form submitted successfully to Basin. Showing success modal.');
 
     } catch (error) {
       console.error('CompetitionModal: Error submitting form to Basin:', error);
@@ -179,7 +191,6 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
     }
   };
 
-  // --- MODIFIED: handleShareSuccess to match original logic ---
   const handleShareSuccess = (platform: string) => {
     const shareUrl = window.location.origin;
     const shareText = "I found a hidden golden logo on RecklessBear's website and entered their R10,000 competition! 🏆 Can you find all 5 hidden logos?";
@@ -194,16 +205,13 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
         shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`;
         break;
       case 'instagram':
-        // For Instagram, copy to clipboard as direct sharing via URL is not supported
         document.execCommand('copy'); 
         console.log('CompetitionModal: Link copied to clipboard for Instagram share.');
-        // You might want to add a custom toast/notification here instead of alert
         return; 
       case 'whatsapp':
         shareLink = `https://wa.me/?text=${encodedText} ${encodedUrl}`;
         break;
       default:
-        // Fallback for generic web share API
         if (navigator.share) {
           navigator.share({
             title: 'RecklessBear Golden Logo Competition',
@@ -218,7 +226,6 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       window.open(shareLink, '_blank', 'width=600,height=400');
     }
   };
-  // --- END MODIFIED ---
 
   // Success Modal Component (This is your existing "YOU'RE REGISTERED!" modal)
   const SuccessModal = () => (
@@ -310,8 +317,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
     </AnimatePresence>
   );
 
-  // --- MODIFIED: Congrats Modal Component (RESTORED ORIGINAL STRUCTURE) ---
-  // This modal is specifically shown when all 5 logos are found.
+  // Congrats Modal Component (This is your existing "CONGRATULATIONS!" modal)
   const CongratsModal = () => (
     <AnimatePresence>
       {showCongrats && ( // This is controlled by the `showCongrats` prop from CompetitionProvider
@@ -328,7 +334,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onCloseCongrats} // Use the provided onCloseCongrats callback
+            onClick={onCloseCongrats}
           />
           
           {/* Modal */}
@@ -344,7 +350,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
           >
             {/* Close Button */}
             <button
-              onClick={onCloseCongrats} // Use the provided onCloseCongrats callback
+              onClick={onCloseCongrats}
               className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500 transition-colors duration-200"
               aria-label="Close modal"
             >
@@ -355,7 +361,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
               {/* Golden Logo */}
               <div className="mb-6">
                 <img 
-                  src="/Golden-Logo.png" // Your golden logo image
+                  src="/Golden-Logo.png" 
                   alt="Golden RecklessBear Logo" 
                   className="w-20 h-20 mx-auto mb-4 animate-pulse"
                 />
@@ -426,7 +432,6 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       )}
     </AnimatePresence>
   );
-  // --- END MODIFIED ---
 
   // Main rendering logic for CompetitionModal
   // If showCongrats is true, render only the CongratsModal.
@@ -658,4 +663,3 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
 };
 
 export default CompetitionModal;
-
