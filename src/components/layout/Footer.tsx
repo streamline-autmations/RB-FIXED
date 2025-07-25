@@ -47,27 +47,27 @@ const Footer: React.FC = () => {
           {/* Logo and Tagline */}
           <div className="flex flex-col relative items-start"> 
             {shouldRenderGoldenLogo1 ? (
-              // On homepage and not found: show golden logo icon + RECKLESSBEAR text
+              // On homepage and not found: show golden logo icon + RECKLESSBEAR text image
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={handleLogo1Click}>
                 <img
                   id="golden-logo-1" // Unique ID for this logo
-                  src="/Golden-Logo.png" // Using the correct Golden-Logo.png path
+                  src="/Golden-Logo.png" // Path to your golden logo image
                   alt="Hidden Golden Logo"
-                  // No specific opacity here, as we want it fully visible when replacing the logo
                   className={`golden-logo-image z-20`} // golden-logo-image class will handle 'found' state
-                  // Match the size of your original RB icon and place exactly over it
-                  // Adjusted values for pixel-perfect overlay (assuming 40x40px icon)
                   style={{
                     width: '40px', // Assuming this is the size of the RB icon
                     height: '40px', // Assuming this is the size
                     top: '0px', // Position relative to its parent div
                     left: '0px', // Position relative to its parent div
                     opacity: 1, // FULLY VISIBLE when replacing the logo
-                    // You might need to adjust top/left slightly after deployment
                   }}
                 />
-                {/* The "RECKLESSBEAR" text. Add ml-2 for spacing. */}
-                <span className="text-rb-white text-xl font-bebas tracking-wider ml-2" style={{ pointerEvents: 'none' }}>RECKLESSBEAR</span>
+                {/* Image for "RECKLESSBEAR" text - CORRECTED TO USE IMG TAG */}
+                <img
+                  src="/rb_text_f.png" // Path to your text logo image
+                  alt="RECKLESSBEAR"
+                  style={{ height: '20px', marginLeft: '8px', pointerEvents: 'none' }} // Adjust height and margin as needed
+                />
               </div>
             ) : (
               // On other pages or if found: render original Logo component
@@ -239,3 +239,4 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
+
