@@ -375,10 +375,10 @@ const TrackOrderPage: React.FC = () => {
                                 className="golden-logo-image absolute z-10" // z-index for mobile
                                 onClick={handleLogo4Click}
                                 style={{
-                                  width: '20px', // Smaller for mobile
-                                  height: '20px', // Smaller for mobile
-                                  top: '50%',
-                                  left: '50%',
+                                  width: '32px', // Smaller for mobile
+                                  height: '32px', // Smaller for mobile
+                                  top: '52%',
+                                  left: '20%',
                                   transform: 'translate(-50%, -50%)',
                                   opacity: 1,
                                   cursor: 'pointer',
