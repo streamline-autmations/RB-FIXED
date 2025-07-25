@@ -14,7 +14,7 @@ const CompetitionTsAndCsPage: React.FC = () => {
           <div className="prose prose-invert max-w-none prose-h2:text-2xl prose-h2:font-bebas prose-h2:text-yellow-300 prose-h2:mb-2 prose-p:leading-relaxed prose-a:text-red-500 hover:prose-a:text-red-400">
             <h2>1. Eligibility</h2>
             <p>
-              This competition is open to residents of South Africa aged 18 years or over, except for employees of RecklessBear and their close relatives and anyone otherwise connected with the organisation or judging of the competition.
+              This competition is open to participants of any age and from any country, except for employees of RecklessBear and their close relatives and anyone otherwise connected with the organisation or judging of the competition. Entry is limited to one per person.
             </p>
 
             <h2>2. How to Enter</h2>
@@ -24,7 +24,7 @@ const CompetitionTsAndCsPage: React.FC = () => {
 
             <h2>3. Competition Period</h2>
             <p>
-              The competition begins on 1 August 2025 and ends on 28 August 2025 at 11:59 PM SAST. Entries received after this time will not be valid.
+              The competition begins on 28 July 2025 and ends on 28 August 2025 at 11:59 PM SAST. Entries received after this time will not be valid.
             </p>
 
             <h2>4. The Prize</h2>
