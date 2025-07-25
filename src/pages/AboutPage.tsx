@@ -82,8 +82,8 @@ const AboutPage: React.FC = () => {
                       height: '20px', // Set to 20px
                       top: '30%', // Adjusted top position
                       left: '18%', // Adjusted left position
-                      transform: 'translate(-50%, -50%)', /
-                      opacity: 1, // Set to 0.5 for 50% visibility
+                      transform: 'translate(-50%, -50%)', // Adjust for exact center
+                      opacity: 0.8, // Set to 0.5 for 50% visibility
                     }}
                   />
                 )}
