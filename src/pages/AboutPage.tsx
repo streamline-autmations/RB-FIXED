@@ -81,27 +81,25 @@ const AboutPage: React.FC = () => {
               <p className="text-rb-gray-300 mb-6 text-lg">
                 RecklessBear is more than a clothing brand. We're driven by passion for sport, gym culture, and performance.
               </p>
-              <p className="text-rb-gray-400 mb-6 relative"> {/* Added relative for logo positioning */}
+              <p className="text-rb-gray-400 mb-6 relative">
                 From design to manufacturing, everything happens in-house. Based in Johannesburg, we serve clients across South Africa with pride.
-                {/* --- NEW: Golden Logo 5 --- */}
-                {/* Placed within the text, subtle and small */}
                 {!isLogo5Found && (
                   <img
-                    id="golden-logo-5" // Unique ID for this logo
-                    src="/Golden-Logo.png" // Path to your golden logo image
+                    id="golden-logo-5"
+                    src="/Golden-Logo.png"
                     alt="Hidden Golden Logo"
-                    className={`golden-logo-image absolute z-10`} // z-index to be clickable
+                    className="golden-logo-image absolute z-10"
                     onClick={handleLogo5Click}
                     style={{
-                      width: '10px', // Very small
-                      height: '10px', // Very small
-                      top: '10px', // Adjust vertically
-                      right: '10px', // Adjust horizontally (from right edge of parent p)
-                      opacity: 0.05, // Very low visibility (5% visible)
+                      width: '10px',
+                      height: '10px',
+                      top: '0px',
+                      right: '0px',
+                      opacity: 0.05,
+                      cursor: 'pointer'
                     }}
                   />
                 )}
-                {/* --- END NEW --- */}
               </p>
               <p className="text-rb-gray-400 mb-8">
                 We started with a simple belief: athletes, teams, and fitness enthusiasts deserve custom sportswear that performs as good as it looks. 
