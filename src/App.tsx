@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 
@@ -122,14 +122,12 @@ import GenericProductPage from './pages/products/GenericProductPage';
 
 import BaseCataloguePage from './components/shared/BaseCataloguePage';
 
-// NEW IMPORTS FOR COMPETITION
+// IMPORTS FOR COMPETITION
 import CompetitionModal from './components/ui/CompetitionModal';
-import ToastNotification from './common/ToastNotification'; // Corrected path
+import ToastNotification from './common/ToastNotification';
 import { CompetitionProvider, useCompetition } from './context/CompetitionProvider';
-// END NEW IMPORTS
 
-
-// Simplified catalogue pages (keep these as they are)
+// Simplified catalogue pages
 const MainCataloguePage = () => (
   <BaseCataloguePage
     title="2025–2026 Catalogue"
@@ -170,65 +168,29 @@ const MatricCataloguePage = () => (
   />
 );
 
+// AppContent component contains the main layout and modal logic
 const AppContent: React.FC = () => {
   const [isCompetitionModalOpen, setIsCompetitionModalOpen] = useState(false);
   const { toastMessage, showCongratsModal, setCongratsModalOpen } = useCompetition();
 
-  // --- Code to ADD: useEffect to trigger modal after 5 seconds ---
+  // --- THIS IS THE CORRECTED 5-SECOND TIMER ---
+  // It runs only ONCE when the app loads, thanks to the empty dependency array [].
   useEffect(() => {
-    // Only trigger if the modal is not already open and not showing congrats
-    // This prevents it from re-opening if the user closes it manually
-    if (!isCompetitionModalOpen && !showCongratsModal) {
-      const timer = setTimeout(() => {
-        setIsCompetitionModalOpen(true); // Open the modal after 5 seconds
-      }, 5000); // 5000 milliseconds = 5 seconds
+    const timer = setTimeout(() => {
+      setIsCompetitionModalOpen(true); // Open the modal after 5 seconds
+    }, 5000); // 5000 milliseconds = 5 seconds
 
-      // Cleanup the timer if the component unmounts before 5 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [isCompetitionModalOpen, showCongratsModal]); // Re-run if these states change
-  // --- END Code to ADD ---
-
-  // --- Code to ADD: useEffect to trigger modal after 5 seconds ---
-  useEffect(() => {
-    // Only trigger if the modal is not already open and not showing congrats
-    // This prevents it from re-opening if the user closes it manually
-    if (!isCompetitionModalOpen && !showCongratsModal) {
-      const timer = setTimeout(() => {
-        setIsCompetitionModalOpen(true); // Open the modal after 5 seconds
-      }, 5000); // 5000 milliseconds = 5 seconds
-
-      // Cleanup the timer if the component unmounts before 5 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [isCompetitionModalOpen, showCongratsModal]); // Re-run if these states change
-  // --- END Code to ADD ---
-
-  // Function to open the main competition registration modal
-  const openCompetitionModal = () => {
-    setIsCompetitionModalOpen(true);
-  };
-
-  // ... rest of your AppContent component ...
-};
-      {/* Render the Toast Notification */}
-      <ToastNotification message={toastMessage} />
-      {/* --- END NEW --- */}
-    </div>
-  );
-};
-
-  // Function to open the main competition registration modal
-  const openCompetitionModal = () => {
-    setIsCompetitionModalOpen(true);
-  };
+    // Cleanup the timer if the component unmounts
+    return () => clearTimeout(timer);
+  }, []); 
+  // --- END TIMER ---
 
   // Function to close the main competition registration modal
   const closeCompetitionModal = () => {
     setIsCompetitionModalOpen(false);
   };
 
-  // This function will be passed to CompetitionModal to close the congrats modal
+  // This function will be passed to CompetitionModal to close the "congrats" modal
   const handleCloseCongratsModal = () => {
     setCongratsModalOpen(false);
   };
@@ -239,7 +201,7 @@ const AppContent: React.FC = () => {
       <main>
         <AnimatePresence mode="wait">
           <Routes>
-            {/* All your existing Route components go here, exactly as they were */}
+            {/* All your existing routes remain untouched */}
             <Route path="/" element={<HomePage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
@@ -395,18 +357,17 @@ const AppContent: React.FC = () => {
       </main>
       <Footer />
 
-     
-
-     
-
-      {/* Render the CompetitionModal */}
+      {/* Render the CompetitionModal and ToastNotification */}
       <CompetitionModal
         isOpen={isCompetitionModalOpen}
         onClose={closeCompetitionModal}
         showCongrats={showCongratsModal}
         onCloseCongrats={handleCloseCongratsModal}
       />
-
+      <ToastNotification message={toastMessage} />
+    </div>
+  );
+};
 
 // Root App component that provides the Router and CompetitionContext
 function App() {
