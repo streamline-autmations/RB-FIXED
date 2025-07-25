@@ -53,16 +53,14 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
   }, []); // Run only once on mount
 
   // Effect to manage showing the "You're Registered!" modal based on device registration
+  // This useEffect is now simplified to just set showSuccessModal if device is registered
   useEffect(() => {
-    if (isOpen && isDeviceRegistered && !showCongrats) { // If modal is triggered, device registered, and not showing congrats
+    if (isDeviceRegistered && !showCongrats) { // If device is registered and not showing congrats
       setShowSuccessModal(true);
-      onClose(); // Close the main form if it was trying to open
-    } else if (!isOpen && !isDeviceRegistered && !showCongrats) {
-      // Reset success modal state if main modal is closed and device is not registered
-      setShowSuccessModal(false);
+    } else {
+      setShowSuccessModal(false); // Hide if not registered or if showing congrats
     }
-  }, [isOpen, isDeviceRegistered, showCongrats, onClose]);
-
+  }, [isDeviceRegistered, showCongrats]); // Depend on these states
 
   // Hide chatbot widget when any competition modal is open
   useEffect(() => {
@@ -161,10 +159,9 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
 
       localStorage.setItem(LS_KEY_REGISTERED, 'true');
       localStorage.setItem(LS_KEY_REGISTERED_EMAIL, formData.email);
-      setIsDeviceRegistered(true);
+      setIsDeviceRegistered(true); // This will now trigger the useEffect above to show success modal
 
-      setIsSubmitted(true);
-      setShowSuccessModal(true); // Show "You're Registered!" modal
+      setIsSubmitted(true); // Not strictly needed for logic, but kept for consistency
       onClose(); // Close the main form modal
       
       setFormData({
@@ -180,7 +177,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       console.error('CompetitionModal: Error submitting form to Basin:', error);
       setSubmissionError("Failed to register. Please check your internet connection and try again.");
       setIsSubmitted(false);
-      setShowSuccessModal(false);
+      setShowSuccessModal(false); // Ensure success modal doesn't show on error
     }
   };
 
