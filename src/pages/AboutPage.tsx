@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // Import useState and useEffect
+import React, { useState, useEffect } => { // Import useState and useEffect
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import Button from '../components/ui/Button';
@@ -62,12 +62,32 @@ const AboutPage: React.FC = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <div className="aspect-square rounded-lg overflow-hidden">
+              <div className="aspect-square rounded-lg overflow-hidden relative"> {/* Added relative positioning */}
                 <img 
                   src="/rb-about.png" 
                   alt="RecklessBear Team" 
                   className="w-full h-full object-cover"
                 />
+                {/* --- NEW: Golden Logo 5 --- */}
+                {/* Placed over the background image, with specified size and opacity */}
+                {!isLogo5Found && (
+                  <img
+                    id="golden-logo-5" // Unique ID for this logo
+                    src="/Golden-Logo.png" // Path to your golden logo image
+                    alt="Hidden Golden Logo"
+                    className={`golden-logo-image absolute z-10`} // z-index to be clickable
+                    onClick={handleLogo5Click}
+                    style={{
+                      width: '20px', // Set to 20px
+                      height: '20px', // Set to 20px
+                      top: '50%', // Centered vertically on the image
+                      left: '50%', // Centered horizontally on the image
+                      transform: 'translate(-50%, -50%)', // Adjust for exact center
+                      opacity: 0.5, // Set to 0.5 for 50% visibility
+                    }}
+                  />
+                )}
+                {/* --- END NEW --- */}
               </div>
             </motion.div>
             
@@ -81,25 +101,8 @@ const AboutPage: React.FC = () => {
               <p className="text-rb-gray-300 mb-6 text-lg">
                 RecklessBear is more than a clothing brand. We're driven by passion for sport, gym culture, and performance.
               </p>
-              <p className="text-rb-gray-400 mb-6 relative">
+              <p className="text-rb-gray-400 mb-6"> {/* Removed relative from here as logo moved to image div */}
                 From design to manufacturing, everything happens in-house. Based in Johannesburg, we serve clients across South Africa with pride.
-                {!isLogo5Found && (
-                  <img
-                    id="golden-logo-5"
-                    src="/Golden-Logo.png"
-                    alt="Hidden Golden Logo"
-                    className="golden-logo-image absolute z-10"
-                    onClick={handleLogo5Click}
-                    style={{
-                      width: '25px',
-                      height: '25px',
-                      top: '0px',
-                      right: '0px',
-                      opacity: 0.8,
-                      cursor: 'pointer'
-                    }}
-                  />
-                )}
               </p>
               <p className="text-rb-gray-400 mb-8">
                 We started with a simple belief: athletes, teams, and fitness enthusiasts deserve custom sportswear that performs as good as it looks. 
