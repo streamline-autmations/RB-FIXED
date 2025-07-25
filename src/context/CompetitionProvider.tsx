@@ -59,10 +59,11 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
       const deviceId = localStorage.getItem(LS_KEY_DEVICE_ID);
       const registeredEmail = localStorage.getItem(LS_KEY_REGISTERED_EMAIL);
       
-      console.log('All 5 logos found! Triggering n8n webhook for completion...');
-      // Example fetch call (replace with your actual n8n webhook URL for completion)
-      /*
-      fetch('YOUR_N8N_COMPLETION_WEBHOOK_URL', {
+      // Corrected n8n webhook URL for completion
+      const N8N_COMPLETION_WEBHOOK_URL = 'https://dockerfile-1n82.onrender.com/webhook/competision-completed';
+
+      console.log('CompetitionProvider: All 5 logos found! Triggering n8n webhook for completion...');
+      fetch(N8N_COMPLETION_WEBHOOK_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,9 +76,8 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
         }),
       })
       .then(response => response.json())
-      .then(data => console.log('Completion status sent to n8n:', data))
-      .catch(error => console.error('Error sending completion status to n8n:', error));
-      */
+      .then(data => console.log('CompetitionProvider: Completion status sent to n8n:', data))
+      .catch(error => console.error('CompetitionProvider: Error sending completion status to n8n:', error));
       // --- END IMPORTANT ---
     }
   }, [foundLogos]); // Re-run when foundLogos array changes
@@ -130,7 +130,7 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
     localStorage.removeItem(LS_KEY_COMPLETED_COMPETITION);
     localStorage.removeItem(LS_KEY_REGISTERED); // Also reset registration status
     localStorage.removeItem(LS_KEY_DEVICE_ID); // Reset device ID to get a new one on next load
-    localStorage.removeItem(LS_KEY_KEY_REGISTERED_EMAIL); // Reset registered email
+    localStorage.removeItem(LS_KEY_REGISTERED_EMAIL); // Reset registered email
 
     setFoundLogos([]);
     setFoundLogosCount(0);
@@ -170,3 +170,4 @@ export const useCompetition = () => {
   }
   return context;
 };
+
