@@ -80,16 +80,16 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
     // First, check if the user is registered.
     if (!isDeviceRegistered) {
       console.log("User not registered. Opening registration modal.");
-      setToastMessage("Please register to start finding logos!"); // Optional: give feedback
+      setToastMessage("Please register to start finding logos!");
       setTimeout(() => setToastMessage(null), 3000);
       setRegistrationModalOpen(true); // Open the registration modal
       return; // IMPORTANT: Stop the function here so the logo is not "found".
     }
 
     // If the user is registered, proceed with the original logic.
-    setFoundLogos(prevFoundLogos => {
-      if (!prevFoundLogos.includes(logoId)) {
-        const newFoundLogos = [...prevFoundLogos, logoId];
+    if (!foundLogos.includes(logoId)) {
+        const newFoundLogos = [...foundLogos, logoId];
+        setFoundLogos(newFoundLogos);
         localStorage.setItem(LS_KEY_FOUND_LOGOS, JSON.stringify(newFoundLogos));
         setToastMessage(`Golden Logo Found! (${newFoundLogos.length}/${TOTAL_LOGOS_REQUIRED} found)`);
         setTimeout(() => setToastMessage(null), 3000);
@@ -97,11 +97,8 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
         if (logoElement) {
           logoElement.classList.add('found');
         }
-        return newFoundLogos;
-      }
-      return prevFoundLogos;
-    });
-  }, [isDeviceRegistered]); // Dependency array is correct
+    }
+  }, [isDeviceRegistered, foundLogos]); // Dependency array is correct
 
   // Expose findLogo globally (Preserved)
   useEffect(() => {
