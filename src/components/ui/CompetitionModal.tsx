@@ -54,13 +54,17 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
 
   // Effect to manage showing the "You're Registered!" modal based on device registration
   // This useEffect is now simplified to just set showSuccessModal if device is registered
+  // and the modal is trying to open (isOpen) and not overridden by showCongrats
   useEffect(() => {
-    if (isDeviceRegistered && !showCongrats) { // If device is registered and not showing congrats
+    if (isOpen && isDeviceRegistered && !showCongrats) { // If modal is triggered, device registered, and not showing congrats
       setShowSuccessModal(true);
-    } else {
-      setShowSuccessModal(false); // Hide if not registered or if showing congrats
+      onClose(); // Close the main form if it was trying to open
+    } else if (!isOpen && !isDeviceRegistered && !showCongrats) {
+      // Reset success modal state if main modal is closed and device is not registered
+      setShowSuccessModal(false);
     }
-  }, [isDeviceRegistered, showCongrats]); // Depend on these states
+  }, [isOpen, isDeviceRegistered, showCongrats, onClose]);
+
 
   // Hide chatbot widget when any competition modal is open
   useEffect(() => {
@@ -431,27 +435,25 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
   );
 
   // Main rendering logic for CompetitionModal
-  // If showCongrats is true, render only the CongratsModal.
-  // Otherwise, if isOpen is true and device is not registered, render the main form.
-  // If neither, render null.
+  // This logic determines which modal (registration, "You're Registered!", or "Congrats!") is shown.
+  // Priority: 1. Congrats Modal (if showCongrats prop is true)
+  //           2. "You're Registered!" Modal (if device is registered and modal is trying to open)
+  //           3. Registration Form (if modal is trying to open and device is NOT registered)
   if (showCongrats) {
     console.log('CompetitionModal: showCongrats is TRUE. Rendering CongratsModal.');
     return <CongratsModal />;
   }
 
-  // If main modal is trying to open (isOpen is true) AND device is already registered,
-  // we want to directly show the success modal (You're Registered!).
   if (isOpen && isDeviceRegistered) {
     console.log('CompetitionModal: isOpen is TRUE and device is registered. Rendering SuccessModal.');
     return <SuccessModal />;
   }
   
-  // If neither congrats nor registration/already registered is active, render the main form if isOpen
   if (isOpen && !isDeviceRegistered) {
     console.log('CompetitionModal: isOpen is TRUE and device not registered. Rendering main form.');
     return (
       <>
-        <SuccessModal /> {/* Still render SuccessModal, its own state controls visibility */}
+        <SuccessModal /> {/* Always render SuccessModal, its own state controls visibility */}
         <AnimatePresence>
           {isOpen && !isDeviceRegistered && (
         <motion.div
