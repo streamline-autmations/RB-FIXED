@@ -34,8 +34,8 @@ const CategoryPage: React.FC = () => {
 
   // Handle click for golden-logo-2
   const handleLogo2Click = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent the parent Link/card click from triggering
-    e.preventDefault(); // NEW: Also prevent default link behavior
+    e.stopPropagation(); // Prevent event from bubbling up
+    e.preventDefault(); // Prevent default link behavior
     if (!isLogo2Found) {
       findLogo('golden-logo-2'); // Use findLogo from context
       setIsLogo2Found(true); // Optimistically update state for immediate visual feedback
@@ -220,64 +220,80 @@ const CategoryPage: React.FC = () => {
       <section className="py-16 bg-rb-gray-900">
         <div className="container-custom">
           <div className={`grid ${getGridClasses()} gap-8`}>
-            {filteredProducts.map((product, index) => (
-              <motion.div
-                key={index}
-                className="group cursor-pointer"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                {/* The Link component wraps the entire product card */}
-                <Link to={product.path}>
-                  <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-4">
-                    <div 
-                      className="absolute inset-0 bg-cover bg-center transform transition-transform duration-500 group-hover:scale-110"
-                      style={{ backgroundImage: `url(${product.image})` }}
-                    >
-                      {/* --- NEW: Golden Logo 2 --- */}
-                      {/* Conditional rendering for golden-logo-2 */}
-                      {/* Only render if:
-                          1. It's the "Cricket Pants" card (robust check for title)
-                          2. The current categorySlug is 'school-team-sports'
-                          3. The logo hasn't been found yet
-                      */}
-                      {product.title.toLowerCase().trim().includes("cricket pants") &&
-                       categorySlug === 'school-team-sports' && // Use categorySlug from useParams
-                       !isLogo2Found && (
-                        <img
-                          id="golden-logo-2" // Unique ID for this logo
-                          src="/Golden-Logo.png" // Path to your golden logo image
-                          alt="Hidden Golden Logo"
-                          className={`golden-logo-image absolute z-30`} // z-index higher than overlay
-                          onClick={handleLogo2Click} // This will now correctly trigger the handler
-                          // Fine-tuned styles for precise overlay on the RB logo on the pants image
-                          // Adjusted values based on your feedback for 90% visibility and precise positioning
-                          style={{
-                            width: '25px', // Estimated size of the RB logo on the pants
-                            height: '25px', // Estimated size
-                            top: '15%', // Moved down slightly
-                            left: '46%', // Moved right slightly less (more left)
-                            opacity: 0.1, // 90% visibility (1 - 0.9 = 0.1 opacity)
-                          }}
-                        />
-                      )}
-                      {/* --- END NEW --- */}
+            {filteredProducts.map((product, index) => {
+              // Determine if this is the Cricket Pants card on the correct page
+              const isCricketPantsCard =
+                product.title.toLowerCase().trim().includes("cricket pants") &&
+                categorySlug === 'school-team-sports';
+              
+              // Determine if golden-logo-2 should be rendered
+              const shouldRenderGoldenLogo2 = isCricketPantsCard && !isLogo2Found;
+
+              // Choose the wrapper element based on whether the golden logo is active
+              const WrapperElement = shouldRenderGoldenLogo2 ? 'div' : Link;
+              const wrapperProps = shouldRenderGoldenLogo2 ? 
+                { 
+                  className: "group cursor-pointer", // Keep existing classes for styling
+                  onClick: (e: React.MouseEvent) => {
+                    // Only apply click handler if it's the golden logo's turn
+                    if (shouldRenderGoldenLogo2) {
+                      handleLogo2Click(e);
+                    }
+                  }
+                } : 
+                { 
+                  to: product.path, // Pass the link path if it's a regular product card
+                  className: "group cursor-pointer" // Keep existing classes for styling
+                };
+
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  {/* Conditionally render Link or div */}
+                  <WrapperElement {...wrapperProps}>
+                    <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-4">
+                      <div 
+                        className="absolute inset-0 bg-cover bg-center transform transition-transform duration-500 group-hover:scale-110"
+                        style={{ backgroundImage: `url(${product.image})` }}
+                      >
+                        {/* Golden Logo 2 */}
+                        {shouldRenderGoldenLogo2 && (
+                          <img
+                            id="golden-logo-2" // Unique ID for this logo
+                            src="/Golden-Logo.png" // Path to your golden logo image
+                            alt="Hidden Golden Logo"
+                            className={`golden-logo-image absolute z-30`} // z-index higher than overlay
+                            // No onClick here, as it's handled by the WrapperElement
+                            // Fine-tuned styles for precise overlay on the RB logo on the pants image
+                            style={{
+                              width: '25px', // Estimated size of the RB logo on the pants
+                              height: '25px', // Estimated size
+                              top: '18%', // Moved down slightly
+                              left: '42%', // Moved left slightly
+                              opacity: 1, // FULLY VISIBLE
+                            }}
+                          />
+                        )}
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-rb-black to-transparent opacity-60"></div>
+                      <div className="absolute bottom-0 left-0 right-0 p-6">
+                        <h3 className="text-sm md:text-lg lg:text-2xl font-bebas text-rb-white group-hover:text-rb-red transition-colors">
+                          {product.title}
+                        </h3>
+                        <span className="inline-block bg-rb-red px-1 py-0.5 md:px-2 md:py-1 lg:px-3 lg:py-1 rounded-sm text-rb-white text-xs md:text-sm mt-1 md:mt-2 truncate text-center max-w-full">
+                          {product.subcategory}
+                        </span>
+                      </div>
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-rb-black to-transparent opacity-60"></div>
-                    <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <h3 className="text-sm md:text-lg lg:text-2xl font-bebas text-rb-white group-hover:text-rb-red transition-colors">
-                        {product.title}
-                      </h3>
-                      <span className="inline-block bg-rb-red px-1 py-0.5 md:px-2 md:py-1 lg:px-3 lg:py-1 rounded-sm text-rb-white text-xs md:text-sm mt-1 md:mt-2 truncate text-center max-w-full">
-                        {product.subcategory}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+                  </WrapperElement>
+                </motion.div>
+              );
+            })}
           </div>
 
           {filteredProducts.length === 0 && (
