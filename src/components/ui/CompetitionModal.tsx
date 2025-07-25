@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Facebook, Instagram, Share2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useCompetition } from '../../context/CompetitionProvider'; // <-- THIS IS THE FIX
+import { useCompetition } from '../../context/CompetitionProvider';
 
 interface CompetitionModalProps {
   isOpen: boolean;
@@ -85,7 +85,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       if (!response.ok) throw new Error(`Basin submission failed: ${response.status}`);
       
       localStorage.setItem(LS_KEY_REGISTERED_EMAIL, formData.email);
-      registerDevice(); // Use the function from the provider
+      registerDevice();
       
       onClose();
       setShowSuccessModal(true);
@@ -133,7 +133,8 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowSuccessModal(false)} />
           <motion.div className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md border border-yellow-500/30" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
             <button onClick={() => setShowSuccessModal(false)} className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500"><X size={24} /></button>
-            <div className="p-8 pt-8 text-center">
+            {/* --- PADDING CHANGE HERE --- */}
+            <div className="px-8 pb-8 pt-12 text-center">
               <img src="/Golden-Logo.png" alt="Golden Logo" className="w-20 h-20 mx-auto mb-4" />
               <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">🏆 You're Registered!</h2>
               <p className="text-white text-lg leading-relaxed mb-6">You've successfully registered to compete. Find all 5 golden logos to be entered into the final draw!</p>
@@ -152,7 +153,8 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onCloseCongrats} />
           <motion.div className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md border border-yellow-500/30" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
             <button onClick={onCloseCongrats} className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500"><X size={24} /></button>
-            <div className="p-8 pt-8 text-center">
+            {/* --- PADDING CHANGE HERE --- */}
+            <div className="px-8 pb-8 pt-12 text-center">
               <img src="/Golden-Logo.png" alt="Golden Logo" className="w-20 h-20 mx-auto mb-4 animate-pulse" />
               <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">🎉 Congratulations! 🎉</h2>
               <p className="text-white text-lg leading-relaxed mb-6">You've been entered into the wheel spin to win R10,000!</p>
@@ -182,14 +184,14 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
             <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
             <motion.div className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-yellow-500/30" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
               <button onClick={onClose} className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500"><X size={24} /></button>
-              <div className="p-8">
+              {/* --- PADDING CHANGE HERE --- */}
+              <div className="px-8 pb-8 pt-12">
                 <div className="text-center mb-6">
                   <img src="/Golden-Logo.png" alt="Golden Logo" className="w-16 h-16 mx-auto mb-4" />
                   <h2 className="text-2xl md:text-3xl font-bebas text-white mb-2">Stand a chance to win R10 000!</h2>
                   <p className="text-gray-300 text-sm md:text-base leading-relaxed">Find all 5 golden logos hidden across the site to enter the draw.</p>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* Form inputs are preserved */}
                   <input type="hidden" name="device_id" id="competition-device-id" value={currentDeviceId || ''} />
                   <div>
                     <label htmlFor="fullName" className="block text-white text-sm font-medium mb-2">Full Name *</label>
