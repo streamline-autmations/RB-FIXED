@@ -4,7 +4,7 @@ import { Menu, X, ChevronDown, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Logo from './Logo';
 import allProducts, { getAllCategories, getAllSubcategories, getSubcategorySlug } from '../../data/productsData';
-import GoldenLogoModal from '../ui/GoldenLogoModal';
+import GoldenLogoModal from '../ui/GoldenLogoModal'; // Keep if this modal is used elsewhere
 
 interface NavItem {
   label: string;
@@ -24,7 +24,7 @@ const Header: React.FC = () => {
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const location = useLocation();
-  const [showGoldenModal, setShowGoldenModal] = useState(false);
+  const [showGoldenModal, setShowGoldenModal] = useState(false); // Keep if GoldenLogoModal is used elsewhere
 
   // Generate navigation items dynamically from productsData
   const generateNavItems = (): NavItem[] => {
@@ -170,31 +170,8 @@ const Header: React.FC = () => {
     }
   };
 
-  const handleGoldenLogoClick = () => {
-    // Load confetti library if not already loaded
-    if (!window.confetti) {
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js';
-      script.onload = () => {
-        // Trigger confetti animation
-        window.confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
-      };
-      document.head.appendChild(script);
-    } else {
-      // Trigger confetti animation
-      window.confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-    }
-    
-    setShowGoldenModal(true);
-  };
+  // Removed handleGoldenLogoClick as it was tied to the header logo.
+  // The main competition logic is now in CompetitionProvider.
 
   const DropdownMenu: React.FC<{ item: NavItem }> = ({ item }) => {
     if (!item.children) return null;
@@ -259,31 +236,8 @@ const Header: React.FC = () => {
             className="z-50 cursor-pointer relative"
           >
             <Logo size="medium" />
-            {/* Golden Logo Overlay */}
-            <div
-              className="absolute top-0 left-0 w-full h-full flex items-center justify-start"
-            >
-              <img 
-                src="/Golden-Logo.png" 
-                alt="Golden Logo" 
-                className="w-10 h-10 md:w-12 md:h-12"
-              />
-            </div>
-            {/* Hidden Golden Logo Overlay for Competition */}
-            <div
-              id="golden-logo"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handleGoldenLogoClick();
-              }}
-              className="absolute top-0 left-0 w-full h-full cursor-pointer opacity-0 hover:opacity-10 transition-opacity duration-300"
-              style={{
-                background: 'radial-gradient(circle at center, rgba(255, 215, 0, 0.3) 0%, transparent 70%)',
-                zIndex: 10
-              }}
-              title="🏆 Hidden Golden Logo - Click to enter competition!"
-            />
+            {/* Removed Golden Logo Overlay */}
+            {/* Removed Hidden Golden Logo Overlay for Competition */}
           </a>
 
           {/* Desktop Navigation */}
