@@ -32,7 +32,7 @@ const BaseCataloguePage: React.FC<BaseCataloguePageProps> = ({
 }) => {
   return (
     <>
-      {/* Hero Section */}
+      {/* Hero Section (Unchanged) */}
       <section className="pt-32 pb-16 bg-rb-black texture-overlay relative">
         <div className="absolute inset-0 bg-gradient-to-b from-rb-black to-transparent opacity-80"></div>
         
@@ -49,7 +49,7 @@ const BaseCataloguePage: React.FC<BaseCataloguePageProps> = ({
         </div>
       </section>
 
-      {/* Catalogue Content */}
+      {/* Catalogue Content (Unchanged) */}
       <section className="py-20 bg-rb-gray-900">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -157,45 +157,14 @@ const BaseCataloguePage: React.FC<BaseCataloguePageProps> = ({
         </div>
       </section>
 
-      {/* Flipbook Viewer Section */}
+      {/* --- THIS ENTIRE SECTION HAS BEEN REMOVED --- */}
+      {/*
       <section className="py-20 bg-rb-black">
-        <div className="container-custom">
-          <motion.div
-            className="text-center mb-12"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-4xl font-bebas mb-6">Browse Our Catalogue</h2>
-            <p className="text-rb-gray-400">
-              Our digital flipbook experience is coming soon. In the meantime, download the PDF version to explore our complete 2025–2026 collection of custom athletic apparel and branded gear.
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="bg-rb-gray-900 rounded-lg p-12 text-center"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="max-w-md mx-auto">
-              <FileText size={64} className="text-rb-red mx-auto mb-6" />
-              <h3 className="text-2xl font-bebas mb-4">Interactive Catalogue Viewer</h3>
-              <p className="text-rb-gray-400 mb-6">
-                Our digital flipbook experience is coming soon. In the meantime, download the PDF version to explore our complete 2025–2026 collection of custom athletic apparel and branded gear.
-              </p>
-              <Button href={downloadUrl} variant="primary" size="lg">
-                <Download className="mr-2" size={20} />
-                Download PDF
-              </Button>
-            </div>
-          </motion.div>
-        </div>
+        ...
       </section>
+      */}
 
-      {/* CTA Section */}
+      {/* CTA Section (Unchanged) */}
       <section className="py-20 bg-rb-gray-900">
         <div className="container-custom text-center">
           <motion.div
