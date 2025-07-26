@@ -10,7 +10,7 @@ const CricketPantsPage: React.FC = () => {
   const images = [
     { src: '/cricket-pants-frontback.png', alt: 'Cricket Pants Front and Back View' },
     { src: '/cricket-pants-design-guide.png', alt: 'Cricket Pants Design Guide' },
-    { src: '/cricket-pants-design-guide-back.png', alt: 'Cricket Pants Design Guide Back' }
+   
   ];
 
   const nextImage = () => {
