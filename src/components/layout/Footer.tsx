@@ -44,33 +44,30 @@ const Footer: React.FC = () => {
       <div className="container-custom">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           
-          {/* Logo and Tagline */}
+          {/* Logo and Tagline (Unchanged) */}
           <div className="flex flex-col relative items-start"> 
             {shouldRenderGoldenLogo1 ? (
-              // On homepage and not found: show golden logo icon + RECKLESSBEAR text image
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={handleLogo1Click}>
                 <img
-                  id="golden-logo-1" // Unique ID for this logo
-                  src="/Golden-Logo.png" // Path to your golden logo image
+                  id="golden-logo-1"
+                  src="/Golden-Logo.png"
                   alt="Hidden Golden Logo"
-                  className={`golden-logo-image z-20`} // golden-logo-image class will handle 'found' state
+                  className={`golden-logo-image z-20`}
                   style={{
-                    width: '40px', // Assuming this is the size of the RB icon
-                    height: '40px', // Assuming this is the size
-                    top: '0px', // Position relative to its parent div
-                    left: '0px', // Position relative to its parent div
-                    opacity: 1, // FULLY VISIBLE when replacing the logo
+                    width: '40px',
+                    height: '40px',
+                    top: '0px',
+                    left: '0px',
+                    opacity: 1,
                   }}
                 />
-                {/* Image for "RECKLESSBEAR" text - CORRECTED TO USE IMG TAG */}
                 <img
-                  src="/rb_text_f.png" // Path to your text logo image
+                  src="/rb_text_f.png"
                   alt="RECKLESSBEAR"
-                  style={{ height: '50px', marginLeft: '10px', pointerEvents: 'none' }} // Adjust height and margin as needed
+                  style={{ height: '50px', marginLeft: '10px', pointerEvents: 'none' }}
                 />
               </div>
             ) : (
-              // On other pages or if found: render original Logo component
               <Logo size="small" />
             )}
 
@@ -87,33 +84,32 @@ const Footer: React.FC = () => {
             </div>
           </div>
           
-          {/* Quick Links */}
+          {/* --- UPDATED: Quick Links --- */}
           <div>
             <h3 className="text-xl mb-4 text-rb-white">Quick Links</h3>
             <ul className="space-y-2">
               <li><Link to="/" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Home</Link></li>
-              <li><Link to="/services" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Services</Link></li>
-              <li><Link to="/gallery" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Gallery</Link></li>
-              <li><Link to="/about" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">About</Link></li>
-              <li><Link to="/contact" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Book a Call</Link></li>
+              <li><Link to="/products" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Products</Link></li>
+              <li><Link to="/catalogues/2025" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Catalogues</Link></li>
+              <li><Link to="/track-order" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Track Order</Link></li>
+              <li><Link to="/about" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">About Us</Link></li>
+              <li><Link to="/contact" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Contact Us</Link></li>
             </ul>
           </div>
           
-          {/* Services - Updated headers */}
+          {/* --- UPDATED: Our Services to Our Products --- */}
           <div>
-            <h3 className="text-xl mb-4 text-rb-white">Our Services</h3>
+            <h3 className="text-xl mb-4 text-rb-white">Our Products</h3>
             <ul className="space-y-2">
-              <li><Link to="/services" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Custom Sports Kits</Link></li>
-              <li><Link to="/services" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Corporate Uniforms</Link></li>
-              <li><Link to="/services" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Fitness Gear</Link></li>
-              <li><Link to="/services" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Custom Embroidery</Link></li>
-              <li><Link to="/services" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Team Uniforms</Link></li>
-              {/* The missing closing tags were likely here or further down */}
-              <li><Link to="/services" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Something Else</Link></li> {/* Added a placeholder to ensure closing tag */}
+              <li><Link to="/products/school-team-sports" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">School & Team Sports</Link></li>
+              <li><Link to="/products/corporate-staff" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Corporate & Staff Apparel</Link></li>
+              <li><Link to="/products/gym-fitness" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Gym & Fitness Apparel</Link></li>
+              <li><Link to="/products/accessories-branding" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Accessories & Branding</Link></li>
+              <li><Link to="/products" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">View All Products</Link></li>
             </ul>
           </div>
           
-          {/* Contact Info */}
+          {/* Contact Info (Unchanged) */}
           <div>
             <h3 className="text-xl mb-4 text-rb-white">Contact Us</h3>
             <div className="space-y-3">
@@ -144,7 +140,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
         
-        {/* Copyright */}
+        {/* Copyright (Unchanged) */}
         <div className="border-t border-rb-gray-800 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center">
           <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
             <p className="text-rb-gray-500 text-sm">
@@ -169,7 +165,7 @@ const Footer: React.FC = () => {
         </div>
       </div>
       
-      {/* Lead ID and Location Tracking Script - Keep this as is */}
+      {/* Lead ID and Location Tracking Script (Unchanged) */}
       <script dangerouslySetInnerHTML={{
         __html: `
           // Generate unique lead_id if not exists
@@ -239,4 +235,3 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
-
