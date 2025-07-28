@@ -172,7 +172,7 @@ const AboutPage: React.FC = () => {
                 image: '/etienne-viljoen.png' // <-- ADDED IMAGE PATH
               },
               {
-                name: 'Alicia',
+                name: 'Alicia Viljoen',
                 position: 'Financial Director',
                 email: 'alicia@recklessbear.co.za',
                 phone: '076 123 4567',
