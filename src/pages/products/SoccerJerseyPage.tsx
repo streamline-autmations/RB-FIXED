@@ -10,6 +10,7 @@ const SoccerJerseyPage: React.FC = () => {
   const images = [
     { src: '/soccer-jersey-frontback.png', alt: 'Soccer Jersey Front and Back View' },
     { src: '/soccer-jersey-design-guide.png', alt: 'Soccer Jersey Design Guide' }
+    { src: '/soccer-jersey-design-guide-back.png', alt: 'Soccer Jersey Front and Back View' },
   ];
 
   const nextImage = () => {
