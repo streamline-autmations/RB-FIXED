@@ -2,57 +2,38 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Phone, Mail, Facebook, Instagram } from 'lucide-react';
 import Logo from './Logo';
-
-declare global {
-  interface Window {
-    triggerGoldenLogoFound?: (logoId: string) => void;
-  }
-}
+import { useCompetition } from '../../context/CompetitionProvider'; // <-- IMPORT THE HOOK
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   const location = useLocation();
+  
+  // --- UPDATED: Get state and functions from the central provider ---
+  const { findLogo, foundLogosCount } = useCompetition();
 
   const [isLogo1Found, setIsLogo1Found] = useState(false);
-  // --- NEW: State for the logo on the contact page ---
   const [isLogo4Found, setIsLogo4Found] = useState(false);
 
+  // This effect now re-runs whenever a logo is found anywhere on the site
   useEffect(() => {
     const foundLogos = JSON.parse(localStorage.getItem('recklessbear_found_logos') || '[]');
-    if (foundLogos.includes('golden-logo-1')) {
-      setIsLogo1Found(true);
-    }
-    // --- NEW: Check for the new logo ---
-    if (foundLogos.includes('golden-logo-4')) {
-      setIsLogo4Found(true);
-    }
-  }, []);
+    setIsLogo1Found(foundLogos.includes('golden-logo-1'));
+    setIsLogo4Found(foundLogos.includes('golden-logo-4'));
+  }, [foundLogosCount]); // Re-check when the total number of found logos changes
 
   const handleLogo1Click = () => {
-    if (!isLogo1Found) {
-      if (window.triggerGoldenLogoFound) {
-        window.triggerGoldenLogoFound('golden-logo-1');
-        setIsLogo1Found(true);
-      }
-    }
+    findLogo('golden-logo-1');
   };
 
-  // --- NEW: Click handler for the new logo ---
   const handleLogo4Click = (e: React.MouseEvent) => {
-    // We call findLogo first
-    if (!isLogo4Found) {
-      if (window.triggerGoldenLogoFound) {
-        window.triggerGoldenLogoFound('golden-logo-4');
-        setIsLogo4Found(true);
-      }
-    }
-    // We do not prevent the default link behavior, so the Facebook link still works
+    // This function now just calls the central findLogo function.
+    // The link to Facebook will still work because we are not stopping the event.
+    findLogo('golden-logo-4');
   };
 
   const isOnHomepage = location.pathname === '/';
   const shouldRenderGoldenLogo1 = isOnHomepage && !isLogo1Found;
   
-  // --- NEW: Condition to show the logo on the contact page ---
   const isOnContactPage = location.pathname === '/contact';
   const shouldRenderGoldenLogo4 = isOnContactPage && !isLogo4Found;
 
@@ -65,7 +46,7 @@ const Footer: React.FC = () => {
           <div className="flex flex-col relative items-start"> 
             {shouldRenderGoldenLogo1 ? (
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={handleLogo1Click}>
-                <img id="golden-logo-1" src="/Golden-Logo.png" alt="Hidden Golden Logo" className="golden-logo-image z-20" style={{ width: '40px', height: '40px', top: '0px', left: '0px', opacity: 1 }} />
+                <img id="golden-logo-1" src="/Golden-Logo.png" alt="Hidden Golden Logo" className="golden-logo-image z-20" style={{ width: '40px', height: '40px' }} />
                 <img src="/rb_text_f.png" alt="RECKLESSBEAR" style={{ height: '50px', marginLeft: '10px', pointerEvents: 'none' }} />
               </div>
             ) : (
@@ -73,16 +54,20 @@ const Footer: React.FC = () => {
             )}
             <p className="mt-4 text-rb-gray-400">ELEVATE YOUR GAME. DO IT RECKLESS.</p>
             <div className="flex mt-6 space-x-4">
-              {/* --- UPDATED: Facebook Icon Logic --- */}
+              {/* --- UPDATED: Facebook Icon Logic for Visibility and Clickability --- */}
               <a 
                 href="https://www.facebook.com/Recklessbearfitness01" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 onClick={handleLogo4Click}
-                className="bg-rb-gray-800 p-2 rounded-full text-rb-gray-400 hover:text-rb-white hover:bg-rb-red transition-colors duration-300"
+                // Conditionally change styling for better visibility
+                className={`
+                  rounded-full text-rb-gray-400 hover:text-rb-white hover:bg-rb-red transition-all duration-300
+                  ${shouldRenderGoldenLogo4 ? 'p-1.5 bg-yellow-400/20 hover:bg-yellow-500/40' : 'p-2 bg-rb-gray-800'}
+                `}
               >
                 {shouldRenderGoldenLogo4 ? (
-                  <img id="golden-logo-4" src="/Golden-Logo.png" alt="Hidden Golden Logo" className="golden-logo-image" style={{ width: '20px', height: '20px' }} />
+                  <img id="golden-logo-4" src="/Golden-Logo.png" alt="Hidden Golden Logo" className="golden-logo-image animate-pulse" style={{ width: '24px', height: '24px' }} />
                 ) : (
                   <Facebook size={20} />
                 )}
