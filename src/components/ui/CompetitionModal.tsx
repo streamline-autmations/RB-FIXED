@@ -138,7 +138,6 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
               <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">🏆 You're Registered!</h2>
               <p className="text-white text-lg leading-relaxed mb-6">You've successfully registered to compete. Find all 5 golden logos to be entered into the final draw!</p>
               
-              {/* --- NEW: Share Buttons Added Here --- */}
               <p className="text-gray-300 text-sm mb-4">Share with friends so they can enter too!</p>
               <div className="flex flex-col space-y-4 mb-8">
                 <button onClick={() => handleShare('facebook')} className="w-full py-3 px-6 bg-blue-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-blue-700"><Facebook size={20} className="mr-2" /> Share on Facebook</button>
@@ -190,12 +189,12 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       <SuccessModal />
       <AnimatePresence>
         {isOpen && !isDeviceRegistered && (
-          <motion.div className="fixed inset-0 z-40 flex items-center justify-center p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          // --- PADDING CHANGE HERE ---
+          <motion.div className="fixed inset-0 z-40 flex items-start justify-center p-4 pt-24" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-            <motion.div className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-yellow-500/30" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
+            <motion.div className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-y-auto border border-yellow-500/30" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
               <button onClick={onClose} className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500"><X size={24} /></button>
-              {/* --- PADDING CHANGE HERE --- */}
-              <div className="px-8 pb-8 pt-16">
+              <div className="p-8 pt-12">
                 <div className="text-center mb-6">
                   <img src="/Golden-Logo.png" alt="Golden Logo" className="w-16 h-16 mx-auto mb-4" />
                   <h2 className="text-2xl md:text-3xl font-bebas text-white mb-2">Stand a chance to win R10 000!</h2>
