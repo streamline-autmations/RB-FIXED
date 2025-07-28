@@ -2,33 +2,36 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Phone, Mail, Facebook, Instagram } from 'lucide-react';
 import Logo from './Logo';
-import { useCompetition } from '../../context/CompetitionProvider'; // <-- IMPORT THE HOOK
+import { useCompetition } from '../../context/CompetitionProvider';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   const location = useLocation();
-  
-  // --- UPDATED: Get state and functions from the central provider ---
   const { findLogo, foundLogosCount } = useCompetition();
 
   const [isLogo1Found, setIsLogo1Found] = useState(false);
   const [isLogo4Found, setIsLogo4Found] = useState(false);
 
-  // This effect now re-runs whenever a logo is found anywhere on the site
   useEffect(() => {
     const foundLogos = JSON.parse(localStorage.getItem('recklessbear_found_logos') || '[]');
     setIsLogo1Found(foundLogos.includes('golden-logo-1'));
     setIsLogo4Found(foundLogos.includes('golden-logo-4'));
-  }, [foundLogosCount]); // Re-check when the total number of found logos changes
+  }, [foundLogosCount]);
 
   const handleLogo1Click = () => {
     findLogo('golden-logo-1');
   };
 
+  // --- UPDATED: Click handler for the Facebook icon logo ---
   const handleLogo4Click = (e: React.MouseEvent) => {
-    // This function now just calls the central findLogo function.
-    // The link to Facebook will still work because we are not stopping the event.
-    findLogo('golden-logo-4');
+    // If the logo hasn't been found yet...
+    if (!isLogo4Found) {
+      // ...prevent the link from opening...
+      e.preventDefault();
+      // ...and register the logo find.
+      findLogo('golden-logo-4');
+    }
+    // If the logo HAS been found, this function does nothing, and the link works normally.
   };
 
   const isOnHomepage = location.pathname === '/';
@@ -54,20 +57,16 @@ const Footer: React.FC = () => {
             )}
             <p className="mt-4 text-rb-gray-400">ELEVATE YOUR GAME. DO IT RECKLESS.</p>
             <div className="flex mt-6 space-x-4">
-              {/* --- UPDATED: Facebook Icon Logic for Visibility and Clickability --- */}
+              {/* --- UPDATED: Facebook Icon Logic for Visibility and Click Behavior --- */}
               <a 
                 href="https://www.facebook.com/Recklessbearfitness01" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 onClick={handleLogo4Click}
-                // Conditionally change styling for better visibility
-                className={`
-                  rounded-full text-rb-gray-400 hover:text-rb-white hover:bg-rb-red transition-all duration-300
-                  ${shouldRenderGoldenLogo4 ? 'p-1.5 bg-yellow-400/20 hover:bg-yellow-500/40' : 'p-2 bg-rb-gray-800'}
-                `}
+                className="bg-rb-gray-800 p-2 rounded-full text-rb-gray-400 hover:text-rb-white hover:bg-rb-red transition-all duration-300"
               >
                 {shouldRenderGoldenLogo4 ? (
-                  <img id="golden-logo-4" src="/Golden-Logo.png" alt="Hidden Golden Logo" className="golden-logo-image animate-pulse" style={{ width: '24px', height: '24px' }} />
+                  <img id="golden-logo-4" src="/Golden-Logo.png" alt="Hidden Golden Logo" className="golden-logo-image" style={{ width: '20px', height: '20px', opacity: 1 }} />
                 ) : (
                   <Facebook size={20} />
                 )}
@@ -122,7 +121,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
         
-        {/* Copyright */}
+        {/* Copyright and other footer content... */}
         <div className="border-t border-rb-gray-800 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center">
           <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
             <p className="text-rb-gray-500 text-sm">© {currentYear} RecklessBear. All rights reserved.</p>
@@ -135,7 +134,6 @@ const Footer: React.FC = () => {
         </div>
       </div>
       
-      {/* Lead ID Script */}
       <script dangerouslySetInnerHTML={{ __html: `if(!localStorage.getItem("lead_id")){const e=(Date.now().toString(36)+Math.random().toString(36).substring(2,8)).toUpperCase();localStorage.setItem("lead_id",e)}const lead_id=localStorage.getItem("lead_id");fetch("https://ipapi.co/json/").then(e=>e.json()).then(e=>{const t=\`\${e.ip} | \${e.city}, \${e.region}, \${e.country_name}\`;setInterval(()=>{const e=document.querySelector('input[name="location-data"]'),o=document.querySelector('input[name="lead_id"]');e&&(e.value=t),o&&(o.value=lead_id)},300);const o=()=>{document.querySelectorAll("iframe[data-cal-embed], iframe#cal-embed").forEach(e=>{const t=e.src||e.getAttribute("data-cal-link")||"";if(t.includes("cal.com")&&!t.includes("metadata[lead_id]")){const o=t.includes("?")?"&":"?";e.src=\`\${t}\${o}metadata[lead_id]=\${lead_id}\`}}),document.querySelectorAll("[data-cal-link]").forEach(e=>{const t=e.getAttribute("data-cal-link")||"";if(t.includes("cal.com")&&!t.includes("metadata[lead_id]")){const o=t.includes("?")?"&":"?";e.setAttribute("data-cal-link",\`\${t}\${o}metadata[lead_id]=\${lead_id}\`)}})};o(),new MutationObserver(o).observe(document.body,{childList:!0,subtree:!0})}).catch(e=>console.log("Location fetch failed:",e));` }} />
     </footer>
   );
