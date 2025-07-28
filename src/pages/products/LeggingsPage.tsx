@@ -8,9 +8,7 @@ const LeggingsPage: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   const images = [
-    { src: '/leggings-frontback.png', alt: 'Leggings Front and Back View' },
-    { src: '/leggings-design-guide.png', alt: 'Leggings Design Guide' },
-    { src: '/leggings-design-guide-back.png', alt: 'Leggings Design Guide Back' }
+    { src: '/leggings-frontback.png', alt: 'Leggings Front and Back View' }
   ];
 
   const nextImage = () => {
