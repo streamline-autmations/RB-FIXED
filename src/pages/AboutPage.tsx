@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react'; // CORRECTED: Changed '=> {' to 'from 'react';'
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import Button from '../components/ui/Button';
-import { useCompetition } from '../context/CompetitionProvider'; // Import useCompetition
+import { useCompetition } from '../context/CompetitionProvider';
 
-// Define a global type for the window object to include our custom function
 declare global {
   interface Window {
     triggerGoldenLogoFound?: (logoId: string) => void;
@@ -12,9 +11,8 @@ declare global {
 }
 
 const AboutPage: React.FC = () => {
-  // --- NEW: Competition Logo 5 State and Context ---
-  const { findLogo } = useCompetition(); // Get findLogo function from context
-  const [isLogo5Found, setIsLogo5Found] = useState(false); // State for this specific logo
+  const { findLogo } = useCompetition();
+  const [isLogo5Found, setIsLogo5Found] = useState(false);
 
   useEffect(() => {
     const foundLogos = JSON.parse(localStorage.getItem('recklessbear_found_logos') || '[]');
@@ -23,23 +21,20 @@ const AboutPage: React.FC = () => {
     }
   }, []);
 
-  // Handle click for golden-logo-5
   const handleLogo5Click = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent event from bubbling up
-    e.preventDefault(); // Prevent default link behavior if applicable
+    e.stopPropagation();
+    e.preventDefault();
     if (!isLogo5Found) {
-      findLogo('golden-logo-5'); // Use findLogo from context
-      setIsLogo5Found(true); // Optimistically update state for immediate visual feedback
+      findLogo('golden-logo-5');
+      setIsLogo5Found(true);
     }
   };
-  // --- END NEW ---
 
   return (
     <>
-      {/* About Hero */}
+      {/* About Hero (Unchanged) */}
       <section className="pt-32 pb-20 bg-rb-black texture-overlay relative">
         <div className="absolute inset-0 bg-gradient-to-b from-rb-black to-transparent opacity-80"></div>
-        
         <div className="container-custom relative z-10">
           <motion.div
             className="text-center max-w-3xl mx-auto"
@@ -52,7 +47,7 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
       
-      {/* About Content */}
+      {/* About Content (Unchanged) */}
       <section className="py-20 bg-rb-gray-900">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -62,32 +57,29 @@ const AboutPage: React.FC = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <div className="aspect-square rounded-lg overflow-hidden relative"> {/* Added relative positioning */}
+              <div className="aspect-square rounded-lg overflow-hidden relative">
                 <img 
                   src="/rb-about.png" 
                   alt="RecklessBear Team" 
                   className="w-full h-full object-cover"
                 />
-                {/* --- NEW: Golden Logo 5 --- */}
-                {/* Placed over the background image, with specified size and opacity */}
                 {!isLogo5Found && (
                   <img
-                    id="golden-logo-5" // Unique ID for this logo
-                    src="/Golden-Logo.png" // Path to your golden logo image
+                    id="golden-logo-5"
+                    src="/Golden-Logo.png"
                     alt="Hidden Golden Logo"
-                    className={`golden-logo-image absolute z-10`} // z-index to be clickable
+                    className={`golden-logo-image absolute z-10`}
                     onClick={handleLogo5Click}
                     style={{
-                      width: '20px', // Set to 20px
-                      height: '20px', // Set to 20px
-                      top: '39%', // Adjusted top position
-                      left: '7%', // Adjusted left position
-                      transform: 'translate(-50%, -50%)', // Adjust for exact center
-                      opacity: 1, // Set to 0.5 for 50% visibility
+                      width: '20px',
+                      height: '20px',
+                      top: '39%',
+                      left: '7%',
+                      transform: 'translate(-50%, -50%)',
+                      opacity: 1,
                     }}
                   />
                 )}
-                {/* --- END NEW --- */}
               </div>
             </motion.div>
             
@@ -101,7 +93,7 @@ const AboutPage: React.FC = () => {
               <p className="text-rb-gray-300 mb-6 text-lg">
                 RecklessBear is more than a clothing brand. We're driven by passion for sport, gym culture, and performance.
               </p>
-              <p className="text-rb-gray-400 mb-6"> {/* Removed relative from here as logo moved to image div */}
+              <p className="text-rb-gray-400 mb-6">
                 From design to manufacturing, everything happens in-house. Based in Johannesburg, we serve clients across South Africa with pride.
               </p>
               <p className="text-rb-gray-400 mb-8">
@@ -119,7 +111,7 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
       
-      {/* Values Section */}
+      {/* Values Section (Unchanged) */}
       <section className="py-20 bg-rb-black">
         <div className="container-custom">
           <motion.div
@@ -134,18 +126,9 @@ const AboutPage: React.FC = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              {
-                title: 'Quality',
-                description: 'We never compromise on materials or craftsmanship. Every stitch matters.'
-              },
-              {
-                title: 'Performance',
-                description: 'Our gear is designed to enhance athletic performance, not just look good.'
-              },
-              {
-                title: 'Innovation',
-                description: "We're constantly exploring new techniques and materials to push boundaries."
-              }
+              { title: 'Quality', description: 'We never compromise on materials or craftsmanship. Every stitch matters.' },
+              { title: 'Performance', description: 'Our gear is designed to enhance athletic performance, not just look good.' },
+              { title: 'Innovation', description: "We're constantly exploring new techniques and materials to push boundaries." }
             ].map((value, index) => (
               <motion.div
                 key={index}
@@ -163,7 +146,7 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
       
-      {/* Team Section */}
+      {/* --- UPDATED: Team Section --- */}
       <section className="py-20 bg-rb-gray-900">
         <div className="container-custom">
           <motion.div
@@ -179,38 +162,36 @@ const AboutPage: React.FC = () => {
             </p>
           </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              // --- REORDERED TEAM MEMBERS ---
               {
                 name: 'Etienne Viljoen',
                 position: 'Brand Owner',
                 email: 'etienne@recklessbear.co.za',
                 phone: '082 316 3330',
-                image: null
+                image: '/etienne-viljoen.png' // <-- ADDED IMAGE PATH
               },
               {
                 name: 'Alicia',
                 position: 'Financial Director',
                 email: 'alicia@recklessbear.co.za',
                 phone: '076 123 4567',
-                image: null
+                image: null // <-- LEFT EMPTY AS REQUESTED
               },
               {
                 name: 'Janco Tiedt',
                 position: 'Director',
                 email: 'janco@recklessbear.co.za',
                 phone: '076 689 0383',
-                image: null
+                image: '/janco-tiedt.png' // <-- ADDED IMAGE PATH
               },
               {
                 name: 'Zander Steyn',
                 position: 'Director of Printing and Pressing',
                 email: 'zander@recklessbear.co.za',
                 phone: '082 384 1522',
-                image: null
+                image: '/zander-steyn.png' // <-- ADDED IMAGE PATH
               }
-              // --- END REORDERED TEAM MEMBERS ---
             ].map((member, index) => (
               <motion.div
                 key={index}
@@ -223,11 +204,18 @@ const AboutPage: React.FC = () => {
                 <div 
                   className="aspect-square bg-rb-gray-800 relative rounded-lg overflow-hidden"
                 >
-                  <div className="w-full h-full bg-gradient-to-br from-rb-gray-700 to-rb-gray-900 flex items-center justify-center">
-                    <div className="text-6xl font-bebas text-rb-red opacity-50">
-                      {member.name.split(' ').map(n => n[0]).join('')}
+                  {/* --- NEW: Conditional Image Display --- */}
+                  {member.image ? (
+                    <img src={member.image} alt={member.name} className="w-full h-full object-cover object-center" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-rb-gray-700 to-rb-gray-900 flex items-center justify-center">
+                      <div className="text-6xl font-bebas text-rb-red opacity-50">
+                        {member.name.split(' ').map(n => n[0]).join('')}
+                      </div>
                     </div>
-                  </div>
+                  )}
+                  {/* --- END NEW --- */}
+
                   <div className="absolute inset-0 bg-gradient-to-t from-rb-black to-transparent opacity-80"></div>
                   <div className="absolute bottom-0 left-0 p-6">
                     <h3 className="text-xl font-bebas text-rb-white">{member.name}</h3>
@@ -246,7 +234,7 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Contact Info Section */}
+      {/* Contact Info Section (Unchanged) */}
       <section className="py-20 bg-rb-black">
         <div className="container-custom">
           <motion.div
@@ -256,10 +244,8 @@ const AboutPage: React.FC = () => {
             transition={{ duration: 0.6 }}
             className="grid grid-cols-1 lg:grid-cols-2 gap-12"
           >
-            {/* Contact Info */}
             <div className="bg-rb-gray-900 p-8 rounded-lg">
               <h2 className="text-3xl font-bebas mb-8 text-rb-white">Contact Info</h2>
-              
               <div className="space-y-6">
                 <div className="flex items-center">
                   <Clock className="text-rb-red w-8 h-8 mr-4" />
@@ -269,7 +255,6 @@ const AboutPage: React.FC = () => {
                     <p className="text-rb-400">Saturday - Sunday: Closed</p>
                   </div>
                 </div>
-
                 <div className="flex items-center">
                   <MapPin className="text-rb-red w-8 h-8 mr-4" />
                   <div>
@@ -279,7 +264,6 @@ const AboutPage: React.FC = () => {
                     </a>
                   </div>
                 </div>
-
                 <div className="flex items-center">
                   <Mail className="text-rb-red w-8 h-8 mr-4" />
                   <div>
@@ -289,7 +273,6 @@ const AboutPage: React.FC = () => {
                     </a>
                   </div>
                 </div>
-
                 <div className="flex items-center">
                   <Phone className="text-rb-red w-8 h-8 mr-4" />
                   <div>
@@ -301,8 +284,6 @@ const AboutPage: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* Map */}
             <div className="bg-rb-gray-900 rounded-lg overflow-hidden h-[400px]">
               <iframe 
                 src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3581.100348281348!2d27.65837277541364!3d-26.160861177103264!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjbCsDA5JzM5LjEiUyAyN8KwMzknMzkuNCJF!5e0!3m2!1sen!2sza!4v1752999549079!5m2!1sen!2sza" 
