@@ -101,8 +101,10 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
     if (errors[field]) setErrors(prev => ({ ...prev, [field]: undefined }));
   };
 
+  // --- UPDATED: Share Function ---
   const handleShare = (platform: 'facebook' | 'whatsapp' | 'instagram') => {
-    const shareUrl = window.location.origin;
+    // --- Use your final domain name here ---
+    const shareUrl = "http://www.recklessbear.co.za";
     const shareText = `I've entered the RecklessBear R10,000 competition! 🏆 Find all 5 hidden golden logos to enter. Can you find them all?`;
     const encodedText = encodeURIComponent(shareText);
     const encodedUrl = encodeURIComponent(shareUrl);
@@ -140,15 +142,15 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
               
               <p className="text-gray-300 text-sm mb-4">Share with friends so they can enter too!</p>
               <div className="flex flex-col space-y-4 mb-8">
-                <button onClick={() => handleShare('facebook')} className="w-full py-3 px-6 bg-blue-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-blue-700"><Facebook size={20} className="mr-2" /> Share on Facebook</button>
+                <button onClick={() => handleShare('facebook')} className="w-full py-3 px-6 bg-blue-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-blue-700 transition-colors"><Facebook size={20} className="mr-2" /> Share on Facebook</button>
                 <div className="relative w-full">
-                  <button onClick={() => handleShare('instagram')} className="w-full py-3 px-6 bg-pink-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-pink-700"><Instagram size={20} className="mr-2" /> Share on Instagram</button>
+                  <button onClick={() => handleShare('instagram')} className="w-full py-3 px-6 bg-pink-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-pink-700 transition-colors"><Instagram size={20} className="mr-2" /> Share on Instagram</button>
                   {copySuccess && <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-white bg-black/50 px-2 py-1 rounded">{copySuccess}</span>}
                 </div>
-                <button onClick={() => handleShare('whatsapp')} className="w-full py-3 px-6 bg-green-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-green-700"><Share2 size={20} className="mr-2" /> Share on WhatsApp</button>
+                <button onClick={() => handleShare('whatsapp')} className="w-full py-3 px-6 bg-green-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-green-700 transition-colors"><Share2 size={20} className="mr-2" /> Share on WhatsApp</button>
               </div>
 
-              <button onClick={() => setShowSuccessModal(false)} className="w-full py-3 px-6 bg-[#8B0000] text-white font-bebas text-lg rounded-lg hover:bg-red-700">Continue Hunting</button>
+              <button onClick={() => setShowSuccessModal(false)} className="w-full py-3 px-6 bg-[#8B0000] text-white font-bebas text-lg rounded-lg hover:bg-red-700 transition-colors">Continue Hunting</button>
             </div>
           </motion.div>
         </motion.div>
@@ -169,12 +171,12 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
               <p className="text-white text-lg leading-relaxed mb-6">You've been entered into the wheel spin to win R10,000!</p>
               <p className="text-gray-300 text-sm mb-4">Share with friends so they can enter too!</p>
               <div className="flex flex-col space-y-4 mb-6">
-                <button onClick={() => handleShare('facebook')} className="w-full py-3 px-6 bg-blue-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-blue-700"><Facebook size={20} className="mr-2" /> Share on Facebook</button>
+                <button onClick={() => handleShare('facebook')} className="w-full py-3 px-6 bg-blue-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-blue-700 transition-colors"><Facebook size={20} className="mr-2" /> Share on Facebook</button>
                 <div className="relative w-full">
-                  <button onClick={() => handleShare('instagram')} className="w-full py-3 px-6 bg-pink-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-pink-700"><Instagram size={20} className="mr-2" /> Share on Instagram</button>
+                  <button onClick={() => handleShare('instagram')} className="w-full py-3 px-6 bg-pink-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-pink-700 transition-colors"><Instagram size={20} className="mr-2" /> Share on Instagram</button>
                   {copySuccess && <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-white bg-black/50 px-2 py-1 rounded">{copySuccess}</span>}
                 </div>
-                <button onClick={() => handleShare('whatsapp')} className="w-full py-3 px-6 bg-green-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-green-700"><Share2 size={20} className="mr-2" /> Share on WhatsApp</button>
+                <button onClick={() => handleShare('whatsapp')} className="w-full py-3 px-6 bg-green-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-green-700 transition-colors"><Share2 size={20} className="mr-2" /> Share on WhatsApp</button>
               </div>
             </div>
           </motion.div>
@@ -189,7 +191,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       <SuccessModal />
       <AnimatePresence>
         {isOpen && !isDeviceRegistered && (
-          // --- PADDING CHANGE HERE ---
+          // --- POSITIONING CHANGE HERE ---
           <motion.div className="fixed inset-0 z-40 flex items-start justify-center p-4 pt-24" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
             <motion.div className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-y-auto border border-yellow-500/30" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
