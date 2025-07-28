@@ -9,8 +9,7 @@ const GymVestPage: React.FC = () => {
   
   const images = [
     { src: '/gym-vest-frontback.png', alt: 'Gym Vest Front and Back View' },
-    { src: '/gym-vest-design-guide.png', alt: 'Gym Vest Design Guide' },
-    { src: '/gym-vest-design-guide-back.png', alt: 'Gym Vest Design Guide Back' }
+    { src: '/gym-vest-design-guide.png', alt: 'Gym Vest Design Guide' }
   ];
 
   const nextImage = () => {
