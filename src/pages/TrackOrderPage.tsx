@@ -21,7 +21,6 @@ const TrackOrderPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // --- UPDATED: The new stages for your progress bar ---
   const orderStages: OrderStage[] = [
     { id: 'awaiting-confirmation', title: 'Awaiting Confirmation', description: 'Your order is being reviewed.', icon: Clock },
     { id: 'order-approved', title: 'Order Approved', description: 'Your order is approved and entering production.', icon: CheckCircle },
@@ -32,9 +31,8 @@ const TrackOrderPage: React.FC = () => {
     { id: 'delivered-collected', title: 'Delivered/Collected', description: 'Your order has been successfully delivered or collected.', icon: Truck }
   ];
 
-  // --- UPDATED: This function now maps your n8n statuses to the new stages ---
   const mapStatusToStage = (status: string | null): string => {
-    if (!status) return 'awaiting-confirmation'; // If status is empty, it's the first step
+    if (!status) return 'awaiting-confirmation';
     
     const lowerCaseStatus = status.toLowerCase();
 
@@ -51,7 +49,7 @@ const TrackOrderPage: React.FC = () => {
         return 'out-for-delivery';
       case 'delivered/collected':
         return 'delivered-collected';
-      case 'completed': // Kept as a fallback for old orders
+      case 'completed':
         return 'delivered-collected';
       default:
         return 'awaiting-confirmation';
@@ -81,7 +79,6 @@ const TrackOrderPage: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-      // The API endpoint remains the same, but we send 'order_id' if the API expects it
       const response = await fetch(`https://dockerfile-1n82.onrender.com/webhook/Track%20Order?lead_id=${encodeURIComponent(orderId.trim())}`);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data: ApiResponse = await response.json();
@@ -199,7 +196,10 @@ const TrackOrderPage: React.FC = () => {
             <p className="text-rb-gray-400 mb-8">Can't find your Order ID or have questions about your order? Our team is here to help.</p>
             <div className="flex flex-col md:flex-row gap-4 justify-center">
               <Button to="/contact" variant="outline" size="md">Contact Support</Button>
-              <Button href="tel:+27823163330" variant="primary" size="md"><a href="tel:0823163330">Call Us: 082 316 3330</a></Button>
+              {/* --- THIS IS THE FIX --- */}
+              <Button href="tel:0823163330" variant="primary" size="md">
+                Call Us: 082 316 3330
+              </Button>
             </div>
           </motion.div>
         </div>
