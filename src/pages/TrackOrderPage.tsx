@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Package, Clock, CheckCircle, Truck, AlertCircle, CreditCard, Printer, Scissors, Gift } from 'lucide-react';
+import { Search, Package, Clock, CheckCircle, Truck, AlertCircle, Layers, Box, Send } from 'lucide-react';
 import Button from '../components/ui/Button';
 
 interface OrderStage {
@@ -16,29 +16,45 @@ interface ApiResponse {
 }
 
 const TrackOrderPage: React.FC = () => {
-  const [leadId, setLeadId] = useState('');
+  const [orderId, setOrderId] = useState('');
   const [currentStatus, setCurrentStatus] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // --- UPDATED: The new stages for your progress bar ---
   const orderStages: OrderStage[] = [
-    { id: 'awaiting-confirmation', title: 'Awaiting Confirmation', description: 'Your order is being reviewed and will be confirmed within 24 hours.', icon: Clock },
-    { id: 'order-approved', title: 'Order Approved', description: 'Your order has been approved and is ready for production.', icon: CheckCircle },
-    { id: 'printing', title: 'Printing', description: 'Your designs are being printed onto the fabric.', icon: Printer },
-    { id: 'pressing', title: 'Pressing', description: 'Your printed designs are being heat pressed and set.', icon: Scissors },
-    { id: 'cleaning-packing', title: 'Cleaning & Packing', description: 'Final quality checks and packaging for delivery.', icon: Gift },
-    { id: 'payment-pending', title: 'Payment Pending', description: 'Waiting for final payment before delivery.', icon: CreditCard },
-    { id: 'delivered', title: 'Delivered to Client', description: 'Your order has been completed and delivered successfully.', icon: Truck }
+    { id: 'awaiting-confirmation', title: 'Awaiting Confirmation', description: 'Your order is being reviewed.', icon: Clock },
+    { id: 'order-approved', title: 'Order Approved', description: 'Your order is approved and entering production.', icon: CheckCircle },
+    { id: 'printing', title: 'Printing', description: 'Your designs are being printed.', icon: Printer },
+    { id: 'pressing', title: 'Pressing', description: 'Your items are being heat pressed.', icon: Layers },
+    { id: 'cleaning-packing', title: 'Cleaning & Packing', description: 'Final quality checks and packaging.', icon: Box },
+    { id: 'out-for-delivery', title: 'Out for Delivery', description: 'Your order is on its way to you.', icon: Send },
+    { id: 'delivered-collected', title: 'Delivered/Collected', description: 'Your order has been successfully delivered or collected.', icon: Truck }
   ];
 
+  // --- UPDATED: This function now maps your n8n statuses to the new stages ---
   const mapStatusToStage = (status: string | null): string => {
-    if (!status) return 'awaiting-confirmation';
-    switch (status.toLowerCase()) {
-      case 'orders': return 'order-approved';
-      case 'packing': return 'cleaning-packing';
-      case 'payment reminder': return 'payment-pending';
-      case 'delivered': return 'delivered';
-      default: return 'awaiting-confirmation';
+    if (!status) return 'awaiting-confirmation'; // If status is empty, it's the first step
+    
+    const lowerCaseStatus = status.toLowerCase();
+
+    switch (lowerCaseStatus) {
+      case 'order approved':
+        return 'order-approved';
+      case 'printing':
+        return 'printing';
+      case 'pressing':
+        return 'pressing';
+      case 'packing':
+        return 'cleaning-packing';
+      case 'out for delivery':
+        return 'out-for-delivery';
+      case 'delivered/collected':
+        return 'delivered-collected';
+      case 'completed': // Kept as a fallback for old orders
+        return 'delivered-collected';
+      default:
+        return 'awaiting-confirmation';
     }
   };
 
@@ -54,27 +70,25 @@ const TrackOrderPage: React.FC = () => {
   };
 
   const getStatusMessage = (status: string | null): string => {
-    if (!status) return '';
-    switch (status.toLowerCase()) {
-      case 'delivered': return 'Your order has been completed and delivered successfully.';
-      case 'payment reminder': return 'Waiting for final payment before delivery.';
-      default: return '';
-    }
+    const stageId = mapStatusToStage(status);
+    const stage = orderStages.find(s => s.id === stageId);
+    return stage ? stage.description : 'Your order is in progress.';
   };
 
   const handleTrackOrder = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!leadId.trim()) return;
+    if (!orderId.trim()) return;
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`https://dockerfile-1n82.onrender.com/webhook/Track%20Order?lead_id=${encodeURIComponent(leadId.trim())}`);
+      // The API endpoint remains the same, but we send 'order_id' if the API expects it
+      const response = await fetch(`https://dockerfile-1n82.onrender.com/webhook/Track%20Order?lead_id=${encodeURIComponent(orderId.trim())}`);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data: ApiResponse = await response.json();
       setCurrentStatus(data.status || null);
     } catch (err) {
       console.error('Error fetching order status:', err);
-      setError('Unable to fetch order status. Please check your Lead ID and try again.');
+      setError('Unable to fetch order status. Please check your Order ID and try again.');
       setCurrentStatus(null);
     } finally {
       setIsLoading(false);
@@ -91,7 +105,7 @@ const TrackOrderPage: React.FC = () => {
         <div className="container-custom relative z-10">
           <motion.div className="text-center max-w-3xl mx-auto" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <h1 className="text-5xl md:text-6xl font-bebas mb-6">Track Your Order</h1>
-            <p className="text-lg text-rb-gray-300">Enter your Lead ID to check the status of your custom sportswear order</p>
+            <p className="text-lg text-rb-gray-300">Enter your Order ID to check the status of your custom sportswear order</p>
           </motion.div>
         </div>
       </section>
@@ -102,12 +116,12 @@ const TrackOrderPage: React.FC = () => {
             <motion.div className="bg-rb-gray-800 p-8 rounded-lg" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
               <form onSubmit={handleTrackOrder} className="space-y-6">
                 <div>
-                  <label htmlFor="leadId" className="block text-rb-white font-bebas text-xl mb-3">Lead ID</label>
+                  <label htmlFor="orderId" className="block text-rb-white font-bebas text-xl mb-3">Order ID</label>
                   <div className="relative">
-                    <input type="text" id="leadId" value={leadId} onChange={(e) => setLeadId(e.target.value)} placeholder="Enter your Lead ID (e.g., ABC123DEF456)" className="w-full px-4 py-3 bg-rb-gray-700 text-rb-white border border-rb-gray-600 rounded-md focus:border-rb-red focus:outline-none transition-colors" required />
+                    <input type="text" id="orderId" value={orderId} onChange={(e) => setOrderId(e.target.value)} placeholder="Enter your Order ID (e.g., ABC123DEF456)" className="w-full px-4 py-3 bg-rb-gray-700 text-rb-white border border-rb-gray-600 rounded-md focus:border-rb-red focus:outline-none transition-colors" required />
                     <Search className="absolute right-3 top-3 text-rb-gray-400" size={20} />
                   </div>
-                  <p className="text-rb-gray-400 text-sm mt-2">Your Lead ID was provided when you submitted your quote request</p>
+                  <p className="text-rb-gray-400 text-sm mt-2">Your Order ID was provided when you submitted your quote request</p>
                 </div>
                 <Button type="submit" variant="primary" size="lg" className="w-full" disabled={isLoading}>
                   {isLoading ? 'Tracking...' : 'Track Order'}
@@ -117,10 +131,7 @@ const TrackOrderPage: React.FC = () => {
 
             {error && (
               <motion.div className="mt-6 bg-red-900/50 border border-red-500 p-4 rounded-lg" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-                <div className="flex items-center">
-                  <AlertCircle className="text-red-400 mr-3" size={20} />
-                  <p className="text-red-200">{error}</p>
-                </div>
+                <div className="flex items-center"><AlertCircle className="text-red-400 mr-3" size={20} /><p className="text-red-200">{error}</p></div>
               </motion.div>
             )}
 
@@ -128,10 +139,7 @@ const TrackOrderPage: React.FC = () => {
               <motion.div className="mt-8 bg-rb-gray-800 p-8 rounded-lg" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
                 {statusMessage && (
                   <div className="mb-8 p-4 bg-rb-gray-700 rounded-lg">
-                    <div className="flex items-center">
-                      {currentStatus?.toLowerCase() === 'delivered' ? <CheckCircle className="text-green-400 mr-3" size={24} /> : currentStatus?.toLowerCase() === 'payment reminder' ? <CreditCard className="text-yellow-400 mr-3" size={24} /> : <Package className="text-blue-400 mr-3" size={24} />}
-                      <p className="text-rb-white font-medium">{statusMessage}</p>
-                    </div>
+                    <div className="flex items-center"><Package className="text-blue-400 mr-3" size={24} /><p className="text-rb-white font-medium">{statusMessage}</p></div>
                   </div>
                 )}
                 <div className="space-y-6">
@@ -149,9 +157,7 @@ const TrackOrderPage: React.FC = () => {
                             <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${status === 'completed' ? 'bg-green-500 border-green-500 text-white' : status === 'current' ? 'bg-rb-red border-rb-red text-white animate-pulse' : 'bg-rb-gray-700 border-rb-gray-600 text-rb-gray-400'}`}>
                               {status === 'completed' ? <CheckCircle size={20} /> : <StageIcon size={20} />}
                             </div>
-                            <div className="mt-3 text-center max-w-24">
-                              <p className={`text-sm font-medium ${status === 'current' ? 'text-rb-red' : status === 'completed' ? 'text-green-400' : 'text-rb-gray-500'}`}>{stage.title}</p>
-                            </div>
+                            <div className="mt-3 text-center max-w-24"><p className={`text-sm font-medium ${status === 'current' ? 'text-rb-red' : status === 'completed' ? 'text-green-400' : 'text-rb-gray-500'}`}>{stage.title}</p></div>
                           </div>
                         );
                       })}
@@ -176,7 +182,7 @@ const TrackOrderPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="mt-8 p-4 bg-rb-gray-700 rounded-md">
-                  <p className="text-rb-gray-300 text-sm"><strong>Lead ID:</strong> {leadId}</p>
+                  <p className="text-rb-gray-300 text-sm"><strong>Order ID:</strong> {orderId}</p>
                   <p className="text-rb-gray-300 text-sm mt-1"><strong>Current Status:</strong> {currentStatus || 'Awaiting Confirmation'}</p>
                   <p className="text-rb-gray-300 text-sm mt-1"><strong>Last Updated:</strong> {new Date().toLocaleDateString()}</p>
                 </div>
@@ -190,7 +196,7 @@ const TrackOrderPage: React.FC = () => {
         <div className="container-custom">
           <motion.div className="text-center max-w-2xl mx-auto" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
             <h2 className="text-3xl font-bebas mb-6">Need Help?</h2>
-            <p className="text-rb-gray-400 mb-8">Can't find your Lead ID or have questions about your order? Our team is here to help.</p>
+            <p className="text-rb-gray-400 mb-8">Can't find your Order ID or have questions about your order? Our team is here to help.</p>
             <div className="flex flex-col md:flex-row gap-4 justify-center">
               <Button to="/contact" variant="outline" size="md">Contact Support</Button>
               <Button href="tel:+27823163330" variant="primary" size="md"><a href="tel:0823163330">Call Us: 082 316 3330</a></Button>
@@ -203,4 +209,3 @@ const TrackOrderPage: React.FC = () => {
 };
 
 export default TrackOrderPage;
-
