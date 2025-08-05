@@ -32,12 +32,14 @@ const TrackOrderPage: React.FC = () => {
     { id: 'delivered-collected', title: 'Delivered/Collected', description: 'Your order has been successfully delivered or collected.', icon: Truck }
   ];
 
+  // UPDATED: This function now handles the new statuses like "Production" and "Payment Reminder".
   const mapStatusToStage = (status: string | null): string => {
     if (!status) return 'awaiting-confirmation';
     
     const lowerCaseStatus = status.toLowerCase();
 
     switch (lowerCaseStatus) {
+      case 'production':
       case 'order approved':
         return 'order-approved';
       case 'printing':
@@ -45,12 +47,12 @@ const TrackOrderPage: React.FC = () => {
       case 'pressing':
         return 'pressing';
       case 'packing':
+      case 'payment reminder':
         return 'cleaning-packing';
       case 'out for delivery':
         return 'out-for-delivery';
       case 'delivered/collected':
-        return 'delivered-collected';
-      case 'completed': // Kept as a fallback for old orders
+      case 'completed':
         return 'delivered-collected';
       default:
         return 'awaiting-confirmation';
