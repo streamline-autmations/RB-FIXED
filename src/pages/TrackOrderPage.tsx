@@ -49,7 +49,7 @@ const TrackOrderPage: React.FC = () => {
         return 'out-for-delivery';
       case 'delivered/collected':
         return 'delivered-collected';
-      case 'completed':
+      case 'completed': // Kept as a fallback for old orders
         return 'delivered-collected';
       default:
         return 'awaiting-confirmation';
