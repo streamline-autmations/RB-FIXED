@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Package, Clock, CheckCircle, Truck, AlertCircle, Layers, Box, Send } from 'lucide-react';
+// FIX: Added the missing 'Printer' icon to the import list.
+import { Search, Package, Clock, CheckCircle, Truck, AlertCircle, Layers, Box, Send, Printer } from 'lucide-react';
 import Button from '../components/ui/Button';
 
 interface OrderStage {
@@ -196,7 +197,6 @@ const TrackOrderPage: React.FC = () => {
             <p className="text-rb-gray-400 mb-8">Can't find your Order ID or have questions about your order? Our team is here to help.</p>
             <div className="flex flex-col md:flex-row gap-4 justify-center">
               <Button to="/contact" variant="outline" size="md">Contact Support</Button>
-              {/* --- THIS IS THE FIX --- */}
               <Button href="tel:0823163330" variant="primary" size="md">
                 Call Us: 082 316 3330
               </Button>
