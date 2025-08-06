@@ -75,12 +75,12 @@ const AboutPage: React.FC = () => {
                       width: '20px',
                       height: '20px',
                       // To move the logo UP or DOWN, change the 'top' percentage.
-                      top: '39%',
+                      top: '20%',
                       // To move the logo LEFT or RIGHT, change the 'left' percentage.
-                      left: '7%',
+                      left: '30%',
                       transform: 'translate(-50%, -50%)',
                       // To make the logo MORE or LESS visible, change the opacity (0.0 to 1.0).
-                      opacity: 0.2,
+                      opacity: 0.8,
                     }}
                   />
                 )}
