@@ -109,6 +109,12 @@ import SubcategoryPage from './pages/SubcategoryPage';
 import GenericProductPage from './pages/products/GenericProductPage';
 import BaseCataloguePage from './components/shared/BaseCataloguePage';
 
+// --- NEW PADEL IMPORTS ---
+import PadelShortSleevePage from './pages/products/PadelShortSleevePage';
+import PadelGolferPage from './pages/products/PadelGolferPage';
+import PadelShortsPage from './pages/products/PadelShortsPage';
+import PadelZipTopPage from './pages/products/PadelZipTopPage';
+
 // --- ADD THIS NEW IMPORT ---
 import CompetitionTsAndCsPage from './pages/CompetitionTsAndCsPage';
 
@@ -172,6 +178,7 @@ const AppContent: React.FC = () => {
             <Route path="/products/hunting" element={<SubcategoryPage />} />
             <Route path="/products/cycling" element={<SubcategoryPage />} />
             <Route path="/products/darts" element={<SubcategoryPage />} />
+            <Route path="/products/padel" element={<SubcategoryPage />} /> {/* --- NEW --- */}
             <Route path="/products/corporate" element={<SubcategoryPage />} />
             <Route path="/products/fitness" element={<SubcategoryPage />} />
             <Route path="/products/tracksuits-hoodies" element={<SubcategoryPage />} />
@@ -225,6 +232,13 @@ const AppContent: React.FC = () => {
             <Route path="/products/fishing-tee-short" element={<FishingTeeShortPage />} />
             <Route path="/products/fishing-zip-top" element={<FishingZipTopPage />} />
             <Route path="/products/darts-shirts" element={<DartsShirtsPage />} />
+
+            {/* --- NEW PADEL ROUTES --- */}
+            <Route path="/products/padel-short-sleeve" element={<PadelShortSleevePage />} />
+            <Route path="/products/padel-golfer" element={<PadelGolferPage />} />
+            <Route path="/products/padel-shorts" element={<PadelShortsPage />} />
+            <Route path="/products/padel-zip-top" element={<PadelZipTopPage />} />
+
             <Route path="/products/hunting-hoodie" element={<HuntingHoodiePage />} />
             <Route path="/products/hunting-puffer-long" element={<HuntingPufferLongPage />} />
             <Route path="/products/hunting-puffer-short" element={<HuntingPufferShortPage />} />
