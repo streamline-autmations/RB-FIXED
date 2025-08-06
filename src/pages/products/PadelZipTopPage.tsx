@@ -59,7 +59,6 @@ const PadelZipTopPage: React.FC = () => {
               transition={{ duration: 0.6 }}
             >
               <div className="flex gap-4">
-                {/* Thumbnails */}
                 <div className="flex flex-col gap-3 w-24">
                   {images.map((image, index) => (
                     <button
@@ -77,8 +76,6 @@ const PadelZipTopPage: React.FC = () => {
                     </button>
                   ))}
                 </div>
-
-                {/* Main Image */}
                 <div className="flex-1">
                   <div className="relative aspect-square rounded-lg overflow-hidden bg-rb-gray-800">
                     <img
@@ -86,8 +83,6 @@ const PadelZipTopPage: React.FC = () => {
                       alt={images[currentImageIndex].alt}
                       className="w-full h-full object-contain"
                     />
-                    
-                    {/* Navigation Arrows */}
                     {images.length > 1 && (
                       <>
                         <button
@@ -111,6 +106,7 @@ const PadelZipTopPage: React.FC = () => {
 
             {/* Product Info */}
             <div className="space-y-8">
+              {/* --- UPDATED --- */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -123,12 +119,15 @@ const PadelZipTopPage: React.FC = () => {
                   <h3 className="text-xl font-bebas">Fabric Specifications</h3>
                 </div>
                 <ul className="space-y-2 text-rb-gray-300">
-                  <li>• Thermal fabric that retains heat.</li>
-                  <li>• Breathable panels to prevent overheating.</li>
-                  <li>• 1/4 zip design for adjustable ventilation.</li>
+                  <li>• High-performance design for intense Padel matches</li>
+                  <li>• Sweat-wicking and breathable fabric for comfort</li>
+                  <li>• Durable stitching for rapid, multi-directional movements</li>
+                  <li>• Premium feel with smooth finish</li>
+                  <li>• Easy to clean and made for repeated washing</li>
                 </ul>
               </motion.div>
 
+              {/* --- UPDATED --- */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -140,9 +139,19 @@ const PadelZipTopPage: React.FC = () => {
                   <Ruler className="text-rb-red mr-3" size={24} />
                   <h3 className="text-xl font-bebas">Available Sizes</h3>
                 </div>
-                <div>
-                  <h4 className="font-bebas text-rb-white mb-3 text-lg">ADULT</h4>
-                  <p className="text-rb-gray-300">XS - 5XL</p>
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-bebas text-rb-white mb-3 text-lg">YOUTH</h4>
+                    <div className="grid grid-cols-2 gap-2 text-rb-gray-300 text-sm">
+                      <span>1-2</span><span>3-4</span><span>5-6</span><span>7-8</span><span>9-10</span><span>11-12</span><span>13-14</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-bebas text-rb-white mb-3 text-lg">ADULT</h4>
+                    <div className="grid grid-cols-2 gap-2 text-rb-gray-300 text-sm">
+                      <span>XS</span><span>S</span><span>M</span><span>L</span><span>XL</span><span>2XL</span><span>3XL</span><span>4XL</span><span>5XL</span><span>6XL</span><span>7XL</span><span>8XL</span><span>9XL</span><span>10XL</span>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
 
