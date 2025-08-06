@@ -95,6 +95,8 @@ const Footer: React.FC = () => {
             <h3 className="text-xl mb-4 text-rb-white">Our Products</h3>
             <ul className="space-y-2">
               <li><Link to="/products/school-team-sports" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">School & Team Sports</Link></li>
+              {/* --- NEW --- */}
+              <li><Link to="/products/other-sports-clubs" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Other Sports & Clubs</Link></li>
               <li><Link to="/products/corporate-staff" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Corporate & Staff Apparel</Link></li>
               <li><Link to="/products/gym-fitness" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Gym & Fitness Apparel</Link></li>
               <li><Link to="/products/accessories-branding" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Accessories & Branding</Link></li>
