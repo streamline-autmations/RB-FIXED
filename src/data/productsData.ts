@@ -271,6 +271,36 @@ const allProducts: Product[] = [
     path: '/products/cycling-shirt'
   },
 
+  // NEW: Other Sports & Clubs - Padel
+  {
+    title: 'Padel Short Sleeve',
+    image: '/padel-short-sleeve-frontback.png',
+    category: 'Other Sports & Clubs',
+    subcategory: 'Padel',
+    path: '/products/padel-short-sleeve'
+  },
+  {
+    title: 'Padel Golfer',
+    image: '/padel-golfer-frontback.png',
+    category: 'Other Sports & Clubs',
+    subcategory: 'Padel',
+    path: '/products/padel-golfer'
+  },
+  {
+    title: 'Padel Shorts',
+    image: '/padel-shorts-frontback.png',
+    category: 'Other Sports & Clubs',
+    subcategory: 'Padel',
+    path: '/products/padel-shorts'
+  },
+  {
+    title: 'Padel Zip Top',
+    image: '/padel-zip-top-frontback.png',
+    category: 'Other Sports & Clubs',
+    subcategory: 'Padel',
+    path: '/products/padel-zip-top'
+  },
+
   // Other Sports & Clubs - Fishing
   {
     title: 'Fishing Hoodie',
@@ -655,6 +685,7 @@ export const getSubcategoryBySlug = (slug: string): string | null => {
     'hunting': 'Hunting',
     'cycling': 'Cycling',
     'darts': 'Darts',
+    'padel': 'Padel', // NEW
     'tracksuits-hoodies': 'Tracksuits & Hoodies',
     'tshirts-golfers': 'T-Shirts & Golfers',
     'school-jackets': 'Jackets',
@@ -684,6 +715,7 @@ export const getSubcategorySlug = (subcategory: string): string | null => {
     'Hunting': 'hunting',
     'Cycling': 'cycling',
     'Darts': 'darts',
+    'Padel': 'padel', // NEW
     'Tracksuits & Hoodies': 'tracksuits-hoodies',
     'T-Shirts & Golfers': 'tshirts-golfers',
     'Jackets': 'school-jackets',
