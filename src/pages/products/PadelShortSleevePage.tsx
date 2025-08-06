@@ -2,16 +2,14 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Ruler, Shirt } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import Button from '../../components/ui/Button'; // Adjusted path
+import Button from '../../components/ui/Button';
 
-// This page is now updated to match the structure of NetballShortsPage.tsx
 const PadelShortSleevePage: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const title = 'Padel Short Sleeve';
   const description = 'High-performance, breathable short sleeve shirt designed for the dynamic movements of Padel. Fully customizable to match your team\'s identity.';
   
-  // Data structure matches the NetballShortsPage example
   const images = [
     { src: '/padel-short-sleeve-frontback.png', alt: 'Padel Short Sleeve Front and Back View' },
     { src: '/padel-short-sleeve-design-guide.png', alt: 'Padel Short Sleeve Design Guide' }
@@ -53,7 +51,7 @@ const PadelShortSleevePage: React.FC = () => {
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             
-            {/* Image Carousel - Rebuilt to match NetballShortsPage */}
+            {/* Image Carousel */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -61,7 +59,6 @@ const PadelShortSleevePage: React.FC = () => {
               transition={{ duration: 0.6 }}
             >
               <div className="flex gap-4">
-                {/* Thumbnails */}
                 <div className="flex flex-col gap-3 w-24">
                   {images.map((image, index) => (
                     <button
@@ -79,17 +76,13 @@ const PadelShortSleevePage: React.FC = () => {
                     </button>
                   ))}
                 </div>
-
-                {/* Main Image */}
                 <div className="flex-1">
                   <div className="relative aspect-square rounded-lg overflow-hidden bg-rb-gray-800">
                     <img
                       src={images[currentImageIndex].src}
                       alt={images[currentImageIndex].alt}
-                      className="w-full h-full object-contain" // Using 'contain' for design guides
+                      className="w-full h-full object-contain"
                     />
-                    
-                    {/* Navigation Arrows */}
                     {images.length > 1 && (
                       <>
                         <button
@@ -113,6 +106,7 @@ const PadelShortSleevePage: React.FC = () => {
 
             {/* Product Info */}
             <div className="space-y-8">
+              {/* --- UPDATED --- */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -125,12 +119,15 @@ const PadelShortSleevePage: React.FC = () => {
                   <h3 className="text-xl font-bebas">Fabric Specifications</h3>
                 </div>
                 <ul className="space-y-2 text-rb-gray-300">
-                  <li>• Moisture-wicking technology keeps you dry.</li>
-                  <li>• 4-way stretch fabric for maximum mobility.</li>
-                  <li>• Lightweight and durable for intense matches.</li>
+                  <li>• High-performance design for intense Padel matches</li>
+                  <li>• Sweat-wicking and breathable fabric for comfort</li>
+                  <li>• Durable stitching for rapid, multi-directional movements</li>
+                  <li>• Premium feel with smooth finish</li>
+                  <li>• Easy to clean and made for repeated washing</li>
                 </ul>
               </motion.div>
 
+              {/* --- UPDATED --- */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -142,9 +139,19 @@ const PadelShortSleevePage: React.FC = () => {
                   <Ruler className="text-rb-red mr-3" size={24} />
                   <h3 className="text-xl font-bebas">Available Sizes</h3>
                 </div>
-                <div>
-                  <h4 className="font-bebas text-rb-white mb-3 text-lg">ADULT</h4>
-                  <p className="text-rb-gray-300">XS - 5XL</p>
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-bebas text-rb-white mb-3 text-lg">YOUTH</h4>
+                    <div className="grid grid-cols-2 gap-2 text-rb-gray-300 text-sm">
+                      <span>1-2</span><span>3-4</span><span>5-6</span><span>7-8</span><span>9-10</span><span>11-12</span><span>13-14</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-bebas text-rb-white mb-3 text-lg">ADULT</h4>
+                    <div className="grid grid-cols-2 gap-2 text-rb-gray-300 text-sm">
+                      <span>XS</span><span>S</span><span>M</span><span>L</span><span>XL</span><span>2XL</span><span>3XL</span><span>4XL</span><span>5XL</span><span>6XL</span><span>7XL</span><span>8XL</span><span>9XL</span><span>10XL</span>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
 
@@ -179,7 +186,6 @@ const PadelShortSleevePage: React.FC = () => {
           >
             <h2 className="text-4xl font-bebas mb-6">Complete Your Padel Kit</h2>
           </motion.div>
-          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { title: 'Padel Shorts', image: '/padel-shorts-frontback.png', path: '/products/padel-shorts' },
