@@ -47,7 +47,7 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
       
-      {/* About Content (Unchanged) */}
+      {/* About Content */}
       <section className="py-20 bg-rb-gray-900">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -63,6 +63,7 @@ const AboutPage: React.FC = () => {
                   alt="RecklessBear Team" 
                   className="w-full h-full object-cover"
                 />
+                {/* --- UPDATED HIDDEN LOGO --- */}
                 {!isLogo5Found && (
                   <img
                     id="golden-logo-5"
@@ -73,13 +74,17 @@ const AboutPage: React.FC = () => {
                     style={{
                       width: '20px',
                       height: '20px',
+                      // To move the logo UP or DOWN, change the 'top' percentage.
                       top: '39%',
+                      // To move the logo LEFT or RIGHT, change the 'left' percentage.
                       left: '7%',
                       transform: 'translate(-50%, -50%)',
-                      opacity: 1,
+                      // To make the logo MORE or LESS visible, change the opacity (0.0 to 1.0).
+                      opacity: 0.2,
                     }}
                   />
                 )}
+                 {/* --- END UPDATED HIDDEN LOGO --- */}
               </div>
             </motion.div>
             
@@ -146,7 +151,7 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
       
-      {/* --- UPDATED: Team Section --- */}
+      {/* Team Section (Unchanged) */}
       <section className="py-20 bg-rb-gray-900">
         <div className="container-custom">
           <motion.div
@@ -169,28 +174,28 @@ const AboutPage: React.FC = () => {
                 position: 'Brand Owner',
                 email: 'etienne@recklessbear.co.za',
                 phone: '082 316 3330',
-                image: '/etienne-viljoen.png' // <-- ADDED IMAGE PATH
+                image: '/etienne-viljoen.png'
               },
               {
                 name: 'Alicia Viljoen',
                 position: 'Financial Director',
                 email: 'alicia@recklessbear.co.za',
                 phone: '076 123 4567',
-                image: null // <-- LEFT EMPTY AS REQUESTED
+                image: null
               },
               {
                 name: 'Janco Tiedt',
                 position: 'Director',
                 email: 'janco@recklessbear.co.za',
                 phone: '076 689 0383',
-                image: '/janco-tiedt.png' // <-- ADDED IMAGE PATH
+                image: '/janco-tiedt.png'
               },
               {
                 name: 'Zander Steyn',
                 position: 'Director of Printing and Pressing',
                 email: 'zander@recklessbear.co.za',
                 phone: '082 384 1522',
-                image: '/zander-steyn.png' // <-- ADDED IMAGE PATH
+                image: '/zander-steyn.png'
               }
             ].map((member, index) => (
               <motion.div
@@ -204,7 +209,6 @@ const AboutPage: React.FC = () => {
                 <div 
                   className="aspect-square bg-rb-gray-800 relative rounded-lg overflow-hidden"
                 >
-                  {/* --- NEW: Conditional Image Display --- */}
                   {member.image ? (
                     <img src={member.image} alt={member.name} className="w-full h-full object-cover object-center" />
                   ) : (
@@ -214,7 +218,6 @@ const AboutPage: React.FC = () => {
                       </div>
                     </div>
                   )}
-                  {/* --- END NEW --- */}
 
                   <div className="absolute inset-0 bg-gradient-to-t from-rb-black to-transparent opacity-80"></div>
                   <div className="absolute bottom-0 left-0 p-6">
