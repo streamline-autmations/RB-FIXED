@@ -71,7 +71,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
     setSubmissionError(null);
     if (!validateForm()) return;
 
-    const basinEndpoint = "https://usebasin.com/f/caea1c883e3b";
+    const basinEndpoint = "https://usebasin.com/f/864d943995d8";
     const dataToSend = new FormData();
     dataToSend.append('full_name', formData.fullName);
     dataToSend.append('email_address', formData.email);
