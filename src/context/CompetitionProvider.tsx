@@ -46,7 +46,7 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
     setCompetitionCompleted(localStorage.getItem(LS_KEY_COMPLETED_COMPETITION) === 'true');
   }, []);
 
-  // Effect to check for competition completion (Your n8n webhook logic is preserved)
+  // Effect to check for competition completion
   useEffect(() => {
     if (foundLogos.length === TOTAL_LOGOS_REQUIRED && !isCompetitionCompleted) {
       console.log("Competition complete! Showing congrats modal for the first time.");
@@ -75,18 +75,15 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
     }
   }, [foundLogos, isCompetitionCompleted]);
 
-  // --- UPDATED: findLogo function with the correct check ---
   const findLogo = useCallback((logoId: string) => {
-    // First, check if the user is registered.
     if (!isDeviceRegistered) {
       console.log("User not registered. Opening registration modal.");
       setToastMessage("Please register to start finding logos!");
       setTimeout(() => setToastMessage(null), 3000);
-      setRegistrationModalOpen(true); // Open the registration modal
-      return; // IMPORTANT: Stop the function here so the logo is not "found".
+      setRegistrationModalOpen(true);
+      return;
     }
 
-    // If the user is registered, proceed with the original logic.
     if (!foundLogos.includes(logoId)) {
         const newFoundLogos = [...foundLogos, logoId];
         setFoundLogos(newFoundLogos);
@@ -98,28 +95,27 @@ export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ childr
           logoElement.classList.add('found');
         }
     }
-  }, [isDeviceRegistered, foundLogos]); // Dependency array is correct
+  }, [isDeviceRegistered, foundLogos]);
 
-  // Expose findLogo globally (Preserved)
   useEffect(() => {
     window.triggerGoldenLogoFound = findLogo;
     return () => { delete window.triggerGoldenLogoFound; };
   }, [findLogo]);
 
-  // Function to be called from the modal on successful registration
   const registerDevice = useCallback(() => {
     localStorage.setItem(LS_KEY_REGISTERED, 'true');
     setDeviceRegistered(true);
   }, []);
 
-  // Function to open the modal (used by 5-second timer)
+  // --- UPDATED THIS FUNCTION ---
+  // This now checks if the user is already registered before deciding to open the modal.
   const openRegistrationModal = useCallback(() => {
-    if (!isCompetitionCompleted) {
+    if (!isDeviceRegistered && !isCompetitionCompleted) {
       setRegistrationModalOpen(true);
     }
-  }, [isCompetitionCompleted]);
+  }, [isDeviceRegistered, isCompetitionCompleted]);
+  // --- END UPDATE ---
 
-  // Reset function for testing (Preserved)
   const resetCompetition = useCallback(() => {
     localStorage.removeItem(LS_KEY_FOUND_LOGOS);
     localStorage.removeItem(LS_KEY_COMPLETED_COMPETITION);
