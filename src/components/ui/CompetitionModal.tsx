@@ -71,18 +71,31 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
     setSubmissionError(null);
     if (!validateForm()) return;
 
-    const basinEndpoint = "https://usebasin.com/f/864d943995d8";
-    const dataToSend = new FormData();
-    dataToSend.append('full_name', formData.fullName);
-    dataToSend.append('email_address', formData.email);
-    dataToSend.append('phone_number', formData.phone);
-    dataToSend.append('location', formData.location);
-    dataToSend.append('terms_agreed', String(formData.agreeToTerms));
-    if (currentDeviceId) dataToSend.append('device_id', currentDeviceId);
+    // --- URL UPDATED HERE ---
+    const n8nWebhookUrl = "https://dockerfile-1n82.onrender.com/webhook/comp-registrasion-recieve";
+
+    const dataToSend = {
+      full_name: formData.fullName,
+      email: formData.email,
+      phone: formData.phone,
+      location: formData.location,
+      terms_agreed: formData.agreeToTerms,
+      device_id: currentDeviceId,
+      timestamp: new Date().toISOString(),
+    };
 
     try {
-      const response = await fetch(basinEndpoint, { method: 'POST', body: dataToSend });
-      if (!response.ok) throw new Error(`Basin submission failed: ${response.status}`);
+      const response = await fetch(n8nWebhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Submission failed: Server responded with status ${response.status}`);
+      }
       
       localStorage.setItem(LS_KEY_REGISTERED_EMAIL, formData.email);
       registerDevice();
@@ -91,7 +104,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       setShowSuccessModal(true);
 
     } catch (error) {
-      console.error('Error submitting form to Basin:', error);
+      console.error('Error submitting form to n8n:', error);
       setSubmissionError("Failed to register. Please check your connection and try again.");
     }
   };
@@ -101,11 +114,9 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
     if (errors[field]) setErrors(prev => ({ ...prev, [field]: undefined }));
   };
 
-  // --- UPDATED: Share Function ---
   const handleShare = (platform: 'facebook' | 'whatsapp' | 'instagram') => {
-    // --- Use your final domain name here ---
     const shareUrl = "http://www.recklessbear.co.za";
-    const shareText = `I've entered the RecklessBear R10,000 competition! 🏆 Find all 5 hidden golden logos to enter. Can you find them all?`;
+    const shareText = `I've entered the RecklessBear R10,000 competition! 醇 Find all 5 hidden golden logos to enter. Can you find them all?`;
     const encodedText = encodeURIComponent(shareText);
     const encodedUrl = encodeURIComponent(shareUrl);
     let shareLink = '';
@@ -137,9 +148,8 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
             <button onClick={() => setShowSuccessModal(false)} className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500"><X size={24} /></button>
             <div className="px-8 pb-8 pt-12 text-center">
               <img src="/Golden-Logo.png" alt="Golden Logo" className="w-20 h-20 mx-auto mb-4" />
-              <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">🏆 You're Registered!</h2>
+              <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">醇 You're Registered!</h2>
               <p className="text-white text-lg leading-relaxed mb-6">You've successfully registered to compete. Find all 5 golden logos to be entered into the final draw!</p>
-              
               <p className="text-gray-300 text-sm mb-4">Share with friends so they can enter too!</p>
               <div className="flex flex-col space-y-4 mb-8">
                 <button onClick={() => handleShare('facebook')} className="w-full py-3 px-6 bg-blue-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-blue-700 transition-colors"><Facebook size={20} className="mr-2" /> Share on Facebook</button>
@@ -149,7 +159,6 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
                 </div>
                 <button onClick={() => handleShare('whatsapp')} className="w-full py-3 px-6 bg-green-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-green-700 transition-colors"><Share2 size={20} className="mr-2" /> Share on WhatsApp</button>
               </div>
-
               <button onClick={() => setShowSuccessModal(false)} className="w-full py-3 px-6 bg-[#8B0000] text-white font-bebas text-lg rounded-lg hover:bg-red-700 transition-colors">Continue Hunting</button>
             </div>
           </motion.div>
@@ -167,7 +176,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
             <button onClick={onCloseCongrats} className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500"><X size={24} /></button>
             <div className="px-8 pb-8 pt-12 text-center">
               <img src="/Golden-Logo.png" alt="Golden Logo" className="w-20 h-20 mx-auto mb-4 animate-pulse" />
-              <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">🎉 Congratulations! 🎉</h2>
+              <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">脂 Congratulations! 脂</h2>
               <p className="text-white text-lg leading-relaxed mb-6">You've been entered into the wheel spin to win R10,000!</p>
               <p className="text-gray-300 text-sm mb-4">Share with friends so they can enter too!</p>
               <div className="flex flex-col space-y-4 mb-6">
@@ -191,7 +200,6 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       <SuccessModal />
       <AnimatePresence>
         {isOpen && !isDeviceRegistered && (
-          // --- POSITIONING CHANGE HERE ---
           <motion.div className="fixed inset-0 z-40 flex items-start justify-center p-4 pt-24" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
             <motion.div className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-y-auto border border-yellow-500/30" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
