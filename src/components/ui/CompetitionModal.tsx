@@ -67,7 +67,6 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
     return Object.keys(newErrors).length === 0;
   };
 
-  // --- REVERTED TO BASIN SUBMISSION ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmissionError(null);
@@ -75,10 +74,8 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
 
     setIsSubmitting(true);
 
-    // Using the Basin endpoint you provided
     const basinEndpoint = "https://usebasin.com/f/864d943995d8";
     
-    // Basin works best with FormData
     const dataToSend = new FormData();
     dataToSend.append('full_name', formData.fullName);
     dataToSend.append('email_address', formData.email);
@@ -112,7 +109,6 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       setIsSubmitting(false);
     }
   };
-  // --- END REVERT ---
 
   const handleInputChange = (field: keyof FormData, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -121,7 +117,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
 
   const handleShare = (platform: 'facebook' | 'whatsapp' | 'instagram') => {
     const shareUrl = "http://www.recklessbear.co.za";
-    const shareText = `I've entered the RecklessBear R10,000 competition! 醇 Find all 5 hidden golden logos to enter. Can you find them all?`;
+    const shareText = `I've entered the RecklessBear R10,000 competition! 🎉 Find all 5 hidden golden logos to enter. Can you find them all?`;
     const encodedText = encodeURIComponent(shareText);
     const encodedUrl = encodeURIComponent(shareUrl);
     let shareLink = '';
@@ -153,8 +149,10 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
             <button onClick={() => setShowSuccessModal(false)} className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500"><X size={24} /></button>
             <div className="px-8 pb-8 pt-12 text-center">
               <img src="/Golden-Logo.png" alt="Golden Logo" className="w-20 h-20 mx-auto mb-4" />
-              <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">醇 You're Registered!</h2>
+              {/* --- UPDATED: Replaced strange symbols with standard emoji --- */}
+              <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">🎉 You're Registered! 🎉</h2>
               <p className="text-white text-lg leading-relaxed mb-6">You've successfully registered to compete. Find all 5 golden logos to be entered into the final draw!</p>
+              
               <p className="text-gray-300 text-sm mb-4">Share with friends so they can enter too!</p>
               <div className="flex flex-col space-y-4 mb-8">
                 <button onClick={() => handleShare('facebook')} className="w-full py-3 px-6 bg-blue-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-blue-700 transition-colors"><Facebook size={20} className="mr-2" /> Share on Facebook</button>
@@ -164,6 +162,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
                 </div>
                 <button onClick={() => handleShare('whatsapp')} className="w-full py-3 px-6 bg-green-600 text-white font-bebas text-lg rounded-lg flex items-center justify-center hover:bg-green-700 transition-colors"><Share2 size={20} className="mr-2" /> Share on WhatsApp</button>
               </div>
+
               <button onClick={() => setShowSuccessModal(false)} className="w-full py-3 px-6 bg-[#8B0000] text-white font-bebas text-lg rounded-lg hover:bg-red-700 transition-colors">Continue Hunting</button>
             </div>
           </motion.div>
@@ -181,7 +180,8 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
             <button onClick={onCloseCongrats} className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500"><X size={24} /></button>
             <div className="px-8 pb-8 pt-12 text-center">
               <img src="/Golden-Logo.png" alt="Golden Logo" className="w-20 h-20 mx-auto mb-4 animate-pulse" />
-              <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">脂 Congratulations! 脂</h2>
+              {/* --- UPDATED: Replaced strange symbols with standard emoji --- */}
+              <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">🎉 Congratulations! 🎉</h2>
               <p className="text-white text-lg leading-relaxed mb-6">You've been entered into the wheel spin to win R10,000!</p>
               <p className="text-gray-300 text-sm mb-4">Share with friends so they can enter too!</p>
               <div className="flex flex-col space-y-4 mb-6">
