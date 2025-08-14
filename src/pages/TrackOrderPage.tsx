@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-// FIX: Added the missing 'Printer' icon to the import list.
-import { Search, Package, Clock, CheckCircle, Truck, AlertCircle, Layers, Box, Send, Printer } from 'lucide-react';
+// --- UPDATED: Icons to match the new stages ---
+import { Search, Package, CheckCircle, Truck, AlertCircle, Box, Send, Printer, Palette, LayoutTemplate, Cog, PackageCheck, Home } from 'lucide-react';
 import Button from '../components/ui/Button';
 
 interface OrderStage {
@@ -22,40 +22,44 @@ const TrackOrderPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // --- UPDATED: The new 8-stage production process ---
   const orderStages: OrderStage[] = [
-    { id: 'awaiting-confirmation', title: 'Awaiting Confirmation', description: 'Your order is being reviewed.', icon: Clock },
-    { id: 'order-approved', title: 'Order Approved', description: 'Your order is approved and entering production.', icon: CheckCircle },
-    { id: 'printing', title: 'Printing', description: 'Your designs are being printed.', icon: Printer },
-    { id: 'pressing', title: 'Pressing', description: 'Your items are being heat pressed.', icon: Layers },
-    { id: 'cleaning-packing', title: 'Cleaning & Packing', description: 'Final quality checks and packaging.', icon: Box },
-    { id: 'out-for-delivery', title: 'Out for Delivery', description: 'Your order is on its way to you.', icon: Send },
-    { id: 'delivered-collected', title: 'Delivered/Collected', description: 'Your order has been successfully delivered or collected.', icon: Truck }
+    { id: 'designing', title: 'Designing', description: 'The design process has started.', icon: Palette },
+    { id: 'layout-department', title: 'Layout Department', description: 'The design is with the layout department.', icon: LayoutTemplate },
+    { id: 'print-press-department', title: 'Print & Press Dept.', description: 'The order is with the printing department.', icon: Printer },
+    { id: 'manufacturing-department', title: 'Manufacturing Dept.', description: 'The order is in the manufacturing stage.', icon: Cog },
+    { id: 'cleaning-packing', title: 'Cleaning & Packing', description: 'The order is being cleaned and packaged.', icon: Box },
+    { id: 'ready-for-dispatch', title: 'Ready for Dispatch/Collection', description: 'The order is complete and ready for the customer.', icon: PackageCheck },
+    { id: 'out-for-delivery', title: 'Out for Delivery', description: 'The order has left the facility for delivery.', icon: Truck },
+    { id: 'delivered-collected', title: 'Delivered/Collected', description: 'Your order has been successfully delivered or collected.', icon: Home }
   ];
 
-  // UPDATED: This function now handles the new statuses like "Production" and "Payment Reminder".
+  // --- UPDATED: This function now maps your new statuses to the correct stage ID ---
   const mapStatusToStage = (status: string | null): string => {
-    if (!status) return 'awaiting-confirmation';
+    if (!status) return 'designing'; // Default to the first stage
     
     const lowerCaseStatus = status.toLowerCase();
 
     switch (lowerCaseStatus) {
-      case 'production':
-      case 'order approved':
-        return 'order-approved';
-      case 'printing':
-        return 'printing';
-      case 'pressing':
-        return 'pressing';
-      case 'packing':
-      case 'payment reminder':
+      case 'designing':
+        return 'designing';
+      case 'layout department':
+        return 'layout-department';
+      case 'print & press department':
+        return 'print-press-department';
+      case 'manufacturing department':
+        return 'manufacturing-department';
+      case 'cleaning & packing':
         return 'cleaning-packing';
+      case 'ready for dispatch/collection':
+        return 'ready-for-dispatch';
       case 'out for delivery':
         return 'out-for-delivery';
       case 'delivered/collected':
-      case 'completed':
         return 'delivered-collected';
       default:
-        return 'awaiting-confirmation';
+        // If the status from the API doesn't match, we can assume it's the first stage
+        return 'designing';
     }
   };
 
@@ -112,7 +116,7 @@ const TrackOrderPage: React.FC = () => {
 
       <section className="py-20 bg-rb-gray-900">
         <div className="container-custom">
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-4xl mx-auto"> {/* Increased max-width for more space */}
             <motion.div className="bg-rb-gray-800 p-8 rounded-lg" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
               <form onSubmit={handleTrackOrder} className="space-y-6">
                 <div>
@@ -157,7 +161,7 @@ const TrackOrderPage: React.FC = () => {
                             <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${status === 'completed' ? 'bg-green-500 border-green-500 text-white' : status === 'current' ? 'bg-rb-red border-rb-red text-white animate-pulse' : 'bg-rb-gray-700 border-rb-gray-600 text-rb-gray-400'}`}>
                               {status === 'completed' ? <CheckCircle size={20} /> : <StageIcon size={20} />}
                             </div>
-                            <div className="mt-3 text-center max-w-24"><p className={`text-sm font-medium ${status === 'current' ? 'text-rb-red' : status === 'completed' ? 'text-green-400' : 'text-rb-gray-500'}`}>{stage.title}</p></div>
+                            <div className="mt-3 text-center w-24"><p className={`text-sm font-medium ${status === 'current' ? 'text-rb-red' : status === 'completed' ? 'text-green-400' : 'text-rb-gray-500'}`}>{stage.title}</p></div>
                           </div>
                         );
                       })}
@@ -183,7 +187,7 @@ const TrackOrderPage: React.FC = () => {
                 </div>
                 <div className="mt-8 p-4 bg-rb-gray-700 rounded-md">
                   <p className="text-rb-gray-300 text-sm"><strong>Order ID:</strong> {orderId}</p>
-                  <p className="text-rb-gray-300 text-sm mt-1"><strong>Current Status:</strong> {currentStatus || 'Awaiting Confirmation'}</p>
+                  <p className="text-rb-gray-300 text-sm mt-1"><strong>Current Status:</strong> {currentStatus || 'Designing'}</p>
                   <p className="text-rb-gray-300 text-sm mt-1"><strong>Last Updated:</strong> {new Date().toLocaleDateString()}</p>
                 </div>
               </motion.div>
