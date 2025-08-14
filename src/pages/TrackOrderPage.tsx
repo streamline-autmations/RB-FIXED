@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+// --- UPDATED: Icons to match the new stages ---
 import { Search, Package, CheckCircle, Truck, AlertCircle, Box, Send, Printer, Palette, LayoutTemplate, Cog, PackageCheck, Home } from 'lucide-react';
 import Button from '../components/ui/Button';
 
@@ -21,6 +22,7 @@ const TrackOrderPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // --- UPDATED: The new 8-stage production process ---
   const orderStages: OrderStage[] = [
     { id: 'designing', title: 'Designing', description: 'The design process has started.', icon: Palette },
     { id: 'layout-department', title: 'Layout Department', description: 'The design is with the layout department.', icon: LayoutTemplate },
@@ -32,8 +34,9 @@ const TrackOrderPage: React.FC = () => {
     { id: 'delivered-collected', title: 'Delivered/Collected', description: 'Your order has been successfully delivered or collected.', icon: Home }
   ];
 
+  // --- UPDATED: This function now maps your new statuses to the correct stage ID ---
   const mapStatusToStage = (status: string | null): string => {
-    if (!status) return 'designing';
+    if (!status) return 'designing'; // Default to the first stage
     
     const lowerCaseStatus = status.toLowerCase();
 
@@ -55,6 +58,7 @@ const TrackOrderPage: React.FC = () => {
       case 'delivered/collected':
         return 'delivered-collected';
       default:
+        // If the status from the API doesn't match, we can assume it's the first stage
         return 'designing';
     }
   };
@@ -146,18 +150,21 @@ const TrackOrderPage: React.FC = () => {
                   <h3 className="text-2xl font-bebas text-rb-white mb-6">Order Progress</h3>
                   <div className="hidden md:block">
                     <div className="flex items-center justify-between relative">
-                      <div className="absolute top-6 left-6 right-6 h-0.5 bg-rb-gray-600">
+                      {/* This is the div that contains the progress bar and circles */}
+                      <div className="absolute top-6 left-0 right-0 h-0.5 bg-rb-gray-600">
                         <div className="h-full bg-green-500 transition-all duration-1000 ease-out" style={{ width: currentStageIndex >= 0 ? `${(currentStageIndex / (orderStages.length - 1)) * 100}%` : '0%' }} />
                       </div>
                       {orderStages.map((stage, index) => {
                         const status = getStageStatus(index, currentStageIndex);
                         const StageIcon = stage.icon;
                         return (
-                          <div key={stage.id} className="flex flex-col items-center relative z-10 w-1/8 px-2"> {/* Added w-1/8 and px-2 for flexible spacing */}
+                          <div key={stage.id} className="flex flex-col items-center relative z-10 w-auto">
                             <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${status === 'completed' ? 'bg-green-500 border-green-500 text-white' : status === 'current' ? 'bg-rb-red border-rb-red text-white animate-pulse' : 'bg-rb-gray-700 border-rb-gray-600 text-rb-gray-400'}`}>
                               {status === 'completed' ? <CheckCircle size={20} /> : <StageIcon size={20} />}
                             </div>
-                            <div className="mt-3 text-center"><p className={`text-sm font-medium ${status === 'current' ? 'text-rb-red' : status === 'completed' ? 'text-green-400' : 'text-rb-gray-500'}`}>{stage.title}</p></div> {/* Removed fixed w-24 */}
+                            <div className="mt-3 text-center w-24">
+                              <p className={`text-sm font-medium ${status === 'current' ? 'text-rb-red' : status === 'completed' ? 'text-green-400' : 'text-rb-gray-500'}`}>{stage.title}</p>
+                            </div>
                           </div>
                         );
                       })}
