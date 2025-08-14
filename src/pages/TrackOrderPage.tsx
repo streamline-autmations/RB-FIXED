@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-// --- UPDATED: Icons to match the new stages ---
 import { Search, Package, CheckCircle, Truck, AlertCircle, Box, Send, Printer, Palette, LayoutTemplate, Cog, PackageCheck, Home } from 'lucide-react';
 import Button from '../components/ui/Button';
 
@@ -22,7 +21,6 @@ const TrackOrderPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // --- UPDATED: The new 8-stage production process ---
   const orderStages: OrderStage[] = [
     { id: 'designing', title: 'Designing', description: 'The design process has started.', icon: Palette },
     { id: 'layout-department', title: 'Layout Department', description: 'The design is with the layout department.', icon: LayoutTemplate },
@@ -34,9 +32,8 @@ const TrackOrderPage: React.FC = () => {
     { id: 'delivered-collected', title: 'Delivered/Collected', description: 'Your order has been successfully delivered or collected.', icon: Home }
   ];
 
-  // --- UPDATED: This function now maps your new statuses to the correct stage ID ---
   const mapStatusToStage = (status: string | null): string => {
-    if (!status) return 'designing'; // Default to the first stage
+    if (!status) return 'designing';
     
     const lowerCaseStatus = status.toLowerCase();
 
@@ -58,7 +55,6 @@ const TrackOrderPage: React.FC = () => {
       case 'delivered/collected':
         return 'delivered-collected';
       default:
-        // If the status from the API doesn't match, we can assume it's the first stage
         return 'designing';
     }
   };
@@ -116,7 +112,7 @@ const TrackOrderPage: React.FC = () => {
 
       <section className="py-20 bg-rb-gray-900">
         <div className="container-custom">
-          <div className="max-w-4xl mx-auto"> {/* Increased max-width for more space */}
+          <div className="max-w-4xl mx-auto">
             <motion.div className="bg-rb-gray-800 p-8 rounded-lg" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
               <form onSubmit={handleTrackOrder} className="space-y-6">
                 <div>
@@ -157,11 +153,11 @@ const TrackOrderPage: React.FC = () => {
                         const status = getStageStatus(index, currentStageIndex);
                         const StageIcon = stage.icon;
                         return (
-                          <div key={stage.id} className="flex flex-col items-center relative z-10">
+                          <div key={stage.id} className="flex flex-col items-center relative z-10 w-1/8 px-2"> {/* Added w-1/8 and px-2 for flexible spacing */}
                             <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${status === 'completed' ? 'bg-green-500 border-green-500 text-white' : status === 'current' ? 'bg-rb-red border-rb-red text-white animate-pulse' : 'bg-rb-gray-700 border-rb-gray-600 text-rb-gray-400'}`}>
                               {status === 'completed' ? <CheckCircle size={20} /> : <StageIcon size={20} />}
                             </div>
-                            <div className="mt-3 text-center w-24"><p className={`text-sm font-medium ${status === 'current' ? 'text-rb-red' : status === 'completed' ? 'text-green-400' : 'text-rb-gray-500'}`}>{stage.title}</p></div>
+                            <div className="mt-3 text-center"><p className={`text-sm font-medium ${status === 'current' ? 'text-rb-red' : status === 'completed' ? 'text-green-400' : 'text-rb-gray-500'}`}>{stage.title}</p></div> {/* Removed fixed w-24 */}
                           </div>
                         );
                       })}
