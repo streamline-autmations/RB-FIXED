@@ -116,13 +116,12 @@ import CompetitionTsAndCsPage from './pages/CompetitionTsAndCsPage';
 import CompetitionModal from './components/ui/CompetitionModal';
 import ToastNotification from './common/ToastNotification';
 
-// Your Catalogue Page components can be preserved as they are
 const MainCataloguePage = () => ( <BaseCataloguePage title="2025–2026 Catalogue" description="Explore our full collection of high-performance sportswear, uniforms, and branded apparel." previewImage="/rb-about.png" collectionName="2025–2026 Collection" collectionSubtitle="Complete product range and specifications" features={[ 'School & Team Sports Kits (Rugby, Netball, Cricket, Hockey, Athletics)', 'Other Sports & Clubs (Soccer, Golf, Darts, Fishing, Cycling, Hunting)', 'Gym & Fitness Apparel', 'Schoolwear & Matric Apparel', 'Corporate & Staff Uniforms', 'Accessories & Branding (Socks, Caps, Bags, Branding Items)', 'Sizing Charts & Customization Options' ]} pages="48 pages" fileSize="12.5 MB" ctaTitle="Need Custom Apparel?" downloadUrl="https://drive.google.com/uc?export=download&id=1-8T8g4HUj2lSZyai575Or66A5cTb0gWh" flipbookUrl="https://heyzine.com/flip-book/1f122372a4.html" /> );
 const MatricCataloguePage = () => ( <BaseCataloguePage title="Matric Apparel Catalogue" description="Celebrate your matriculation with our premium custom matric jackets and apparel" previewImage="https://images.pexels.com/photos/6311475/pexels-photo-6311475.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=2" collectionName="2025–2026 Matric Collection" collectionSubtitle="Premium jackets and customization options" features={['Standard Matric Jackets', 'Premium Matric Jackets', 'Embroidery Options', 'Color Combinations', 'Sizing Guide', 'Ordering Process']} pages="32 pages" fileSize="8.2 MB" ctaTitle="Ready to Order Your Matric Jackets?" downloadUrl="https://drive.google.com/uc?export=download&id=1-8T8g4HUj2lSZyai575Or66A5cTb0gWh" flipbookUrl="https://heyzine.com/flip-book/1f122372a4.html" /> );
 
 
 const AppContent: React.FC = () => {
-  // --- UPDATED: Using the NEW and CORRECT state from our provider ---
+  // --- Using the correct state from our provider ---
   const { 
     isLoading,
     isRegistered,
@@ -132,10 +131,9 @@ const AppContent: React.FC = () => {
     setRegistrationModalOpen,
   } = useCompetition();
 
-  // --- THIS IS THE CORRECTED LOGIC ---
-  // It waits for the initial check to finish (`isLoading` is false),
-  // and only opens the modal if the user is not registered.
+  // --- Corrected logic to open the modal for new users ---
   useEffect(() => {
+    // Only run the timer if loading is finished AND the user is not yet registered.
     if (!isLoading && !isRegistered) {
       const timer = setTimeout(() => {
         setRegistrationModalOpen(true);
@@ -303,7 +301,7 @@ const AppContent: React.FC = () => {
         isOpen={isRegistrationModalOpen}
         onClose={() => setRegistrationModalOpen(false)}
         showCongrats={showCongratsModal}
-        onCloseCongrats={() => { /* This might need a function in the provider if used */}}
+        onCloseCongrats={() => { /* This can be expanded later if needed */}}
       />
       <ToastNotification message={toastMessage} />
     </div>
