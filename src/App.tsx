@@ -12,7 +12,7 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import ProductsPage from './pages/ProductsPage';
 import TrackOrderPage from './pages/TrackOrderPage';
-import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import allProducts from './data/productsData';
 import RugbyKitsPage from './pages/products/RugbyKitsPage';
 import RugbyJerseysPage from './pages/products/RugbyJerseysPage';
 import RugbyShortsPage from './pages/products/RugbyShortsPage';
@@ -108,20 +108,28 @@ import CategoryPage from './pages/CategoryPage';
 import SubcategoryPage from './pages/SubcategoryPage';
 import GenericProductPage from './pages/products/GenericProductPage';
 import BaseCataloguePage from './components/shared/BaseCataloguePage';
+
+// --- NEW PADEL IMPORTS ---
 import PadelShortSleevePage from './pages/products/PadelShortSleevePage';
 import PadelGolferPage from './pages/products/PadelGolferPage';
 import PadelShortsPage from './pages/products/PadelShortsPage';
 import PadelZipTopPage from './pages/products/PadelZipTopPage';
+
+// --- ADD THIS NEW IMPORT ---
 import CompetitionTsAndCsPage from './pages/CompetitionTsAndCsPage';
+
+// IMPORTS FOR COMPETITION
 import CompetitionModal from './components/ui/CompetitionModal';
 import ToastNotification from './common/ToastNotification';
 import { CompetitionProvider, useCompetition } from './context/CompetitionProvider';
 
+// Your Catalogue Page components are preserved
 const MainCataloguePage = () => ( <BaseCataloguePage title="2025–2026 Catalogue" description="Explore our full collection of high-performance sportswear, uniforms, and branded apparel." previewImage="/rb-about.png" collectionName="2025–2026 Collection" collectionSubtitle="Complete product range and specifications" features={[ 'School & Team Sports Kits (Rugby, Netball, Cricket, Hockey, Athletics)', 'Other Sports & Clubs (Soccer, Golf, Darts, Fishing, Cycling, Hunting)', 'Gym & Fitness Apparel', 'Schoolwear & Matric Apparel', 'Corporate & Staff Uniforms', 'Accessories & Branding (Socks, Caps, Bags, Branding Items)', 'Sizing Charts & Customization Options' ]} pages="48 pages" fileSize="12.5 MB" ctaTitle="Need Custom Apparel?" downloadUrl="https://drive.google.com/uc?export=download&id=1-8T8g4HUj2lSZyai575Or66A5cTb0gWh" flipbookUrl="https://heyzine.com/flip-book/1f122372a4.html" /> );
 const MatricCataloguePage = () => ( <BaseCataloguePage title="Matric Apparel Catalogue" description="Celebrate your matriculation with our premium custom matric jackets and apparel" previewImage="https://images.pexels.com/photos/6311475/pexels-photo-6311475.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=2" collectionName="2025–2026 Matric Collection" collectionSubtitle="Premium jackets and customization options" features={['Standard Matric Jackets', 'Premium Matric Jackets', 'Embroidery Options', 'Color Combinations', 'Sizing Guide', 'Ordering Process']} pages="32 pages" fileSize="8.2 MB" ctaTitle="Ready to Order Your Matric Jackets?" downloadUrl="https://drive.google.com/uc?export=download&id=1-8T8g4HUj2lSZyai575Or66A5cTb0gWh" flipbookUrl="https://heyzine.com/flip-book/1f122372a4.html" /> );
 
 
 const AppContent: React.FC = () => {
+  // --- UPDATED: Using centralized state from the provider ---
   const { 
     toastMessage, 
     showCongratsModal, 
@@ -132,6 +140,7 @@ const AppContent: React.FC = () => {
     openRegistrationModal 
   } = useCompetition();
 
+  // --- UPDATED: 5-second timer to open the modal ---
   useEffect(() => {
     if (!isCompetitionCompleted) {
       const timer = setTimeout(() => {
@@ -157,7 +166,6 @@ const AppContent: React.FC = () => {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/track-order" element={<TrackOrderPage />} />
             <Route path="/products" element={<ProductsPage />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/products/:categorySlug" element={<CategoryPage />} />
             <Route path="/products/rugby" element={<SubcategoryPage />} />
             <Route path="/products/netball" element={<SubcategoryPage />} />
@@ -170,7 +178,7 @@ const AppContent: React.FC = () => {
             <Route path="/products/hunting" element={<SubcategoryPage />} />
             <Route path="/products/cycling" element={<SubcategoryPage />} />
             <Route path="/products/darts" element={<SubcategoryPage />} />
-            <Route path="/products/padel" element={<SubcategoryPage />} /> 
+            <Route path="/products/padel" element={<SubcategoryPage />} /> {/* --- NEW --- */}
             <Route path="/products/corporate" element={<SubcategoryPage />} />
             <Route path="/products/fitness" element={<SubcategoryPage />} />
             <Route path="/products/tracksuits-hoodies" element={<SubcategoryPage />} />
@@ -224,10 +232,13 @@ const AppContent: React.FC = () => {
             <Route path="/products/fishing-tee-short" element={<FishingTeeShortPage />} />
             <Route path="/products/fishing-zip-top" element={<FishingZipTopPage />} />
             <Route path="/products/darts-shirts" element={<DartsShirtsPage />} />
+
+            {/* --- NEW PADEL ROUTES --- */}
             <Route path="/products/padel-short-sleeve" element={<PadelShortSleevePage />} />
             <Route path="/products/padel-golfer" element={<PadelGolferPage />} />
             <Route path="/products/padel-shorts" element={<PadelShortsPage />} />
             <Route path="/products/padel-zip-top" element={<PadelZipTopPage />} />
+
             <Route path="/products/hunting-hoodie" element={<HuntingHoodiePage />} />
             <Route path="/products/hunting-puffer-long" element={<HuntingPufferLongPage />} />
             <Route path="/products/hunting-puffer-short" element={<HuntingPufferShortPage />} />
@@ -292,12 +303,16 @@ const AppContent: React.FC = () => {
             <Route path="/catalogues/2025" element={<MainCataloguePage />} />
             <Route path="/catalogues/matric" element={<MatricCataloguePage />} />
             <Route path="/catalogues/*" element={<MainCataloguePage />} />
+
+            {/* --- ADDED: The new route for the T&Cs page --- */}
             <Route path="/competition-rules" element={<CompetitionTsAndCsPage />} />
+
           </Routes>
         </AnimatePresence>
       </main>
       <Footer />
 
+      {/* --- UPDATED: Props now come from the provider --- */}
       <CompetitionModal
         isOpen={isRegistrationModalOpen}
         onClose={() => setRegistrationModalOpen(false)}
