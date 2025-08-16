@@ -127,6 +127,7 @@ export const CompetitionProvider: React.FC<{ children: ReactNode }> = ({ childre
 
   // --- UPDATED: This is the function called when a logo is clicked ---
   const findLogo = (logoId: string) => {
+    // If the user isn't registered, open the registration modal.
     if (!isRegistered) {
       setToastMessage("Please register to start finding logos!");
       setTimeout(() => setToastMessage(null), 3000);
@@ -141,6 +142,7 @@ export const CompetitionProvider: React.FC<{ children: ReactNode }> = ({ childre
     }
 
     // Since we don't track individual logos anymore, we just increment the count
+    // A simple way to prevent double-counting is to just not increment past the max
     const newCount = logosFound + 1;
     if (newCount <= TOTAL_LOGOS_REQUIRED) {
         updateProgress(newCount);
@@ -162,7 +164,6 @@ export const CompetitionProvider: React.FC<{ children: ReactNode }> = ({ childre
     isLoading,
     isRegistered,
     logosFound,
-    recordId,
     status,
     toastMessage,
     showCongratsModal,
