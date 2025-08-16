@@ -12,6 +12,7 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import ProductsPage from './pages/ProductsPage';
 import TrackOrderPage from './pages/TrackOrderPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage'; // --- NEW PAGE IMPORT ---
 import allProducts from './data/productsData';
 import RugbyKitsPage from './pages/products/RugbyKitsPage';
 import RugbyJerseysPage from './pages/products/RugbyJerseysPage';
@@ -166,6 +167,10 @@ const AppContent: React.FC = () => {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/track-order" element={<TrackOrderPage />} />
             <Route path="/products" element={<ProductsPage />} />
+            
+            {/* --- NEW PAGE ROUTE --- */}
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+
             <Route path="/products/:categorySlug" element={<CategoryPage />} />
             <Route path="/products/rugby" element={<SubcategoryPage />} />
             <Route path="/products/netball" element={<SubcategoryPage />} />
@@ -178,7 +183,7 @@ const AppContent: React.FC = () => {
             <Route path="/products/hunting" element={<SubcategoryPage />} />
             <Route path="/products/cycling" element={<SubcategoryPage />} />
             <Route path="/products/darts" element={<SubcategoryPage />} />
-            <Route path="/products/padel" element={<SubcategoryPage />} /> {/* --- NEW --- */}
+            <Route path="/products/padel" element={<SubcategoryPage />} /> 
             <Route path="/products/corporate" element={<SubcategoryPage />} />
             <Route path="/products/fitness" element={<SubcategoryPage />} />
             <Route path="/products/tracksuits-hoodies" element={<SubcategoryPage />} />
