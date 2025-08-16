@@ -16,17 +16,21 @@ interface FormData {
 }
 
 const LS_KEY_DEVICE_ID = 'recklessbear_device_id';
+const LS_KEY_REGISTERED_EMAIL = 'recklessbear_registered_email';
 
 const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, showCongrats, onCloseCongrats }) => {
-  const { registerUser } = useCompetition();
+  const { isDeviceRegistered, registerDevice } = useCompetition();
   
-  const [formData, setFormData] = useState<FormData>({ fullName: '', email: '', phone: '', location: '', agreeToTerms: false });
+  const [formData, setFormData] = useState<FormData>({
+    fullName: '', email: '', phone: '', location: '', agreeToTerms: false
+  });
+  
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [currentDeviceId, setCurrentDeviceId] = useState<string | null>(null);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [copySuccess, setCopySuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     let deviceId = localStorage.getItem(LS_KEY_DEVICE_ID);
@@ -36,6 +40,21 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
     }
     setCurrentDeviceId(deviceId);
   }, []);
+
+  useEffect(() => {
+    if (isOpen && isDeviceRegistered) {
+      onClose();
+      setShowSuccessModal(true);
+    }
+  }, [isOpen, isDeviceRegistered, onClose]);
+
+  useEffect(() => {
+    const chatbotWidget = document.getElementById('vg-widget-container');
+    const isAnyModalOpen = isOpen || showSuccessModal || showCongrats;
+    if (chatbotWidget) {
+      chatbotWidget.style.display = isAnyModalOpen ? 'none' : '';
+    }
+  }, [isOpen, showSuccessModal, showCongrats]);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
@@ -55,24 +74,37 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
 
     setIsSubmitting(true);
 
+    const basinEndpoint = "https://usebasin.com/f/864d943995d8";
+    
+    const dataToSend = new FormData();
+    dataToSend.append('full_name', formData.fullName);
+    dataToSend.append('email_address', formData.email);
+    dataToSend.append('phone_number', formData.phone);
+    dataToSend.append('location', formData.location);
+    dataToSend.append('terms_agreed', String(formData.agreeToTerms));
+    if (currentDeviceId) {
+        dataToSend.append('device_id', currentDeviceId);
+    }
+
     try {
-      const response = await registerUser({
-        fullName: formData.fullName,
-        email: formData.email,
-        phone: formData.phone,
-        deviceId: currentDeviceId,
+      const response = await fetch(basinEndpoint, { 
+          method: 'POST', 
+          body: dataToSend 
       });
 
-      if (!response.success) {
-        throw new Error(response.message || 'Registration failed. Please try again.');
+      if (!response.ok) {
+        throw new Error(`Basin submission failed: ${response.status}`);
       }
+      
+      localStorage.setItem(LS_KEY_REGISTERED_EMAIL, formData.email);
+      registerDevice();
       
       onClose();
       setShowSuccessModal(true);
 
-    } catch (error: any) {
-      console.error('Error submitting form:', error);
-      setSubmissionError(error.message);
+    } catch (error) {
+      console.error('Error submitting form to Basin:', error);
+      setSubmissionError("Failed to register. Please check your connection and try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -85,7 +117,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
 
   const handleShare = (platform: 'facebook' | 'whatsapp' | 'instagram') => {
     const shareUrl = "http://www.recklessbear.co.za";
-    const shareText = `I've entered the RecklessBear R10,000 competition! 脂 Find all 5 hidden golden logos to enter. Can you find them all?`;
+    const shareText = `I've entered the RecklessBear R10,000 competition! 🎉 Find all 5 hidden golden logos to enter. Can you find them all?`;
     const encodedText = encodeURIComponent(shareText);
     const encodedUrl = encodeURIComponent(shareUrl);
     let shareLink = '';
@@ -117,7 +149,8 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
             <button onClick={() => setShowSuccessModal(false)} className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500"><X size={24} /></button>
             <div className="px-8 pb-8 pt-12 text-center">
               <img src="/Golden-Logo.png" alt="Golden Logo" className="w-20 h-20 mx-auto mb-4" />
-              <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">You're Registered!</h2>
+              {/* --- UPDATED: Replaced strange symbols with standard emoji --- */}
+              <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">🎉 You're Registered! 🎉</h2>
               <p className="text-white text-lg leading-relaxed mb-6">You've successfully registered to compete. Find all 5 golden logos to be entered into the final draw!</p>
               
               <p className="text-gray-300 text-sm mb-4">Share with friends so they can enter too!</p>
@@ -147,7 +180,8 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
             <button onClick={onCloseCongrats} className="absolute top-4 right-4 z-10 p-2 text-white hover:text-yellow-500"><X size={24} /></button>
             <div className="px-8 pb-8 pt-12 text-center">
               <img src="/Golden-Logo.png" alt="Golden Logo" className="w-20 h-20 mx-auto mb-4 animate-pulse" />
-              <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">Congratulations!</h2>
+              {/* --- UPDATED: Replaced strange symbols with standard emoji --- */}
+              <h2 className="text-3xl md:text-4xl font-bebas text-yellow-400 mb-4">🎉 Congratulations! 🎉</h2>
               <p className="text-white text-lg leading-relaxed mb-6">You've been entered into the wheel spin to win R10,000!</p>
               <p className="text-gray-300 text-sm mb-4">Share with friends so they can enter too!</p>
               <div className="flex flex-col space-y-4 mb-6">
@@ -170,7 +204,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
       <CongratsModal />
       <SuccessModal />
       <AnimatePresence>
-        {isOpen && (
+        {isOpen && !isDeviceRegistered && (
           <motion.div className="fixed inset-0 z-40 flex items-start justify-center p-4 pt-24" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
             <motion.div className="relative bg-[#1E1E1E] rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-y-auto border border-yellow-500/30" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
@@ -182,6 +216,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
                   <p className="text-gray-300 text-sm md:text-base leading-relaxed">Find all 5 golden logos hidden across the site to enter the draw.</p>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  <input type="hidden" name="device_id" id="competition-device-id" value={currentDeviceId || ''} />
                   <div>
                     <label htmlFor="fullName" className="block text-white text-sm font-medium mb-2">Full Name *</label>
                     <input type="text" id="fullName" value={formData.fullName} onChange={(e) => handleInputChange('fullName', e.target.value)} className={`w-full px-4 py-3 bg-gray-800 text-white border rounded-lg focus:outline-none focus:ring-2 ${errors.fullName ? 'border-red-500 focus:ring-red-500' : 'border-gray-600 focus:border-red-600 focus:ring-red-600'}`} required />
@@ -208,6 +243,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({ isOpen, onClose, sh
                       {' '}*
                     </label>
                   </div>
+                  {errors.agreeToTerms && <p className="text-red-400 text-xs">{errors.agreeToTerms}</p>}
                   {submissionError && <p className="text-red-400 text-sm text-center">{submissionError}</p>}
                   <button 
                     type="submit" 
