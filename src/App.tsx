@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import { CompetitionProvider, useCompetition } from './context/CompetitionProvider';
 
-// --- Keep all your existing page and component imports ---
+// Keep all your existing page and component imports.
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import HomePage from './pages/HomePage';
@@ -107,6 +106,7 @@ import ArmSleevesPage from './pages/products/ArmSleevesPage';
 import LegSleevesPage from './pages/products/LegSleevesPage';
 import CategoryPage from './pages/CategoryPage';
 import SubcategoryPage from './pages/SubcategoryPage';
+import GenericProductPage from './pages/products/GenericProductPage';
 import BaseCataloguePage from './components/shared/BaseCataloguePage';
 import PadelShortSleevePage from './pages/products/PadelShortSleevePage';
 import PadelGolferPage from './pages/products/PadelGolferPage';
@@ -115,32 +115,33 @@ import PadelZipTopPage from './pages/products/PadelZipTopPage';
 import CompetitionTsAndCsPage from './pages/CompetitionTsAndCsPage';
 import CompetitionModal from './components/ui/CompetitionModal';
 import ToastNotification from './common/ToastNotification';
+import { CompetitionProvider, useCompetition } from './context/CompetitionProvider';
 
 const MainCataloguePage = () => ( <BaseCataloguePage title="2025–2026 Catalogue" description="Explore our full collection of high-performance sportswear, uniforms, and branded apparel." previewImage="/rb-about.png" collectionName="2025–2026 Collection" collectionSubtitle="Complete product range and specifications" features={[ 'School & Team Sports Kits (Rugby, Netball, Cricket, Hockey, Athletics)', 'Other Sports & Clubs (Soccer, Golf, Darts, Fishing, Cycling, Hunting)', 'Gym & Fitness Apparel', 'Schoolwear & Matric Apparel', 'Corporate & Staff Uniforms', 'Accessories & Branding (Socks, Caps, Bags, Branding Items)', 'Sizing Charts & Customization Options' ]} pages="48 pages" fileSize="12.5 MB" ctaTitle="Need Custom Apparel?" downloadUrl="https://drive.google.com/uc?export=download&id=1-8T8g4HUj2lSZyai575Or66A5cTb0gWh" flipbookUrl="https://heyzine.com/flip-book/1f122372a4.html" /> );
 const MatricCataloguePage = () => ( <BaseCataloguePage title="Matric Apparel Catalogue" description="Celebrate your matriculation with our premium custom matric jackets and apparel" previewImage="https://images.pexels.com/photos/6311475/pexels-photo-6311475.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=2" collectionName="2025–2026 Matric Collection" collectionSubtitle="Premium jackets and customization options" features={['Standard Matric Jackets', 'Premium Matric Jackets', 'Embroidery Options', 'Color Combinations', 'Sizing Guide', 'Ordering Process']} pages="32 pages" fileSize="8.2 MB" ctaTitle="Ready to Order Your Matric Jackets?" downloadUrl="https://drive.google.com/uc?export=download&id=1-8T8g4HUj2lSZyai575Or66A5cTb0gWh" flipbookUrl="https://heyzine.com/flip-book/1f122372a4.html" /> );
 
 
 const AppContent: React.FC = () => {
-  // --- Using the correct state from our provider ---
   const { 
-    isLoading,
-    isRegistered,
     toastMessage, 
     showCongratsModal, 
+    setCongratsModalOpen, 
+    isCompetitionCompleted,
     isRegistrationModalOpen,
     setRegistrationModalOpen,
+    openRegistrationModal 
   } = useCompetition();
 
-  // --- Corrected logic to open the modal for new users ---
   useEffect(() => {
-    // Only run the timer if loading is finished AND the user is not yet registered.
-    if (!isLoading && !isRegistered) {
+    if (!isCompetitionCompleted) {
       const timer = setTimeout(() => {
-        setRegistrationModalOpen(true);
-      }, 5000); // 5-second timer
+        openRegistrationModal();
+      }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [isLoading, isRegistered, setRegistrationModalOpen]);
+  }, [isCompetitionCompleted, openRegistrationModal]);
+
+  const handleCloseCongratsModal = () => setCongratsModalOpen(false);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -301,7 +302,7 @@ const AppContent: React.FC = () => {
         isOpen={isRegistrationModalOpen}
         onClose={() => setRegistrationModalOpen(false)}
         showCongrats={showCongratsModal}
-        onCloseCongrats={() => { /* This can be expanded later if needed */}}
+        onCloseCongrats={handleCloseCongratsModal}
       />
       <ToastNotification message={toastMessage} />
     </div>
