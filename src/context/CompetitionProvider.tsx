@@ -141,7 +141,6 @@ export const CompetitionProvider: React.FC<{ children: ReactNode }> = ({ childre
       return;
     }
 
-    // Since we don't track individual logos anymore, we just increment the count
     // A simple way to prevent double-counting is to just not increment past the max
     const newCount = logosFound + 1;
     if (newCount <= TOTAL_LOGOS_REQUIRED) {
@@ -188,3 +187,4 @@ export const useCompetition = () => {
   }
   return context;
 };
+
