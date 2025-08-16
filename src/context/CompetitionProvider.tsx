@@ -1,150 +1,96 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 
-// Define the shape of our context data
+// --- Local Storage Keys ---
+// We still use these to remember the user on a specific device
+const LS_KEY_DEVICE_ID = 'recklessbear_device_id';
+const LS_KEY_REGISTERED_EMAIL = 'recklessbear_registered_email';
+
+// --- Define the shape of our new context data ---
 interface CompetitionContextType {
-  foundLogosCount: number;
-  findLogo: (logoId: string) => void;
-  toastMessage: string | null;
-  showCongratsModal: boolean;
-  setCongratsModalOpen: (isOpen: boolean) => void;
-  resetCompetition: () => void;
-  isCompetitionCompleted: boolean;
-  isDeviceRegistered: boolean;
-  registerDevice: () => void;
-  isRegistrationModalOpen: boolean;
-  openRegistrationModal: () => void;
-  setRegistrationModalOpen: (isOpen: boolean) => void;
+  isLoading: boolean;
+  isRegistered: boolean;
+  logosFound: number;
+  recordId: string | null;
+  status: 'Incomplete' | 'Completed' | null;
+  updateProgress: (newCount: number) => Promise<void>;
+  registerUser: (formData: { fullName: string; email: string; phone: string; deviceId: string | null }) => Promise<any>;
 }
 
 const CompetitionContext = createContext<CompetitionContextType | undefined>(undefined);
 
-// Local Storage Keys
-const LS_KEY_FOUND_LOGOS = 'recklessbear_found_logos';
-const LS_KEY_COMPLETED_COMPETITION = 'recklessbear_competition_completed';
-const LS_KEY_REGISTERED = 'recklessbear_competition_registered';
-const LS_KEY_DEVICE_ID = 'recklessbear_device_id';
-const LS_KEY_REGISTERED_EMAIL = 'recklessbear_registered_email';
+export const CompetitionProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [logosFound, setLogosFound] = useState(0);
+  const [recordId, setRecordId] = useState<string | null>(null);
+  const [status, setStatus] = useState<'Incomplete' | 'Completed' | null>(null);
 
-const TOTAL_LOGOS_REQUIRED = 5;
-
-interface CompetitionProviderProps {
-  children: ReactNode;
-}
-
-export const CompetitionProvider: React.FC<CompetitionProviderProps> = ({ children }) => {
-  const [foundLogos, setFoundLogos] = useState<string[]>([]);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [showCongratsModal, setShowCongratsModal] = useState(false);
-  const [isCompetitionCompleted, setCompetitionCompleted] = useState(false);
-  const [isDeviceRegistered, setDeviceRegistered] = useState(false);
-  const [isRegistrationModalOpen, setRegistrationModalOpen] = useState(false);
-
-  // Initialize all state from localStorage on mount
-  useEffect(() => {
-    setFoundLogos(JSON.parse(localStorage.getItem(LS_KEY_FOUND_LOGOS) || '[]'));
-    setDeviceRegistered(localStorage.getItem(LS_KEY_REGISTERED) === 'true');
-    setCompetitionCompleted(localStorage.getItem(LS_KEY_COMPLETED_COMPETITION) === 'true');
+  // --- NEW: This function checks the user's status against our API ---
+  const checkUser = useCallback(async () => {
+    setIsLoading(true);
+    const email = localStorage.getItem(LS_KEY_REGISTERED_EMAIL);
+    
+    if (email) {
+      try {
+        const response = await fetch('/api/check-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        const data = await response.json();
+        if (data.exists) {
+          setIsRegistered(true);
+          setLogosFound(data.logosFound);
+          setRecordId(data.recordId);
+          setStatus(data.status);
+        }
+      } catch (error) {
+        console.error("Failed to check user status:", error);
+      }
+    }
+    setIsLoading(false);
   }, []);
 
-  // Effect to check for competition completion
+  // Run the check once when the application first loads
   useEffect(() => {
-    if (foundLogos.length === TOTAL_LOGOS_REQUIRED && !isCompetitionCompleted) {
-      console.log("Competition complete! Showing congrats modal for the first time.");
-      localStorage.setItem(LS_KEY_COMPLETED_COMPETITION, 'true');
-      setCompetitionCompleted(true);
-      setShowCongratsModal(true);
-      
-      const deviceId = localStorage.getItem(LS_KEY_DEVICE_ID);
-      const registeredEmail = localStorage.getItem(LS_KEY_REGISTERED_EMAIL);
-      const N8N_COMPLETION_WEBHOOK_URL = 'https://dockerfile-1n82.onrender.com/webhook/competision-completed';
-
-      console.log('Triggering n8n webhook for completion...');
-      fetch(N8N_COMPLETION_WEBHOOK_URL, {
+    checkUser();
+  }, [checkUser]);
+  
+  // --- NEW: This function registers a new user via our API ---
+  const registerUser = async (formData) => {
+    const response = await fetch('/api/register-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          device_id: deviceId,
-          email: registeredEmail,
-          competition_completed: true,
-          timestamp: new Date().toISOString(),
-        }),
-      })
-      .then(response => response.json())
-      .then(data => console.log('Completion status sent to n8n:', data))
-      .catch(error => console.error('Error sending completion status to n8n:', error));
+        body: JSON.stringify(formData),
+    });
+    const data = await response.json();
+    if (data.success) {
+      // Save the email to remember the user on this device
+      localStorage.setItem(LS_KEY_REGISTERED_EMAIL, formData.email);
+      // Refresh the user's state after successful registration
+      await checkUser(); 
     }
-  }, [foundLogos, isCompetitionCompleted]);
-
-  const findLogo = useCallback((logoId: string) => {
-    if (!isDeviceRegistered) {
-      console.log("User not registered. Opening registration modal.");
-      setToastMessage("Please register to start finding logos!");
-      setTimeout(() => setToastMessage(null), 3000);
-      setRegistrationModalOpen(true);
-      return;
-    }
-
-    if (!foundLogos.includes(logoId)) {
-        const newFoundLogos = [...foundLogos, logoId];
-        setFoundLogos(newFoundLogos);
-        localStorage.setItem(LS_KEY_FOUND_LOGOS, JSON.stringify(newFoundLogos));
-        setToastMessage(`Golden Logo Found! (${newFoundLogos.length}/${TOTAL_LOGOS_REQUIRED} found)`);
-        setTimeout(() => setToastMessage(null), 3000);
-        const logoElement = document.getElementById(logoId);
-        if (logoElement) {
-          logoElement.classList.add('found');
-        }
-    }
-  }, [isDeviceRegistered, foundLogos]);
-
-  useEffect(() => {
-    window.triggerGoldenLogoFound = findLogo;
-    return () => { delete window.triggerGoldenLogoFound; };
-  }, [findLogo]);
-
-  const registerDevice = useCallback(() => {
-    localStorage.setItem(LS_KEY_REGISTERED, 'true');
-    setDeviceRegistered(true);
-  }, []);
-
-  // --- UPDATED THIS FUNCTION ---
-  // This now checks if the user is already registered before deciding to open the modal.
-  const openRegistrationModal = useCallback(() => {
-    if (!isDeviceRegistered && !isCompetitionCompleted) {
-      setRegistrationModalOpen(true);
-    }
-  }, [isDeviceRegistered, isCompetitionCompleted]);
-  // --- END UPDATE ---
-
-  const resetCompetition = useCallback(() => {
-    localStorage.removeItem(LS_KEY_FOUND_LOGOS);
-    localStorage.removeItem(LS_KEY_COMPLETED_COMPETITION);
-    localStorage.removeItem(LS_KEY_REGISTERED);
-    localStorage.removeItem(LS_KEY_DEVICE_ID);
-    localStorage.removeItem(LS_KEY_REGISTERED_EMAIL);
-    window.location.reload();
-  }, []);
-
-  const contextValue = {
-    foundLogosCount: foundLogos.length,
-    findLogo,
-    toastMessage,
-    showCongratsModal,
-    setCongratsModalOpen: setShowCongratsModal,
-    resetCompetition,
-    isCompetitionCompleted,
-    isDeviceRegistered,
-    registerDevice,
-    isRegistrationModalOpen,
-    openRegistrationModal,
-    setRegistrationModalOpen,
+    return data;
   };
 
-  return (
-    <CompetitionContext.Provider value={contextValue}>
-      {children}
-    </CompetitionContext.Provider>
-  );
+  // --- NEW: This function updates the user's logo count via our API ---
+  const updateProgress = async (newCount: number) => {
+    if (!recordId) {
+      console.error("Cannot update progress: user recordId is missing.");
+      return;
+    }
+    setLogosFound(newCount); // Update state immediately for a smooth UX
+    
+    await fetch('/api/update-progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recordId, logosFound: newCount }),
+    });
+  };
+  
+  const value = { isLoading, isRegistered, logosFound, recordId, status, updateProgress, registerUser };
+
+  return <CompetitionContext.Provider value={value}>{children}</CompetitionContext.Provider>;
 };
 
 export const useCompetition = () => {
