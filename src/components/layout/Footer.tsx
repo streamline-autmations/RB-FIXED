@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Phone, Mail, Facebook, Instagram } from 'lucide-react';
+// --- UPDATED: Added MapPin icon ---
+import { Phone, Mail, Facebook, Instagram, MapPin } from 'lucide-react';
 import Logo from './Logo';
 import { useCompetition } from '../../context/CompetitionProvider';
 
@@ -22,16 +23,11 @@ const Footer: React.FC = () => {
     findLogo('golden-logo-1');
   };
 
-  // --- UPDATED: Click handler for the Facebook icon logo ---
   const handleLogo4Click = (e: React.MouseEvent) => {
-    // If the logo hasn't been found yet...
     if (!isLogo4Found) {
-      // ...prevent the link from opening...
       e.preventDefault();
-      // ...and register the logo find.
       findLogo('golden-logo-4');
     }
-    // If the logo HAS been found, this function does nothing, and the link works normally.
   };
 
   const isOnHomepage = location.pathname === '/';
@@ -56,8 +52,8 @@ const Footer: React.FC = () => {
               <Logo size="small" />
             )}
             <p className="mt-4 text-rb-gray-400">ELEVATE YOUR GAME. DO IT RECKLESS.</p>
+            {/* --- UPDATED: Social Icons --- */}
             <div className="flex mt-6 space-x-4">
-              {/* --- UPDATED: Facebook Icon Logic for Visibility and Click Behavior --- */}
               <a 
                 href="https://www.facebook.com/Recklessbearfitness01" 
                 target="_blank" 
@@ -73,6 +69,10 @@ const Footer: React.FC = () => {
               </a>
               <a href="https://www.instagram.com/recklessbearapparel/" target="_blank" rel="noopener noreferrer" className="bg-rb-gray-800 p-2 rounded-full text-rb-gray-400 hover:text-rb-white hover:bg-rb-red transition-colors duration-300">
                 <Instagram size={20} />
+              </a>
+              {/* --- ADDED: Google Maps Icon --- */}
+              <a href="https://www.google.com/maps/place/Johannesburg/" target="_blank" rel="noopener noreferrer" className="bg-rb-gray-800 p-2 rounded-full text-rb-gray-400 hover:text-rb-white hover:bg-rb-red transition-colors duration-300">
+                <MapPin size={20} />
               </a>
             </div>
           </div>
@@ -95,7 +95,6 @@ const Footer: React.FC = () => {
             <h3 className="text-xl mb-4 text-rb-white">Our Products</h3>
             <ul className="space-y-2">
               <li><Link to="/products/school-team-sports" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">School & Team Sports</Link></li>
-              {/* --- NEW --- */}
               <li><Link to="/products/other-sports-clubs" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Other Sports & Clubs</Link></li>
               <li><Link to="/products/corporate-staff" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Corporate & Staff Apparel</Link></li>
               <li><Link to="/products/gym-fitness" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Gym & Fitness Apparel</Link></li>
@@ -118,7 +117,13 @@ const Footer: React.FC = () => {
                 <a href="tel:0766890383" className="flex items-center text-rb-gray-400 hover:text-rb-red transition-colors duration-200"><Phone size={18} className="mr-2" /> 076 689 0383</a>
                 <a href="mailto:janco@recklessbear.co.za" className="flex items-center text-rb-gray-400 hover:text-rb-red transition-colors duration-200"><Mail size={18} className="mr-2" /> janco@recklessbear.co.za</a>
               </div>
-              <a href="https://maps.app.goo.gl/qtmuTbufg5rCqvjP7" target="_blank" rel="noopener noreferrer" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200 mt-3 block">Johannesburg, South Africa</a>
+              {/* --- ADDED: Zander Steyn's Contact Details --- */}
+              <div className="space-y-2 pt-3 border-t border-rb-gray-800">
+                <p className="text-rb-gray-300 font-medium">Zander Steyn</p>
+                <a href="tel:0823841522" className="flex items-center text-rb-gray-400 hover:text-rb-red transition-colors duration-200"><Phone size={18} className="mr-2" /> 082 384 1522</a>
+                <a href="mailto:zander@recklessbear.co.za" className="flex items-center text-rb-gray-400 hover:text-rb-red transition-colors duration-200"><Mail size={18} className="mr-2" /> zander@recklessbear.co.za</a>
+              </div>
+              {/* --- REMOVED: Johannesburg Text Link --- */}
             </div>
           </div>
         </div>
@@ -130,7 +135,8 @@ const Footer: React.FC = () => {
             <p className="text-rb-gray-500 text-sm">Designed by <a href="https://streamline-automations.agency" target="_blank" rel="noopener noreferrer" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Streamline Automations</a></p>
           </div>
           <div className="mt-4 md:mt-0">
-            <a href="#privacy" className="text-sm text-rb-gray-500 hover:text-rb-white transition-colors duration-200 mr-6">Privacy Policy</a>
+            {/* --- UPDATED: Privacy Policy Link --- */}
+            <Link to="/privacy-policy" className="text-sm text-rb-gray-500 hover:text-rb-white transition-colors duration-200 mr-6">Privacy Policy</Link>
             <a href="#terms" className="text-sm text-rb-gray-500 hover:text-rb-white transition-colors duration-200">Terms of Service</a>
           </div>
         </div>
