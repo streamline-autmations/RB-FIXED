@@ -32,10 +32,18 @@ const CompetitionTsAndCsPage: React.FC = () => {
               The prize is R10,000 (ten thousand South African Rand). The prize is not transferable.
             </p>
 
+            {/* --- UPDATED SECTION STARTS HERE --- */}
             <h2>5. Winner Selection and Notification</h2>
             <p>
-              The winner will be chosen at random via a live-streamed wheel spin from all valid entries received. The live stream will take place on RecklessBear's social media channels on 29 August 2025. The winner will be notified by email and/or phone number provided during registration within 48 hours of the draw. If the winner cannot be contacted or does not claim the prize within 14 days of notification, we reserve the right to withdraw the prize from the winner and pick a replacement winner.
+              The winner will be chosen by a random draw from all valid entries. The winner will be announced during a live stream on RecklessBear's social media channels on <strong>29 August 2025 at approximately 6:00 PM SAST</strong>.
             </p>
+            <p>
+              Following the live announcement, the winner will be officially notified via the email address and/or phone number provided during registration within 24 hours. The selected winner must respond to the official notification to claim their prize within 7 days.
+            </p>
+            <p>
+              If the winner fails to respond within the 7-day period, or is found to be ineligible, they will forfeit the prize. In such an event, RecklessBear reserves the right to select a new winner by conducting another random draw from the remaining valid entries. This process will be repeated until a winner successfully claims the prize.
+            </p>
+            {/* --- UPDATED SECTION ENDS HERE --- */}
 
             <h2>6. General Conditions</h2>
             <p>
