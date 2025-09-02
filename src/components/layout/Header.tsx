@@ -4,7 +4,6 @@ import { Menu, X, ChevronDown, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Logo from './Logo';
 import allProducts, { getAllCategories, getAllSubcategories, getSubcategorySlug } from '../../data/productsData';
-import GoldenLogoModal from '../ui/GoldenLogoModal'; // Keep if this modal is used elsewhere
 
 interface NavItem {
   label: string;
@@ -24,12 +23,10 @@ const Header: React.FC = () => {
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const location = useLocation();
-  const [showGoldenModal, setShowGoldenModal] = useState(false); // Keep if GoldenLogoModal is used elsewhere
 
   // Generate navigation items dynamically from productsData
   const generateNavItems = (): NavItem[] => {
     const categories = getAllCategories();
-    const subcategories = getAllSubcategories();
     
     const productChildren = [
       {
@@ -40,7 +37,6 @@ const Header: React.FC = () => {
       }
     ];
 
-    // Map categories to URL slugs
     const categorySlugMap: { [key: string]: string } = {
       'School & Team Sports': 'school-team-sports',
       'Other Sports & Clubs': 'other-sports-clubs',
@@ -50,38 +46,13 @@ const Header: React.FC = () => {
       'Accessories & Branding': 'accessories-branding'
     };
 
-    // Map subcategories to URL slugs
-    const subcategorySlugMap: { [key: string]: string } = {
-      'Rugby': 'rugby',
-      'Netball': 'netball',
-      'Cricket': 'cricket',
-      'Hockey': 'hockey',
-      'Athletics': 'athletics',
-      'Soccer': 'soccer',
-      'Golf': 'golf',
-      'Fishing': 'fishing',
-      'Hunting': 'hunting',
-      'Cycling': 'cycling',
-      'Darts': 'darts',
-      'Tracksuits & Hoodies': 'tracksuits-hoodies',
-      'T-Shirts & Golfers': 'tshirts-golfers',
-      'Jackets': 'school-jackets',
-      'Corporate Wear': 'corporate',
-      'Fitness Gear': 'fitness',
-      'Socks': 'socks',
-      'Headwear': 'headwear',
-      'Bags': 'bags',
-      'Sleeves & Accessories': 'sleeves-accessories'
-    };
-
-    // Add categories dynamically from products
     categories.forEach(category => {
       const categoryProducts = allProducts.filter(product => product.category === category);
       const categorySubcategories = [...new Set(categoryProducts.map(product => product.subcategory).filter(Boolean))];
       
       if (categorySubcategories.length > 0) {
         const categorySlug = categorySlugMap[category];
-        if (!categorySlug) return; // Skip if no slug mapping
+        if (!categorySlug) return;
         
         const items = [
           { label: `View All ${category}`, path: `/products/${categorySlug}` }
@@ -143,7 +114,6 @@ const Header: React.FC = () => {
     setExpandedSections([]);
     setIsProductsOpen(false);
     
-    // Scroll to top on route change
     window.scrollTo(0, 0);
   }, [location]);
 
@@ -158,20 +128,15 @@ const Header: React.FC = () => {
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     
-    // If we're on the homepage, scroll to top
     if (location.pathname === '/') {
       window.scrollTo({
         top: 0,
         behavior: 'smooth'
       });
     } else {
-      // If we're on another page, navigate to homepage
       window.location.href = '/';
     }
   };
-
-  // Removed handleGoldenLogoClick as it was tied to the header logo.
-  // The main competition logic is now in CompetitionProvider.
 
   const DropdownMenu: React.FC<{ item: NavItem }> = ({ item }) => {
     if (!item.children) return null;
@@ -236,8 +201,6 @@ const Header: React.FC = () => {
             className="z-50 cursor-pointer relative"
           >
             <Logo size="medium" />
-            {/* Removed Golden Logo Overlay */}
-            {/* Removed Hidden Golden Logo Overlay for Competition */}
           </a>
 
           {/* Desktop Navigation */}
@@ -377,12 +340,6 @@ const Header: React.FC = () => {
           </AnimatePresence>
         </div>
       </div>
-      
-      {/* Golden Logo Modal */}
-      <GoldenLogoModal 
-        isOpen={showGoldenModal} 
-        onClose={() => setShowGoldenModal(false)} 
-      />
     </header>
   );
 };
