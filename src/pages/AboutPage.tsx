@@ -31,7 +31,7 @@ const AboutPage: React.FC = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <div className="aspect-square rounded-lg overflow-hidden relative">
+              <div className="aspect-[53/35] rounded-lg overflow-hidden relative"> {/* MODIFIED LINE */}
                 <img 
                   src="/group-photo.webp" 
                   alt="RecklessBear Team" 
@@ -53,7 +53,7 @@ const AboutPage: React.FC = () => {
               <p className="text-rb-gray-400 mb-6">
                 From design to manufacturing, everything happens in-house. Based in Johannesburg, we serve clients across South Africa with pride.
               </p>
-              <p className="text-rb-gray-400 mb-8">
+              <p className="text-rb-400 mb-8">
                 We started with a simple belief: athletes, teams, and fitness enthusiasts deserve custom sportswear that performs as good as it looks. 
                 Every design is created with performance, durability, and style in mind.
               </p>
@@ -133,14 +133,14 @@ const AboutPage: React.FC = () => {
                 position: 'Financial Director',
                 email: 'alicia@recklessbear.co.za',
                 phone: '076 123 4567',
-                image: '/alicia-profile.JPG'
+                image: '/alicia-profile.webp'
               },
               {
                 name: 'Janco Tiedt',
                 position: 'Director',
                 email: 'janco@recklessbear.co.za',
                 phone: '076 689 0383',
-                image: '/janco-profile.JPG'
+                image: '/janco-profile.webp'
               },
               {
                 name: 'Zander Steyn',
