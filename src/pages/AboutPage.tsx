@@ -33,7 +33,7 @@ const AboutPage: React.FC = () => {
             >
               <div className="aspect-square rounded-lg overflow-hidden relative">
                 <img 
-                  src="/rb-about-us.png" 
+                  src="/group-photo.JPG" 
                   alt="RecklessBear Team" 
                   className="w-full h-full object-cover"
                 />
