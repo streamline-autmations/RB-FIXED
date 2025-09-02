@@ -140,7 +140,7 @@ const AboutPage: React.FC = () => {
                 position: 'Director',
                 email: 'janco@recklessbear.co.za',
                 phone: '076 689 0383',
-                image: '/janco-profile.webp'
+                image: '/janco-profile.JPG'
               },
               {
                 name: 'Zander Steyn',
