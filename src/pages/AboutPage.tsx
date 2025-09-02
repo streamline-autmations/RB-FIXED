@@ -33,7 +33,7 @@ const AboutPage: React.FC = () => {
             >
               <div className="aspect-square rounded-lg overflow-hidden relative">
                 <img 
-                  src="/group-photo.JPG" 
+                  src="/group-photo.webp" 
                   alt="RecklessBear Team" 
                   className="w-full h-full object-cover"
                 />
@@ -126,28 +126,28 @@ const AboutPage: React.FC = () => {
                 position: 'Brand Owner',
                 email: 'etienne@recklessbear.co.za',
                 phone: '082 316 3330',
-                image: '/etienne-viljoen.png'
+                image: '/etienne-profile.webp'
               },
               {
                 name: 'Alicia Viljoen',
                 position: 'Financial Director',
                 email: 'alicia@recklessbear.co.za',
                 phone: '076 123 4567',
-                image: null
+                image: '/alicia-profile.webp'
               },
               {
                 name: 'Janco Tiedt',
                 position: 'Director',
                 email: 'janco@recklessbear.co.za',
                 phone: '076 689 0383',
-                image: '/janco-tiedt.png'
+                image: '/janco-profile.webp'
               },
               {
                 name: 'Zander Steyn',
                 position: 'Director of Printing and Pressing',
                 email: 'zander@recklessbear.co.za',
                 phone: '082 384 1522',
-                image: '/zander-steyn.png'
+                image: '/zander-profile.webp'
               }
             ].map((member, index) => (
               <motion.div
