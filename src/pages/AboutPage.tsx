@@ -1,38 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import Button from '../components/ui/Button';
-import { useCompetition } from '../context/CompetitionProvider';
-
-declare global {
-  interface Window {
-    triggerGoldenLogoFound?: (logoId: string) => void;
-  }
-}
 
 const AboutPage: React.FC = () => {
-  const { findLogo } = useCompetition();
-  const [isLogo5Found, setIsLogo5Found] = useState(false);
-
-  useEffect(() => {
-    const foundLogos = JSON.parse(localStorage.getItem('recklessbear_found_logos') || '[]');
-    if (foundLogos.includes('golden-logo-5')) {
-      setIsLogo5Found(true);
-    }
-  }, []);
-
-  const handleLogo5Click = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    if (!isLogo5Found) {
-      findLogo('golden-logo-5');
-      setIsLogo5Found(true);
-    }
-  };
-
   return (
     <>
-      {/* About Hero (Unchanged) */}
+      {/* About Hero */}
       <section className="pt-32 pb-20 bg-rb-black texture-overlay relative">
         <div className="absolute inset-0 bg-gradient-to-b from-rb-black to-transparent opacity-80"></div>
         <div className="container-custom relative z-10">
@@ -63,28 +37,6 @@ const AboutPage: React.FC = () => {
                   alt="RecklessBear Team" 
                   className="w-full h-full object-cover"
                 />
-                {/* --- UPDATED HIDDEN LOGO --- */}
-                {!isLogo5Found && (
-                  <img
-                    id="golden-logo-5"
-                    src="/Golden-Logo.png"
-                    alt="Hidden Golden Logo"
-                    className={`golden-logo-image absolute z-10`}
-                    onClick={handleLogo5Click}
-                    style={{
-                      width: '20px',
-                      height: '20px',
-                      // To move the logo UP or DOWN, change the 'top' percentage.
-                      top: '22%',
-                      // To move the logo LEFT or RIGHT, change the 'left' percentage.
-                      left: '27%',
-                      transform: 'translate(-50%, -50%)',
-                      // To make the logo MORE or LESS visible, change the opacity (0.0 to 1.0).
-                      opacity: 0.8,
-                    }}
-                  />
-                )}
-                 {/* --- END UPDATED HIDDEN LOGO --- */}
               </div>
             </motion.div>
             
@@ -116,7 +68,7 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
       
-      {/* Values Section (Unchanged) */}
+      {/* Values Section */}
       <section className="py-20 bg-rb-black">
         <div className="container-custom">
           <motion.div
@@ -151,7 +103,7 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
       
-      {/* Team Section (Unchanged) */}
+      {/* Team Section */}
       <section className="py-20 bg-rb-gray-900">
         <div className="container-custom">
           <motion.div
@@ -237,7 +189,7 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Contact Info Section (Unchanged) */}
+      {/* Contact Info Section */}
       <section className="py-20 bg-rb-black">
         <div className="container-custom">
           <motion.div
