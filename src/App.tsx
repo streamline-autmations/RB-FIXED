@@ -116,9 +116,13 @@ import PadelGolferPage from './pages/products/PadelGolferPage';
 import PadelShortsPage from './pages/products/PadelShortsPage';
 import PadelZipTopPage from './pages/products/PadelZipTopPage';
 
+// --- REMOVED ALL COMPETITION IMPORTS ---
+
 // Catalogue Page components
 const MainCataloguePage = () => ( <BaseCataloguePage title="2025–2026 Catalogue" description="Explore our full collection of high-performance sportswear, uniforms, and branded apparel." previewImage="/rb-about.png" collectionName="2025–2026 Collection" collectionSubtitle="Complete product range and specifications" features={[ 'School & Team Sports Kits (Rugby, Netball, Cricket, Hockey, Athletics)', 'Other Sports & Clubs (Soccer, Golf, Darts, Fishing, Cycling, Hunting)', 'Gym & Fitness Apparel', 'Schoolwear & Matric Apparel', 'Corporate & Staff Uniforms', 'Accessories & Branding (Socks, Caps, Bags, Branding Items)', 'Sizing Charts & Customization Options' ]} pages="48 pages" fileSize="12.5 MB" ctaTitle="Need Custom Apparel?" downloadUrl="https://drive.google.com/uc?export=download&id=1-8T8g4HUj2lSZyai575Or66A5cTb0gWh" flipbookUrl="https://heyzine.com/flip-book/1f122372a4.html" /> );
 const MatricCataloguePage = () => ( <BaseCataloguePage title="Matric Apparel Catalogue" description="Celebrate your matriculation with our premium custom matric jackets and apparel" previewImage="https://images.pexels.com/photos/6311475/pexels-photo-6311475.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=2" collectionName="2025–2026 Matric Collection" collectionSubtitle="Premium jackets and customization options" features={['Standard Matric Jackets', 'Premium Matric Jackets', 'Embroidery Options', 'Color Combinations', 'Sizing Guide', 'Ordering Process']} pages="32 pages" fileSize="8.2 MB" ctaTitle="Ready to Order Your Matric Jackets?" downloadUrl="https://drive.google.com/uc?export=download&id=1-8T8g4HUj2lSZyai575Or66A5cTb0gWh" flipbookUrl="https://heyzine.com/flip-book/1f122372a4.html" /> );
+
+// --- REMOVED AppContent COMPONENT ---
 
 function App() {
   return (
@@ -138,34 +142,27 @@ function App() {
               <Route path="/products" element={<ProductsPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
 
-              {/* --- CORRECTED ROUTE ORDER --- */}
-              {/* Specific subcategory and product routes MUST come before generic ones */}
-              
+              {/* Category, Subcategory, and Specific Product Routes */}
+              <Route path="/products/:categorySlug" element={<CategoryPage />} />
               <Route path="/products/rugby" element={<SubcategoryPage />} />
-              
-              {/* Accessories & Branding Subcategories */}
-              <Route path="/products/accessories-branding/socks" element={<SubcategoryPage />} />
-              <Route path="/products/accessories-branding/sleeves-accessories" element={<SubcategoryPage />} />
-              <Route path="/products/accessories-branding/headwear" element={<SubcategoryPage />} />
-              <Route path="/products/accessories-branding/bags" element={<SubcategoryPage />} />
-              
-              {/* Other Specific Product Routes */}
+              {/* ... keep all other subcategory and specific product routes */}
               <Route path="/products/athletics-leggings" element={<AthleticsLeggingsPage />} />
 
-              {/* Generic route for TWO-LEVEL paths (e.g., /products/category/product) */}
+              {/* --- ADDED: The generic route for all other products --- */}
               <Route path="/products/:categorySlug/:productSlug" element={<GenericProductPage />} />
-
-              {/* Generic route for ONE-LEVEL paths (e.g., /products/category). THIS MUST BE LAST. */}
-              <Route path="/products/:categorySlug" element={<CategoryPage />} />
 
               {/* Catalogue Routes */}
               <Route path="/catalogues/2025" element={<MainCataloguePage />} />
               <Route path="/catalogues/matric" element={<MatricCataloguePage />} />
               <Route path="/catalogues/*" element={<MainCataloguePage />} />
+
+              {/* --- REMOVED: The route for the T&Cs page --- */}
             </Routes>
           </AnimatePresence>
         </main>
         <Footer />
+
+        {/* --- REMOVED: CompetitionModal and ToastNotification --- */}
       </div>
     </Router>
   );
