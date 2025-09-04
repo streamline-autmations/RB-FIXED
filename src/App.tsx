@@ -138,27 +138,21 @@ function App() {
               <Route path="/products" element={<ProductsPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
 
-              {/* --- CORRECTED ROUTE ORDER --- */}
-              {/* Specific subcategory and product routes MUST come first */}
-              
-              {/* Specific Subcategories */}
-              <Route path="/products/rugby" element={<SubcategoryPage />} />
-              
-              {/* ADDED: Accessories & Branding Subcategories */}
-              <Route path="/products/accessories-branding/socks" element={<SubcategoryPage />} />
-              <Route path="/products/accessories-branding/sleeves-accessories" element={<SubcategoryPage />} />
-              <Route path="/products/accessories-branding/headwear" element={<SubcategoryPage />} />
-              <Route path="/products/accessories-branding/bags" element={<SubcategoryPage />} />
+              {/* --- NECESSARY CHANGE: SIMPLIFIED PRODUCT ROUTES --- */}
 
-              {/* Other Specific Product Routes */}
-              <Route path="/products/athletics-leggings" element={<AthleticsLeggingsPage />} />
-
-              {/* Generic route for individual products (e.g., /products/category/product-name) */}
+              {/* This new route will handle ALL your subcategories like "/products/subcategory/netball". */}
+              {/* It points to SubcategoryPage, which is the correct component for the job. */}
+              {/* NOTE: This route comes BEFORE the /:categorySlug route to ensure it's matched first. */}
+              <Route path="/products/subcategory/:slug" element={<SubcategoryPage />} />
+              
+              {/* This route handles broad categories like "/products/school-team-sports". */}
+              <Route path="/products/:categorySlug" element={<CategoryPage />} />
+              
+              {/* This route for specific product pages remains unchanged */}
               <Route path="/products/:categorySlug/:productSlug" element={<GenericProductPage />} />
 
-              {/* Generic route for categories (e.g., /products/netball). THIS MUST BE LAST. */}
-              <Route path="/products/:categorySlug" element={<CategoryPage />} />
-
+              {/* --- END OF NECESSARY CHANGE --- */}
+              
               {/* Catalogue Routes */}
               <Route path="/catalogues/2025" element={<MainCataloguePage />} />
               <Route path="/catalogues/matric" element={<MatricCataloguePage />} />
