@@ -138,21 +138,97 @@ function App() {
               <Route path="/products" element={<ProductsPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
 
-              {/* --- NECESSARY CHANGE: SIMPLIFIED PRODUCT ROUTES --- */}
-
-              {/* This new route will handle ALL your subcategories like "/products/subcategory/netball". */}
-              {/* It points to SubcategoryPage, which is the correct component for the job. */}
-              {/* NOTE: This route comes BEFORE the /:categorySlug route to ensure it's matched first. */}
+              {/* --- ADDED: ALL YOUR SPECIFIC PRODUCT PAGE ROUTES --- */}
+              {/* This block was missing, causing the product card links to break. */}
+              <Route path="/products/rugby-jerseys" element={<RugbyJerseysPage />} />
+              <Route path="/products/rugby-shorts" element={<RugbyShortsPage />} />
+              <Route path="/products/rugby-socks" element={<RugbySocksPage />} />
+              <Route path="/products/rugby-warmup-short" element={<RugbyWarmupShortPage />} />
+              <Route path="/products/rugby-warmup-long" element={<RugbyWarmupLongPage />} />
+              <Route path="/products/netball-dress" element={<NetballDressPage />} />
+              <Route path="/products/netball-hotpants" element={<NetballHotPantsPage />} />
+              <Route path="/products/netball-socks" element={<NetballSocksPage />} />
+              <Route path="/products/netball-bibs" element={<NetballBibsPage />} />
+              <Route path="/products/netball-skort" element={<NetballSkortPage />} />
+              <Route path="/products/netball-vest-ladies" element={<NetballLadiesVestPage />} />
+              <Route path="/products/cricket-shirt" element={<CricketShirtPage />} />
+              <Route path="/products/cricket-pants" element={<CricketPantsPage />} />
+              <Route path="/products/cricket-golfer-long" element={<CricketLongGolferPage />} />
+              <Route path="/products/hockey-dress" element={<HockeyDressPage />} />
+              <Route path="/products/hockey-shorts" element={<HockeyShortsPage />} />
+              <Route path="/products/hockey-socks" element={<HockeySocksPage />} />
+              <Route path="/products/hockey-tshirt-short" element={<HockeyTShirtShortPage />} />
+              <Route path="/products/hockey-tshirt-long" element={<HockeyTShirtLongPage />} />
+              <Route path="/products/hockey-vest-mens" element={<HockeyMensVestPage />} />
+              <Route path="/products/hockey-vest-ladies" element={<HockeyLadiesVestPage />} />
+              <Route path="/products/athletics-tshirt-short" element={<AthleticsShortTShirtPage />} />
+              <Route path="/products/athletics-tshirt-long" element={<AthleticsLongTShirtPage />} />
+              <Route path="/products/athletics-crop-top" element={<AthleticsCropTopPage />} />
+              <Route path="/products/athletics-vest-mens" element={<AthleticsMensVestPage />} />
+              <Route path="/products/athletics-vest-ladies" element={<AthleticsLadiesVestPage />} />
+              <Route path="/products/athletics-shorts" element={<AthleticsShortsPage />} />
+              <Route path="/products/athletics-leggings" element={<AthleticsLeggingsPage />} />
+              <Route path="/products/soccer-jersey" element={<SoccerJerseyPage />} />
+              <Route path="/products/soccer-shorts" element={<SoccerShortsPage />} />
+              <Route path="/products/soccer-socks" element={<SoccerSocksPage />} />
+              <Route path="/products/padel-short-sleeve" element={<PadelShortSleevePage />} />
+              <Route path="/products/padel-golfer" element={<PadelGolferPage />} />
+              <Route path="/products/padel-shorts" element={<PadelShortsPage />} />
+              <Route path="/products/padel-zip-top" element={<PadelZipTopPage />} />
+              <Route path="/products/golf-shirt" element={<GolfShirtPage />} />
+              <Route path="/products/golf-dress" element={<GolfDressPage />} />
+              <Route path="/products/golf-zip-top" element={<GolfZipTopPage />} />
+              <Route path="/products/cycling-shirt" element={<CyclingShirtPage />} />
+              <Route path="/products/fishing-hoodie" element={<FishingHoodiePage />} />
+              <Route path="/products/fishing-tee-long" element={<FishingTeeLongPage />} />
+              <Route path="/products/fishing-tee-short" element={<FishingTeeShortPage />} />
+              <Route path="/products/fishing-zip-top" element={<FishingZipTopPage />} />
+              <Route path="/products/hunting-hoodie" element={<HuntingHoodiePage />} />
+              <Route path="/products/hunting-puffer-long" element={<HuntingPufferLongPage />} />
+              <Route path="/products/hunting-puffer-short" element={<HuntingPufferShortPage />} />
+              <Route path="/products/hunting-zip-top" element={<HuntingZipTopPage />} />
+              <Route path="/products/hunting-softshell" element={<HuntingSoftshellPage />} />
+              <Route path="/products/corporate-shirt" element={<CorporateShirtPage />} />
+              <Route path="/products/corporate-puffer-short" element={<CorporatePufferShortPage />} />
+              <Route path="/products/corporate-puffer-long" element={<CorporatePufferLongPage />} />
+              <Route path="/products/corporate-softshell" element={<CorporateSoftshellPage />} />
+              <Route path="/products/corporate-zip-top" element={<CorporateZipTopPage />} />
+              <Route path="/products/leggings" element={<LeggingsPage />} />
+              <Route path="/products/gym-shirt" element={<GymShirtPage />} />
+              <Route path="/products/gym-vest" element={<GymVestPage />} />
+              <Route path="/products/gym-hoodie" element={<GymHoodiePage />} />
+              <Route path="/products/gym-crop-top" element={<GymCropTopPage />} />
+              <Route path="/products/gym-puffer-jacket" element={<GymPufferJacketPage />} />
+              <Route path="/products/gym-tshirt-long" element={<GymTShirtLongPage />} />
+              <Route path="/products/gym-tracksuit-pants" element={<GymTracksuitPantsPage />} />
+              <Route path="/products/gym-shorts" element={<GymShortsPage />} />
+              <Route path="/products/school-hoodie" element={<SchoolHoodiePage />} />
+              <Route path="/products/school-tracksuit-pants" element={<SchoolTracksuitPantsPage />} />
+              <Route path="/products/school-tshirt-short" element={<SchoolTShirtShortPage />} />
+              <Route path="/products/school-tshirt-long" element={<SchoolTShirtLongPage />} />
+              <Route path="/products/school-golfer-short" element={<SchoolGolferShortPage />} />
+              <Route path="/products/school-golfer-long" element={<SchoolGolferLongPage />} />
+              <Route path="/products/school-softshell" element={<SchoolSoftshellPage />} />
+              <Route path="/products/school-puffer" element={<SchoolPufferPage />} />
+              <Route path="/products/tab-socks" element={<TabSocksPage />} />
+              <Route path="/products/anklet-socks" element={<AnkletSocksPage />} />
+              <Route path="/products/premium-crew-socks" element={<PremiumCrewSocksPage />} />
+              <Route path="/products/ribbed-crew-socks" element={<RibbedCrewSocksPage />} />
+              <Route path="/products/promo-crew-socks" element={<PromoCrewSocksPage />} />
+              <Route path="/products/knee-high-socks" element={<KneeHighSocksPage />} />
+              <Route path="/products/sweatbands" element={<SweatbandsPage />} />
+              <Route path="/products/arm-sleeves" element={<ArmSleevesPage />} />
+              <Route path="/products/leg-sleeves" element={<LegSleevesPage />} />
+              <Route path="/products/cap" element={<CapPage />} />
+              <Route path="/products/visor-cap" element={<VisorCapPage />} />
+              <Route path="/products/backpack" element={<BackpackPage />} />
+              {/* --- END OF SPECIFIC PRODUCT ROUTES --- */}
+              
+              {/* --- CORRECTED CATEGORY & SUBCATEGORY ROUTES --- */}
               <Route path="/products/subcategory/:slug" element={<SubcategoryPage />} />
-              
-              {/* This route handles broad categories like "/products/school-team-sports". */}
               <Route path="/products/:categorySlug" element={<CategoryPage />} />
-              
-              {/* This route for specific product pages remains unchanged */}
               <Route path="/products/:categorySlug/:productSlug" element={<GenericProductPage />} />
 
-              {/* --- END OF NECESSARY CHANGE --- */}
-              
               {/* Catalogue Routes */}
               <Route path="/catalogues/2025" element={<MainCataloguePage />} />
               <Route path="/catalogues/matric" element={<MatricCataloguePage />} />
