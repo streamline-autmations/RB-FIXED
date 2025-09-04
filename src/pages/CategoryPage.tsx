@@ -1,13 +1,10 @@
-import React, 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Filter, Grid3X3, Grid2X2, LayoutList } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { getProductsByCategory } from '../data/productsData';
-
-// NO CHANGES WERE NEEDED IN THIS FILE. IT IS ALREADY CORRECT.
 
 const CategoryPage: React.FC = () => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
