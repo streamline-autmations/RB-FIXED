@@ -1,36 +1,55 @@
-// src/pages/CategoryPage.tsx
+import React, { useState, useEffect } from 'react';
+import { useParams, useLocation, Navigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { Filter } from 'lucide-react';
+import Button from '../components/ui/Button';
+import { getProductsBySubcategory, getSubcategoryBySlug } from '../data/productsData';
+import SubcategoryTemplate from '../components/shared/SubcategoryTemplate';
 
-import React, { useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { getProductsByCategory, getCategoryBySlug } from '../data/productsData'; // We'll add these functions next
-import SubcategoryTemplate from '../components/shared/SubcategoryTemplate'; // Re-using your existing template
+const SubcategoryPage: React.FC = () => {
+  const params = useParams();
+  const location = useLocation();
+  
+  // Extract subcategory slug from URL path
+  const pathSegments = location.pathname.split('/').filter(Boolean);
+  const subcategorySlug = pathSegments[pathSegments.length - 1];
 
-const CategoryPage: React.FC = () => {
-  // This hook gets the slug from the URL, e.g., "netball" from "/products/netball"
-  const { categorySlug } = useParams<{ categorySlug: string }>();
+  // Get subcategory name from slug
+  const subcategoryName = getSubcategoryBySlug(subcategorySlug || '');
+  const products = getProductsBySubcategory(subcategoryName);
 
-  // Scroll to top when the page loads
+  // Scroll to top on mount
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [categorySlug]);
+  }, [location.pathname]);
 
-  // Find the full category name (e.g., "Netball") from its slug ("netball")
-  const categoryName = getCategoryBySlug(categorySlug || '');
-  
-  // Get all products that belong to this category
-  const products = getProductsByCategory(categoryName);
-
-  // If the category doesn't exist, show a "Not Found" message
-  if (!categoryName) {
+  if (!subcategoryName) {
     return (
       <div className="pt-32 pb-16 bg-rb-black min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bebas text-rb-white mb-4">Category Not Found</h1>
+          <h1 className="text-4xl font-bebas text-rb-white mb-4">Subcategory Not Found</h1>
           <p className="text-rb-gray-400 mb-6">
-            The category "{categorySlug}" could not be found.
+            The subcategory "{subcategorySlug}" could not be found.
           </p>
           <Link to="/products" className="text-rb-red hover:text-rb-white">
-            Back to All Products
+            Back to Products
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="pt-32 pb-16 bg-rb-black min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bebas text-rb-white mb-4">No Products Found</h1>
+          <p className="text-rb-gray-400 mb-6">
+            No products are available in the "{subcategoryName}" category at this time.
+          </p>
+          <Link to="/products" className="text-rb-red hover:text-rb-white">
+            Browse All Products
           </Link>
         </div>
       </div>
@@ -38,15 +57,13 @@ const CategoryPage: React.FC = () => {
   }
 
   return (
-    // We are re-using your SubcategoryTemplate to display the products.
-    // It should work perfectly as it just needs a title, description, and a list of products.
     <SubcategoryTemplate
-      title={`${categoryName}`}
-      description={`Browse our complete range of ${categoryName.toLowerCase()} products.`}
+      title={`${subcategoryName} Products`}
+      description={`Browse our complete range of ${subcategoryName.toLowerCase()} products`}
       products={products}
-      showFilter={true} // You might want to show filters on main category pages
+      showFilter={false}
     />
   );
 };
 
-export default CategoryPage;
+export default SubcategoryPage;
