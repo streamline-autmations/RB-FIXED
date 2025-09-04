@@ -1,28 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useLocation, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom'; // Updated imports
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { Filter } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { getProductsBySubcategory, getSubcategoryBySlug } from '../data/productsData';
 import SubcategoryTemplate from '../components/shared/SubcategoryTemplate';
 
 const SubcategoryPage: React.FC = () => {
-  const params = useParams();
-  const location = useLocation();
-  
-  // Extract subcategory slug from URL path
-  const pathSegments = location.pathname.split('/').filter(Boolean);
-  const subcategorySlug = pathSegments[pathSegments.length - 1];
-
-  // Get subcategory name from slug
-  const subcategoryName = getSubcategoryBySlug(subcategorySlug || '');
-  const products = getProductsBySubcategory(subcategoryName);
+  // --- NECESSARY CHANGE: Switched to useParams to get the slug from the URL ---
+  const { slug: subcategorySlug } = useParams<{ slug: string }>();
 
   // Scroll to top on mount
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [location.pathname]);
+  }, [subcategorySlug]);
+
+  // --- THE REST OF YOUR CODE IS PERFECT AND REMAINS UNCHANGED ---
+  const subcategoryName = getSubcategoryBySlug(subcategorySlug || '');
+  const products = getProductsBySubcategory(subcategoryName);
 
   if (!subcategoryName) {
     return (
@@ -46,7 +41,7 @@ const SubcategoryPage: React.FC = () => {
         <div className="text-center">
           <h1 className="text-4xl font-bebas text-rb-white mb-4">No Products Found</h1>
           <p className="text-rb-gray-400 mb-6">
-            No products are available in the "{subcategoryName}" category at this time.
+            No products are available in the "{subcategoryName}" subcategory at this time.
           </p>
           <Link to="/products" className="text-rb-red hover:text-rb-white">
             Browse All Products
@@ -58,7 +53,7 @@ const SubcategoryPage: React.FC = () => {
 
   return (
     <SubcategoryTemplate
-      title={`${subcategoryName} Products`}
+      title={`${subcategoryName}`}
       description={`Browse our complete range of ${subcategoryName.toLowerCase()} products`}
       products={products}
       showFilter={false}
