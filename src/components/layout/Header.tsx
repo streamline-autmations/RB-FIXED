@@ -63,7 +63,8 @@ const Header: React.FC = () => {
           if (subcategorySlug) {
             items.push({
               label: subcategory,
-              path: `/products/${subcategorySlug}`
+              // --- THIS IS THE ONLY NECESSARY CHANGE IN THE ENTIRE FILE ---
+              path: `/products/subcategory/${subcategorySlug}`
             });
           }
         });
@@ -134,6 +135,7 @@ const Header: React.FC = () => {
         behavior: 'smooth'
       });
     } else {
+      // Navigate to home and then scroll to top
       window.location.href = '/';
     }
   };
