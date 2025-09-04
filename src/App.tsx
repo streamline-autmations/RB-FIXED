@@ -138,21 +138,25 @@ function App() {
               <Route path="/products" element={<ProductsPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
 
-              {/* Category, Subcategory, and Specific Product Routes */}
-              <Route path="/products/:categorySlug" element={<CategoryPage />} />
+              {/* --- CORRECTED ROUTE ORDER --- */}
+              {/* Specific subcategory and product routes MUST come before generic ones */}
+              
               <Route path="/products/rugby" element={<SubcategoryPage />} />
               
-              {/* --- ADDED: Specific routes for accessories subcategories --- */}
+              {/* Accessories & Branding Subcategories */}
               <Route path="/products/accessories-branding/socks" element={<SubcategoryPage />} />
               <Route path="/products/accessories-branding/sleeves-accessories" element={<SubcategoryPage />} />
               <Route path="/products/accessories-branding/headwear" element={<SubcategoryPage />} />
               <Route path="/products/accessories-branding/bags" element={<SubcategoryPage />} />
-
-              {/* ... keep all other subcategory and specific product routes */}
+              
+              {/* Other Specific Product Routes */}
               <Route path="/products/athletics-leggings" element={<AthleticsLeggingsPage />} />
 
-              {/* The generic route for all other products remains below */}
+              {/* Generic route for TWO-LEVEL paths (e.g., /products/category/product) */}
               <Route path="/products/:categorySlug/:productSlug" element={<GenericProductPage />} />
+
+              {/* Generic route for ONE-LEVEL paths (e.g., /products/category). THIS MUST BE LAST. */}
+              <Route path="/products/:categorySlug" element={<CategoryPage />} />
 
               {/* Catalogue Routes */}
               <Route path="/catalogues/2025" element={<MainCataloguePage />} />
