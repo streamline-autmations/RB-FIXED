@@ -109,6 +109,7 @@ import CategoryPage from './pages/CategoryPage';
 import SubcategoryPage from './pages/SubcategoryPage';
 import GenericProductPage from './pages/products/GenericProductPage';
 import BaseCataloguePage from './components/shared/BaseCataloguePage';
+import PromoPopup from './components/ui/PromoPopup';
 
 // --- PADEL IMPORTS ---
 import PadelShortSleevePage from './pages/products/PadelShortSleevePage';
@@ -125,6 +126,7 @@ function App() {
     <Router>
       <div className="flex flex-col min-h-screen">
         <Header />
+        <PromoPopup />
         <main>
           <AnimatePresence mode="wait">
             <Routes>
