@@ -200,7 +200,7 @@ const Header: React.FC = () => {
           <a 
             href="/" 
             onClick={handleLogoClick}
-            className="z-50 cursor-pointer relative"
+            className="z-50 cursor-pointer relative block"
           >
             <Logo size="medium" />
           </a>
