@@ -27,29 +27,5 @@
   <body class="bg-black">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-
-    <div style="width: 0; height: 0;" id="VG_OVERLAY_CONTAINER">
-        <!-- Here is where CONVOCORE renders the widget. -->
-        <!-- Set render to 'full-width' then adjust the width and height to 500px (for example) to render the chatbot itself without the popup. -->
-    </div>
-
-    <!-- Remove 'defer' if you want widget to load faster (Will affect website loading) -->
-    <script defer>
-        (function() {
-            window.VG_CONFIG = {
-                ID: "6BhLW2avFF69X0ydpkZ3", // YOUR AGENT ID
-                region: 'na', // YOUR ACCOUNT REGION 
-                render: 'bottom-right', // can be 'full-width' or 'bottom-left' or 'bottom-right'
-                // modalMode: true, // Set this to 'true' to open the widget in modal mode
-                stylesheets: [
-                    "https://vg-bunny-cdn.b-cdn.net/vg_live_build/styles.css",
-                ],
-            }
-            var VG_SCRIPT = document.createElement("script");
-            VG_SCRIPT.src = "https://vg-bunny-cdn.b-cdn.net/vg_live_build/vg_bundle.js";
-            VG_SCRIPT.defer = true; // Remove 'defer' if you want widget to load faster (Will affect website loading)
-            document.body.appendChild(VG_SCRIPT);
-        })()
-    </script>
   </body>
 </html>
