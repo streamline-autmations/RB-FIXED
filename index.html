@@ -23,46 +23,34 @@
     <meta name="twitter:title" content="RecklessBear | Premium Custom Sportswear">
     <meta name="twitter:description" content="RecklessBear designs and manufactures elite custom sportswear for schools, teams, and athletes in South Africa. From concept to creation — Do it Reckless.">
     <meta name="twitter:image" content="https://res.cloudinary.com/dnlgohkcc/image/upload/v1768799688/reckless_logo_r910n4.png">
-    
+
+    <link rel="preconnect" href="https://vg-bunny-cdn.b-cdn.net">
+    <script>
+      window.VG_CONFIG = {
+        ID: "6BhLW2avFF69X0ydpkZ3",
+        region: "na",
+        render: "bottom-right",
+        stylesheets: ["https://vg-bunny-cdn.b-cdn.net/vg_live_build/styles.css"]
+      };
+    </script>
   </head>
   <body class="bg-black">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <div style="width: 0; height: 0;" id="VG_OVERLAY_CONTAINER">
+    <div id="VG_OVERLAY_CONTAINER" style="position: relative; z-index: 99999; overflow: visible;">
         <!-- Here is where CONVOCORE renders the widget. -->
-        <!-- Set render to 'full-width' then adjust the width and height to 500px (for example) to render the chatbot itself without the popup. -->
     </div>
 
-    <!-- Remove 'defer' if you want widget to load faster (Will affect website loading) -->
-    <script defer>
+    <script>
         (function() {
-            window.VG_CONFIG = {
-                ID: "6BhLW2avFF69X0ydpkZ3", // YOUR AGENT ID
-                region: 'na', // YOUR ACCOUNT REGION 
-                render: 'bottom-right', // can be 'full-width' or 'bottom-left' or 'bottom-right'
-                // modalMode: true, // Set this to 'true' to open the widget in modal mode
-                stylesheets: [
-                    // Base CONVOCORE CSS
-                    "https://vg-bunny-cdn.b-cdn.net/vg_live_build/styles.css",
-                    // Add your custom css stylesheets, Can also add relative URL ('/public/your-file.css)
-                ],
-                // THIS IS SUPPOSED TO BE CHANGED OR REMOVED.
-                // user: {
-                //     name: 'John Doe', // User's name
-                //     email: 'johndoe@gmail.com', // User's email
-                //     phone: '+1234567890', // User's phone number
-                // }
-                // Optional user data -- end
-                // **
-                // userID: 'USER_ID', // If you want to use your own user_id
-                // autostart: true, // Whether to autostart the chatbot with the proactive message
+            if (!document.querySelector('script[src*="vg_bundle.js"]')) {
+                var VG_SCRIPT = document.createElement("script");
+                VG_SCRIPT.src = "https://vg-bunny-cdn.b-cdn.net/vg_live_build/vg_bundle.js";
+                VG_SCRIPT.defer = false;
+                document.body.appendChild(VG_SCRIPT);
             }
-            var VG_SCRIPT = document.createElement("script");
-            VG_SCRIPT.src = "https://vg-bunny-cdn.b-cdn.net/vg_live_build/vg_bundle.js";
-            VG_SCRIPT.defer = true; // Remove 'defer' if you want widget to load faster (Will affect website loading)
-            document.body.appendChild(VG_SCRIPT);
-        })()
+        })();
     </script>
   </body>
 </html>
