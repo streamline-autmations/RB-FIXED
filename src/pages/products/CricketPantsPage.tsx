@@ -69,9 +69,7 @@ const CricketPantsPage: React.FC = () => {
                       <img 
                         src={image.src} 
                         alt={`Thumbnail ${index + 1}`} 
-                        className="w-full h-full object-cover" 
-                        loading="lazy" 
-                      />
+                        className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>
@@ -119,11 +117,11 @@ const CricketPantsPage: React.FC = () => {
               >
                 <h3 className="text-xl font-bebas mb-4">FABRIC SPECIFICATIONS</h3>
                 <ul className="space-y-2 text-rb-gray-300">
-                  <li>• Traditional cricket whites with modern performance</li>
-                  <li>• Breathable fabric for all-day comfort</li>
-                  <li>• Reinforced seams for durability during play</li>
-                  <li>• Classic fit with freedom of movement</li>
-                  <li>• Easy to clean and maintain match after match</li>
+                  <li>â€¢ Traditional cricket whites with modern performance</li>
+                  <li>â€¢ Breathable fabric for all-day comfort</li>
+                  <li>â€¢ Reinforced seams for durability during play</li>
+                  <li>â€¢ Classic fit with freedom of movement</li>
+                  <li>â€¢ Easy to clean and maintain match after match</li>
                 </ul>
               </motion.div>
 

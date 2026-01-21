@@ -69,9 +69,7 @@ const TracksuitsPage: React.FC = () => {
                       <img 
                         src={image.src} 
                         alt={`Thumbnail ${index + 1}`} 
-                        className="w-full h-full object-cover" 
-                        loading="lazy" 
-                      />
+                        className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>
@@ -119,11 +117,11 @@ const TracksuitsPage: React.FC = () => {
               >
                 <h3 className="text-xl font-bebas mb-4">FABRIC SPECIFICATIONS</h3>
                 <ul className="space-y-2 text-rb-gray-300">
-                  <li>• Complete tracksuit set for team coordination</li>
-                  <li>• Moisture-wicking fabric for training comfort</li>
-                  <li>• Durable construction for repeated wear</li>
-                  <li>• Professional appearance for team events</li>
-                  <li>• Easy care and machine washable</li>
+                  <li>â€¢ Complete tracksuit set for team coordination</li>
+                  <li>â€¢ Moisture-wicking fabric for training comfort</li>
+                  <li>â€¢ Durable construction for repeated wear</li>
+                  <li>â€¢ Professional appearance for team events</li>
+                  <li>â€¢ Easy care and machine washable</li>
                 </ul>
               </motion.div>
 

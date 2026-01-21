@@ -206,9 +206,7 @@ const ContactForm: React.FC = () => {
             
             <div className="bg-rb-gray-900 rounded-xl overflow-hidden shadow-inner">
               <iframe 
-                data-tally-src={getQuoteFormUrl()}
-                loading="lazy"
-                width="100%" 
+                data-tally-src={getQuoteFormUrl()} width="100%" 
                 height="950" 
                 style={{ 
                   border: 'none', 
@@ -273,9 +271,7 @@ const ContactForm: React.FC = () => {
             
             <div className="bg-rb-gray-900 rounded-xl overflow-hidden shadow-inner">
               <iframe 
-                data-tally-src={getQuestionFormUrl()}
-                loading="lazy"
-                width="100%" 
+                data-tally-src={getQuestionFormUrl()} width="100%" 
                 height="700" 
                 style={{ 
                   border: 'none', 

@@ -69,9 +69,7 @@ const HockeyShirtPage: React.FC = () => {
                       <img 
                         src={image.src} 
                         alt={`Thumbnail ${index + 1}`} 
-                        className="w-full h-full object-cover" 
-                        loading="lazy" 
-                      />
+                        className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>
@@ -119,11 +117,11 @@ const HockeyShirtPage: React.FC = () => {
               >
                 <h3 className="text-xl font-bebas mb-4">FABRIC SPECIFICATIONS</h3>
                 <ul className="space-y-2 text-rb-gray-300">
-                  <li>• High-performance design for intense hockey matches</li>
-                  <li>• Advanced moisture-wicking technology</li>
-                  <li>• Lightweight construction for maximum speed</li>
-                  <li>• Reinforced areas for durability during play</li>
-                  <li>• Easy to clean and maintain</li>
+                  <li>â€¢ High-performance design for intense hockey matches</li>
+                  <li>â€¢ Advanced moisture-wicking technology</li>
+                  <li>â€¢ Lightweight construction for maximum speed</li>
+                  <li>â€¢ Reinforced areas for durability during play</li>
+                  <li>â€¢ Easy to clean and maintain</li>
                 </ul>
               </motion.div>
 

@@ -69,9 +69,7 @@ const CricketShirtPage: React.FC = () => {
                       <img 
                         src={image.src} 
                         alt={`Thumbnail ${index + 1}`} 
-                        className="w-full h-full object-cover" 
-                        loading="lazy" 
-                      />
+                        className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>
@@ -119,11 +117,11 @@ const CricketShirtPage: React.FC = () => {
               >
                 <h3 className="text-xl font-bebas mb-4">FABRIC SPECIFICATIONS</h3>
                 <ul className="space-y-2 text-rb-gray-300">
-                  <li>• High-performance design for long cricket matches</li>
-                  <li>• UV protection and breathable fabric technology</li>
-                  <li>• Moisture-wicking properties for all-day comfort</li>
-                  <li>• Classic cricket styling with modern performance</li>
-                  <li>• Easy to clean and maintain match after match</li>
+                  <li>â€¢ High-performance design for long cricket matches</li>
+                  <li>â€¢ UV protection and breathable fabric technology</li>
+                  <li>â€¢ Moisture-wicking properties for all-day comfort</li>
+                  <li>â€¢ Classic cricket styling with modern performance</li>
+                  <li>â€¢ Easy to clean and maintain match after match</li>
                 </ul>
               </motion.div>
 

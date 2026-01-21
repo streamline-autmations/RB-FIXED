@@ -69,9 +69,7 @@ const FishingTeeShortPage: React.FC = () => {
                       <img 
                         src={image.src} 
                         alt={`Thumbnail ${index + 1}`} 
-                        className="w-full h-full object-cover" 
-                        loading="lazy" 
-                      />
+                        className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>
@@ -119,11 +117,11 @@ const FishingTeeShortPage: React.FC = () => {
               >
                 <h3 className="text-xl font-bebas mb-4">FABRIC SPECIFICATIONS</h3>
                 <ul className="space-y-2 text-rb-gray-300">
-                  <li>• High-performance design for intense rugby play</li>
-                  <li>• Sweat-wicking and breathable fabric for comfort</li>
-                  <li>• Reinforced seams to withstand tackles and scrums</li>
-                  <li>• Premium feel with smooth finish</li>
-                  <li>• Easy to clean and made for repeated washing</li>
+                  <li>â€¢ High-performance design for intense rugby play</li>
+                  <li>â€¢ Sweat-wicking and breathable fabric for comfort</li>
+                  <li>â€¢ Reinforced seams to withstand tackles and scrums</li>
+                  <li>â€¢ Premium feel with smooth finish</li>
+                  <li>â€¢ Easy to clean and made for repeated washing</li>
                 </ul>
               </motion.div>
 
