@@ -151,7 +151,49 @@
                             console.log('[CHATBOT DEBUG]   - Overlay container children:', overlayContainer ? overlayContainer.children.length : 'N/A');
                             
                             if (overlayContainer && overlayContainer.children.length > 0) {
-                                console.log('[CHATBOT DEBUG]   - Overlay container HTML:', overlayContainer.innerHTML.substring(0, 200));
+                                var firstChild = overlayContainer.children[0];
+                                console.log('[CHATBOT DEBUG]   - First child element:', firstChild.tagName, firstChild.id || firstChild.className);
+                                
+                                // Search for common Convocore elements
+                                var allElements = overlayContainer.querySelectorAll('*');
+                                console.log('[CHATBOT DEBUG]   - Total elements inside overlay:', allElements.length);
+                                
+                                // Check for various possible selectors
+                                var possibleSelectors = [
+                                    '#vg-widget-container',
+                                    '.vg-widget-container',
+                                    '[data-vg-widget]',
+                                    '.vg-bubble-button',
+                                    'button',
+                                    '[role="button"]'
+                                ];
+                                
+                                possibleSelectors.forEach(function(selector) {
+                                    var found = overlayContainer.querySelector(selector);
+                                    if (found) {
+                                        console.log('[CHATBOT DEBUG]   - FOUND element with selector "' + selector + '":', found);
+                                        var styles = window.getComputedStyle(found);
+                                        console.log('[CHATBOT DEBUG]     - Display:', styles.display);
+                                        console.log('[CHATBOT DEBUG]     - Visibility:', styles.visibility);
+                                        console.log('[CHATBOT DEBUG]     - Opacity:', styles.opacity);
+                                        console.log('[CHATBOT DEBUG]     - Transform:', styles.transform);
+                                        console.log('[CHATBOT DEBUG]     - Position:', styles.position);
+                                        console.log('[CHATBOT DEBUG]     - Z-index:', styles.zIndex);
+                                        console.log('[CHATBOT DEBUG]     - Width:', styles.width);
+                                        console.log('[CHATBOT DEBUG]     - Height:', styles.height);
+                                    }
+                                });
+                                
+                                // Check overlay container styles
+                                var overlayStyles = window.getComputedStyle(overlayContainer);
+                                console.log('[CHATBOT DEBUG]   - Overlay container styles:');
+                                console.log('[CHATBOT DEBUG]     - Transform:', overlayStyles.transform);
+                                console.log('[CHATBOT DEBUG]     - Display:', overlayStyles.display);
+                                console.log('[CHATBOT DEBUG]     - Visibility:', overlayStyles.visibility);
+                                console.log('[CHATBOT DEBUG]     - Opacity:', overlayStyles.opacity);
+                                console.log('[CHATBOT DEBUG]     - Position:', overlayStyles.position);
+                                console.log('[CHATBOT DEBUG]     - Width:', overlayStyles.width);
+                                console.log('[CHATBOT DEBUG]     - Height:', overlayStyles.height);
                             }
                             
                             if (widgetContainer) {
