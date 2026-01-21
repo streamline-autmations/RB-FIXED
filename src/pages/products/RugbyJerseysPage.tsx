@@ -69,9 +69,7 @@ const RugbyJerseysPage: React.FC = () => {
                       <img 
                         src={image.src} 
                         alt={`Thumbnail ${index + 1}`} 
-                        className="w-full h-full object-cover" 
-                        loading="lazy" 
-                      />
+                        className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>
@@ -119,12 +117,12 @@ const RugbyJerseysPage: React.FC = () => {
               >
                 <h3 className="text-xl font-bebas mb-4">FABRIC SPECIFICATIONS</h3>
                 <ul className="space-y-2 text-rb-gray-300">
-                  <li>• Built for maximum mobility during high-intensity matches</li>
-                  <li>• Sweat-wicking finish keeps players cool and dry</li>
-                  <li>• Reinforced seams to handle the toughest tackles</li>
-                  <li>• Contoured fit for full range of motion</li>
-                  <li>• Easy to clean, designed for repeated wash & wear</li>
-                  <li>• Smooth finish for premium look on and off the field</li>
+                  <li>â€¢ Built for maximum mobility during high-intensity matches</li>
+                  <li>â€¢ Sweat-wicking finish keeps players cool and dry</li>
+                  <li>â€¢ Reinforced seams to handle the toughest tackles</li>
+                  <li>â€¢ Contoured fit for full range of motion</li>
+                  <li>â€¢ Easy to clean, designed for repeated wash & wear</li>
+                  <li>â€¢ Smooth finish for premium look on and off the field</li>
                 </ul>
               </motion.div>
 

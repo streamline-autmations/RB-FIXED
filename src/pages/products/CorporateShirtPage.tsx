@@ -68,9 +68,7 @@ const CorporateShirtPage: React.FC = () => {
                       <img 
                         src={image.src} 
                         alt={`Thumbnail ${index + 1}`} 
-                        className="w-full h-full object-cover" 
-                        loading="lazy" 
-                      />
+                        className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>
@@ -118,11 +116,11 @@ const CorporateShirtPage: React.FC = () => {
               >
                 <h3 className="text-xl font-bebas mb-4">FABRIC SPECIFICATIONS</h3>
                 <ul className="space-y-2 text-rb-gray-300">
-                  <li>• Designed for all-day office comfort and movement</li>
-                  <li>• Soft-touch finish with a premium professional appearance</li>
-                  <li>• Durable, easy-care materials suitable for repeated washing</li>
-                  <li>• Modern fit tailored for corporate environments</li>
-                  <li>• Available in custom colors to match company branding</li>
+                  <li>â€¢ Designed for all-day office comfort and movement</li>
+                  <li>â€¢ Soft-touch finish with a premium professional appearance</li>
+                  <li>â€¢ Durable, easy-care materials suitable for repeated washing</li>
+                  <li>â€¢ Modern fit tailored for corporate environments</li>
+                  <li>â€¢ Available in custom colors to match company branding</li>
                 </ul>
               </motion.div>
 

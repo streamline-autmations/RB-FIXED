@@ -69,9 +69,7 @@ const SoccerJerseyPage: React.FC = () => {
                       <img 
                         src={image.src} 
                         alt={`Thumbnail ${index + 1}`} 
-                        className="w-full h-full object-cover" 
-                        loading="lazy" 
-                      />
+                        className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>
@@ -119,11 +117,11 @@ const SoccerJerseyPage: React.FC = () => {
               >
                 <h3 className="text-xl font-bebas mb-4">FABRIC SPECIFICATIONS</h3>
                 <ul className="space-y-2 text-rb-gray-300">
-                  <li>• High-performance design for intense soccer matches</li>
-                  <li>• Advanced sweat-wicking and breathable fabric</li>
-                  <li>• Lightweight construction for maximum speed</li>
-                  <li>• Premium feel with smooth, aerodynamic finish</li>
-                  <li>• Easy to clean and made for repeated washing</li>
+                  <li>â€¢ High-performance design for intense soccer matches</li>
+                  <li>â€¢ Advanced sweat-wicking and breathable fabric</li>
+                  <li>â€¢ Lightweight construction for maximum speed</li>
+                  <li>â€¢ Premium feel with smooth, aerodynamic finish</li>
+                  <li>â€¢ Easy to clean and made for repeated washing</li>
                 </ul>
               </motion.div>
 

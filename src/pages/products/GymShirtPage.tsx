@@ -69,9 +69,7 @@ const GymShirtPage: React.FC = () => {
                       <img 
                         src={image.src} 
                         alt={`Thumbnail ${index + 1}`} 
-                        className="w-full h-full object-cover" 
-                        loading="lazy" 
-                      />
+                        className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>
@@ -119,11 +117,11 @@ const GymShirtPage: React.FC = () => {
               >
                 <h3 className="text-xl font-bebas mb-4">FABRIC SPECIFICATIONS</h3>
                 <ul className="space-y-2 text-rb-gray-300">
-                  <li>• Lightweight, moisture-wicking performance fabric</li>
-                  <li>• Four-way stretch for unrestricted movement</li>
-                  <li>• Reinforced stitching for intense workouts</li>
-                  <li>• Breathable and sweat-resistant</li>
-                  <li>• Premium feel, built for repeated washing</li>
+                  <li>â€¢ Lightweight, moisture-wicking performance fabric</li>
+                  <li>â€¢ Four-way stretch for unrestricted movement</li>
+                  <li>â€¢ Reinforced stitching for intense workouts</li>
+                  <li>â€¢ Breathable and sweat-resistant</li>
+                  <li>â€¢ Premium feel, built for repeated washing</li>
                 </ul>
               </motion.div>
 
