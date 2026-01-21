@@ -29,3 +29,19 @@
   max-height: 100% !important;
   border-radius: 0 !important;
 }
+
+/* On desktop: make the open chat panel a bit wider (520px); overlay stays full-screen */
+@media (min-width: 768px) {
+  #vg-widget-container,
+  #VG_OVERLAY_CONTAINER .vg-panel,
+  #VG_OVERLAY_CONTAINER .vg-widget-modal,
+  #VG_OVERLAY_CONTAINER [class*="panel"] {
+    width: 520px !important;
+    max-width: 90vw !important;
+    min-width: 420px !important;
+    height: 90vh !important;
+    max-height: 90vh !important;
+    margin: auto !important;
+    border-radius: 12px !important;
+  }
+}
