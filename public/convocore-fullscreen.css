@@ -1,0 +1,31 @@
+/* Make the opened modal overlay full screen */
+#VG_OVERLAY_CONTAINER,
+#VG_OVERLAY_CONTAINER * {
+  box-sizing: border-box;
+}
+
+#VG_OVERLAY_CONTAINER .vg-modal,
+#VG_OVERLAY_CONTAINER .vg-modal-container,
+#VG_OVERLAY_CONTAINER .vg-overlay,
+#VG_OVERLAY_CONTAINER .vg-widget-modal,
+#VG_OVERLAY_CONTAINER [class*="modal"],
+#VG_OVERLAY_CONTAINER [class*="overlay"] {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  inset: 0 !important;
+  border-radius: 0 !important;
+}
+
+#VG_OVERLAY_CONTAINER iframe,
+#VG_OVERLAY_CONTAINER .vg-frame,
+#VG_OVERLAY_CONTAINER .vg-panel,
+#VG_OVERLAY_CONTAINER [class*="panel"],
+#VG_OVERLAY_CONTAINER [class*="container"] {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  border-radius: 0 !important;
+}
