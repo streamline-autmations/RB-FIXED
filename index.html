@@ -23,9 +23,83 @@
     <meta name="twitter:title" content="RecklessBear | Premium Custom Sportswear">
     <meta name="twitter:description" content="RecklessBear designs and manufactures elite custom sportswear for schools, teams, and athletes in South Africa. From concept to creation — Do it Reckless.">
     <meta name="twitter:image" content="https://res.cloudinary.com/dnlgohkcc/image/upload/v1768799688/reckless_logo_r910n4.png">
+    
+    <!-- The chatbot styles have been restored -->
+    <style>
+      /* Mobile-specific styles for the chatbot widget */
+      @media (max-width: 768px) {
+        #vg-widget-container {
+          transform: scale(0.85);
+          transform-origin: bottom right;
+          margin: 0 !important;
+          right: -15px !important;
+          bottom: -15px !important;
+        }
+        .vg-bubble-button {
+          padding: 12px !important;
+        }
+        .vg-bubble-button svg {
+          width: 24px !important;
+          height: 24px !important;
+        }
+        .vg-widget {
+          max-width: 320px !important;
+        }
+        .vg-messages-container {
+          font-size: 14px !important;
+        }
+        .vg-input-container {
+          padding: 8px !important;
+        }
+      }
+      /* New chatbot iframe – bottom-left, un-inverted; hidden on quote/form via ContactForm */
+      #chatbot-iframe-new {
+        position: fixed;
+        bottom: 16px;
+        left: 16px;
+        width: 400px;
+        height: 560px;
+        border: none;
+        z-index: 99998;
+        border-radius: 12px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+      }
+      @media (max-width: 768px) {
+        #chatbot-iframe-new {
+          width: 340px;
+          height: 480px;
+          bottom: 12px;
+          left: 12px;
+        }
+      }
+    </style>
   </head>
   <body class="bg-black">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- The chatbot script and its container have been restored -->
+    <div style="width: 0; height: 0;" id="VG_OVERLAY_CONTAINER">
+    </div>
+
+    <script>
+        (function() {
+            window.VG_CONFIG = {
+                ID: "8qQvlIvdBrn1cdle8sFD", // YOUR AGENT ID
+                region: 'na', // YOUR ACCOUNT REGION 
+                render: 'bottom-right', // can be 'full-width' or 'bottom-left' or 'bottom-right'
+                stylesheets: [
+                    "https://vg-bunny-cdn.b-cdn.net/vg_live_build/styles.css",
+                ],
+            }
+            var VG_SCRIPT = document.createElement("script");
+            VG_SCRIPT.src = "https://vg-bunny-cdn.b-cdn.net/vg_live_build/vg_bundle.js";
+            VG_SCRIPT.defer = true;
+            document.body.appendChild(VG_SCRIPT);
+        })()
+    </script>
+
+    <!-- New chatbot (un-inverted), bottom-left – agent 6BhLW2avFF69X0ydpkZ3 -->
+    <iframe id="chatbot-iframe-new" src="/widget-new.html" title="Chat"></iframe>
   </body>
 </html>
