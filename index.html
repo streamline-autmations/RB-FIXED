@@ -41,8 +41,10 @@
                 region: 'na', // YOUR ACCOUNT REGION
                 render: 'bottom-right', // can be 'full-width' or 'bottom-left' or 'bottom-right'
                 // modalMode: true, // Set this to 'true' to open the widget in modal mode
+                autostart: false, // don't auto-open proactive message (avoids big overlay on load)
                 stylesheets: [
                     "https://vg-bunny-cdn.b-cdn.net/vg_live_build/styles.css",
+                    "/convocore-overrides.css",  /* fix: stop our CSS from stretching widget to 1518×732 */
                 ],
             };
 
