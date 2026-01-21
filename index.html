@@ -52,25 +52,10 @@
           padding: 8px !important;
         }
       }
-      /* New chatbot iframe – bottom-left, un-inverted; hidden on quote/form via ContactForm */
-      #chatbot-iframe-new {
-        position: fixed;
-        bottom: 16px;
-        left: 16px;
-        width: 400px;
-        height: 560px;
-        border: none;
-        z-index: 99998;
-        border-radius: 12px;
-        box-shadow: 0 4px 24px rgba(0,0,0,0.3);
-      }
-      @media (max-width: 768px) {
-        #chatbot-iframe-new {
-          width: 340px;
-          height: 480px;
-          bottom: 12px;
-          left: 12px;
-        }
+      /* Fix inverted/mirrored chatbot: flip horizontally; keep anchor at bottom-right */
+      #VG_OVERLAY_CONTAINER {
+        transform: scaleX(-1);
+        transform-origin: right bottom;
       }
     </style>
   </head>
@@ -78,28 +63,25 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- The chatbot script and its container have been restored -->
-    <div style="width: 0; height: 0;" id="VG_OVERLAY_CONTAINER">
-    </div>
-
+    <!-- Convocore chatbot: agent 6BhLW2avFF69X0ydpkZ3; scaleX(-1) fixes inverted/mirrored display -->
+    <div id="VG_OVERLAY_CONTAINER"></div>
     <script>
         (function() {
             window.VG_CONFIG = {
-                ID: "8qQvlIvdBrn1cdle8sFD", // YOUR AGENT ID
-                region: 'na', // YOUR ACCOUNT REGION 
-                render: 'bottom-right', // can be 'full-width' or 'bottom-left' or 'bottom-right'
+                ID: "6BhLW2avFF69X0ydpkZ3",
+                region: 'na',
+                render: 'bottom-right',
+                modalMode: false,
                 stylesheets: [
                     "https://vg-bunny-cdn.b-cdn.net/vg_live_build/styles.css",
+                    "/convocore-overrides.css"
                 ],
-            }
+            };
             var VG_SCRIPT = document.createElement("script");
             VG_SCRIPT.src = "https://vg-bunny-cdn.b-cdn.net/vg_live_build/vg_bundle.js";
             VG_SCRIPT.defer = true;
             document.body.appendChild(VG_SCRIPT);
-        })()
+        })();
     </script>
-
-    <!-- New chatbot (un-inverted), bottom-left – agent 6BhLW2avFF69X0ydpkZ3 -->
-    <iframe id="chatbot-iframe-new" src="/widget-new.html" title="Chat"></iframe>
   </body>
 </html>

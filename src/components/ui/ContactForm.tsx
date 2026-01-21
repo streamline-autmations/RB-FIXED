@@ -70,10 +70,9 @@ const ContactForm: React.FC = () => {
 
   // Load Tally embed script when quote or form view is active
   useEffect(() => {
-    // Hide chatbot widgets when forms are active
+    // Hide chatbot when forms are active
     const chatbotWidget = document.getElementById('vg-widget-container');
     const chatbotButton = document.querySelector('.vg-bubble-button');
-    const iframeNew = document.getElementById('chatbot-iframe-new');
     
     if (chatbotWidget) {
       if (activeView === 'quote' || activeView === 'form') {
@@ -89,10 +88,6 @@ const ContactForm: React.FC = () => {
       } else {
         (chatbotButton as HTMLElement).style.display = '';
       }
-    }
-    
-    if (iframeNew) {
-      (iframeNew as HTMLElement).style.display = (activeView === 'quote' || activeView === 'form') ? 'none' : '';
     }
     
     if (activeView === 'quote' || activeView === 'form') {
@@ -114,8 +109,6 @@ const ContactForm: React.FC = () => {
       if (chatbotButton) {
         (chatbotButton as HTMLElement).style.display = '';
       }
-      const el = document.getElementById('chatbot-iframe-new');
-      if (el) (el as HTMLElement).style.display = '';
     };
   }, [activeView]);
 
