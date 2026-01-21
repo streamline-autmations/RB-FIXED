@@ -67,20 +67,88 @@
     <div id="VG_OVERLAY_CONTAINER"></div>
     <script>
         (function() {
-            window.VG_CONFIG = {
-                ID: "6BhLW2avFF69X0ydpkZ3",
-                region: 'na',
-                render: 'bottom-right',
-                modalMode: false,
-                stylesheets: [
-                    "https://vg-bunny-cdn.b-cdn.net/vg_live_build/styles.css",
-                    "/convocore-overrides.css"
-                ],
-            };
-            var VG_SCRIPT = document.createElement("script");
-            VG_SCRIPT.src = "https://vg-bunny-cdn.b-cdn.net/vg_live_build/vg_bundle.js";
-            VG_SCRIPT.defer = true;
-            document.body.appendChild(VG_SCRIPT);
+            console.log('[CHATBOT DEBUG] Script initialization started');
+            
+            function initChatbot() {
+                console.log('[CHATBOT DEBUG] Initializing chatbot...');
+                
+                // Check if container exists
+                var container = document.getElementById('VG_OVERLAY_CONTAINER');
+                if (!container) {
+                    console.error('[CHATBOT DEBUG] ERROR: VG_OVERLAY_CONTAINER not found!');
+                    return;
+                }
+                console.log('[CHATBOT DEBUG] Container found:', container);
+                
+                // Check if body exists
+                if (!document.body) {
+                    console.error('[CHATBOT DEBUG] ERROR: document.body not ready!');
+                    return;
+                }
+                console.log('[CHATBOT DEBUG] document.body ready');
+                
+                // Set up config
+                window.VG_CONFIG = {
+                    ID: "6BhLW2avFF69X0ydpkZ3",
+                    region: 'na',
+                    render: 'bottom-right',
+                    modalMode: false,
+                    stylesheets: [
+                        "https://vg-bunny-cdn.b-cdn.net/vg_live_build/styles.css",
+                        "/convocore-overrides.css"
+                    ],
+                };
+                console.log('[CHATBOT DEBUG] VG_CONFIG set:', window.VG_CONFIG);
+                
+                // Create and load script
+                var VG_SCRIPT = document.createElement("script");
+                VG_SCRIPT.src = "https://vg-bunny-cdn.b-cdn.net/vg_live_build/vg_bundle.js";
+                VG_SCRIPT.defer = false; // Changed from true to false to ensure it loads
+                
+                // Add error handler
+                VG_SCRIPT.onerror = function(e) {
+                    console.error('[CHATBOT DEBUG] ERROR: Failed to load vg_bundle.js');
+                    console.error('[CHATBOT DEBUG] Script src:', VG_SCRIPT.src);
+                    console.error('[CHATBOT DEBUG] Error event:', e);
+                    console.error('[CHATBOT DEBUG] Check Network tab for 404, CORS, or blocked requests');
+                };
+                
+                // Add load handler
+                VG_SCRIPT.onload = function() {
+                    console.log('[CHATBOT DEBUG] ✅ Script loaded successfully');
+                    // Check if widget was created after a delay
+                    setTimeout(function() {
+                        var widgetContainer = document.getElementById('vg-widget-container');
+                        var bubbleButton = document.querySelector('.vg-bubble-button');
+                        console.log('[CHATBOT DEBUG] Widget container:', widgetContainer ? '✅ FOUND' : '❌ NOT FOUND');
+                        console.log('[CHATBOT DEBUG] Bubble button:', bubbleButton ? '✅ FOUND' : '❌ NOT FOUND');
+                        if (widgetContainer) {
+                            var styles = window.getComputedStyle(widgetContainer);
+                            console.log('[CHATBOT DEBUG] Widget display:', styles.display);
+                            console.log('[CHATBOT DEBUG] Widget visibility:', styles.visibility);
+                            console.log('[CHATBOT DEBUG] Widget opacity:', styles.opacity);
+                        }
+                    }, 3000);
+                };
+                
+                // Append to body
+                try {
+                    document.body.appendChild(VG_SCRIPT);
+                    console.log('[CHATBOT DEBUG] ✅ Script tag appended to body');
+                    console.log('[CHATBOT DEBUG] Script element:', VG_SCRIPT);
+                } catch (e) {
+                    console.error('[CHATBOT DEBUG] ERROR: Failed to append script:', e);
+                }
+            }
+            
+            // Wait for DOM to be ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initChatbot);
+                console.log('[CHATBOT DEBUG] Waiting for DOMContentLoaded...');
+            } else {
+                // DOM already ready, run immediately
+                initChatbot();
+            }
         })();
     </script>
   </body>
