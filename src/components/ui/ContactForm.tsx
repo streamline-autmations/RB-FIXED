@@ -72,7 +72,7 @@ const ContactForm: React.FC = () => {
   useEffect(() => {
     // Hide chatbot when forms are active
     const chatbotWidget = document.getElementById('vg-widget-container');
-    const chatbotButton = document.querySelector('.vg-bubble-button');
+    const chatbotButton = document.getElementById('vg_chat_toggle') || document.querySelector('.vg-bubble-button');
     
     if (chatbotWidget) {
       if (activeView === 'quote' || activeView === 'form') {

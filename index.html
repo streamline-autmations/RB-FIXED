@@ -54,8 +54,20 @@
       }
       /* Fix inverted/mirrored chatbot: flip horizontally; keep anchor at bottom-right */
       #VG_OVERLAY_CONTAINER {
+        position: fixed !important;
+        bottom: 0 !important;
+        right: 0 !important;
+        z-index: 9999 !important;
         transform: scaleX(-1);
         transform-origin: right bottom;
+        width: auto !important;
+        height: auto !important;
+        pointer-events: none; /* Allow clicks to pass through container to button */
+      }
+      
+      /* Re-enable pointer events on interactive elements */
+      #VG_OVERLAY_CONTAINER * {
+        pointer-events: auto;
       }
     </style>
     <!-- Set VG_CONFIG early, before any scripts load -->
