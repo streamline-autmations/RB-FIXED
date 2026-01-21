@@ -38,51 +38,18 @@
         (function() {
             window.VG_CONFIG = {
                 ID: "6BhLW2avFF69X0ydpkZ3", // YOUR AGENT ID
-                region: 'na', // YOUR ACCOUNT REGION
+                region: 'na', // YOUR ACCOUNT REGION 
                 render: 'bottom-right', // can be 'full-width' or 'bottom-left' or 'bottom-right'
                 // modalMode: true, // Set this to 'true' to open the widget in modal mode
-                autostart: false, // don't auto-open proactive message (avoids big overlay on load)
                 stylesheets: [
                     "https://vg-bunny-cdn.b-cdn.net/vg_live_build/styles.css",
-                    "/convocore-overrides.css",  /* fix: stop our CSS from stretching widget to 1518×732 */
                 ],
-            };
-
-            // --- DEBUG: log config and container when we run ---
-            console.log("[CONVOCORE] VG_CONFIG:", JSON.stringify(window.VG_CONFIG, null, 2));
-            var container = document.getElementById("VG_OVERLAY_CONTAINER");
-            console.log("[CONVOCORE] VG_OVERLAY_CONTAINER exists:", !!container, container);
-
+            }
             var VG_SCRIPT = document.createElement("script");
             VG_SCRIPT.src = "https://vg-bunny-cdn.b-cdn.net/vg_live_build/vg_bundle.js";
             VG_SCRIPT.defer = true; // Remove 'defer' if you want widget to load faster (Will affect website loading)
-            VG_SCRIPT.onload = function() { console.log("[CONVOCORE] vg_bundle.js loaded"); };
-            VG_SCRIPT.onerror = function() { console.error("[CONVOCORE] vg_bundle.js failed to load"); };
             document.body.appendChild(VG_SCRIPT);
-
-            // --- DEBUG: after CONVOCORE has had time to render, inspect what it built ---
-            setTimeout(function() {
-                var c = document.getElementById("VG_OVERLAY_CONTAINER");
-                if (!c) return;
-                var html = c.innerHTML;
-                var modal = c.querySelector("[class*='modal'], [class*='overlay'], [class*='Modal'], [class*='Overlay']");
-                var all = c.querySelectorAll("*");
-                console.log("[CONVOCORE] Container child count:", c.children.length);
-                console.log("[CONVOCORE] Container innerHTML length:", html.length);
-                if (modal) {
-                    var rect = modal.getBoundingClientRect();
-                    var st = window.getComputedStyle(modal);
-                    console.log("[CONVOCORE] Modal/overlay element:", modal.className, "size:", rect.width, "x", rect.height, "position:", st.position, "inset:", st.top, st.right, st.bottom, st.left);
-                }
-                for (var i = 0; i < Math.min(all.length, 12); i++) {
-                    var el = all[i];
-                    var r = el.getBoundingClientRect();
-                    var s = window.getComputedStyle(el);
-                    if (r.width > 200 || r.height > 200)
-                        console.log("[CONVOCORE] Large el:", el.className || el.tagName, "size:", r.width.toFixed(0), "x", r.height.toFixed(0), "position:", s.position);
-                }
-            }, 3000);
-        })();
+        })()
     </script>
   </body>
 </html>
