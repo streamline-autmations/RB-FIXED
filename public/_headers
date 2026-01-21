@@ -1,0 +1,7 @@
+# Ensure .js and .css are served with correct MIME so module scripts load
+# (fixes: "Expected a JavaScript module but got application/octet-stream")
+/assets/*.js
+  Content-Type: application/javascript; charset=UTF-8
+
+/assets/*.css
+  Content-Type: text/css; charset=UTF-8
