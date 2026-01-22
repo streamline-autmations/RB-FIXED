@@ -104,12 +104,14 @@ div[class*="vg-"][class*="widget"] {
 }
 
 /* Remove any scale transforms that might be zooming content in */
+/* Override Tailwind classes that set width to 100vw - force to 100% of parent */
 .vg-chat-overlay-container > *,
 #vg-mother-container > *,
 .vg-chat-view-container > *,
 .vg-modal > *,
 .vg-modal-container > *,
-[class*="vg-modal"] > * {
+[class*="vg-modal"] > *,
+[class*="vg-overlay-root-container"] {
   transform: none !important;
   scale: 1 !important;
   zoom: 1 !important;
@@ -120,6 +122,19 @@ div[class*="vg-"][class*="widget"] {
   margin: 0 !important;
   position: relative !important;
   overflow: auto !important;
+}
+
+/* Override specific Tailwind width classes */
+[class*="vg-w-[100vw]"],
+[class*="w-[100vw]"] {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+[class*="vg-h-[100dvh]"],
+[class*="h-[100dvh]"] {
+  height: 100% !important;
+  max-height: 100% !important;
 }
 
 /* Ensure content inside modal fits properly - remove any oversized children */
