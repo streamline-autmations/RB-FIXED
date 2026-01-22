@@ -103,18 +103,31 @@ div[class*="vg-"][class*="widget"] {
   }
 }
 
+/* Remove any scale transforms that might be zooming content in */
+.vg-chat-overlay-container > *,
+#vg-mother-container > *,
+.vg-chat-view-container > *,
 .vg-modal > *,
 .vg-modal-container > *,
-[class*="vg-modal"] > *,
-.vg-modal > * > *,
-.vg-modal-container > * > *,
-[class*="vg-modal"] > * > * {
-  width: 90vw !important;
-  height: 90vh !important;
-  max-width: 90vw !important;
-  max-height: 90vh !important;
-  margin: auto !important;
+[class*="vg-modal"] > * {
+  transform: none !important;
+  scale: 1 !important;
+  zoom: 1 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
   position: relative !important;
+  overflow: auto !important;
+}
+
+/* Ensure content inside modal fits properly - remove any oversized children */
+.vg-chat-overlay-container *,
+#vg-mother-container *,
+.vg-chat-view-container * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 @media (max-width: 768px) {
