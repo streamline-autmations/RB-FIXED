@@ -48,10 +48,16 @@
   position: static !important;
 }
 
-/* Force widget button to bottom-right */
+/* Force widget button to bottom-right - ultra aggressive */
 #VG_OVERLAY_CONTAINER .vg-widget-controls-container,
 #VG_ROOT_INNER .vg-widget-controls-container,
-.vg-widget-controls-container {
+.vg-widget-controls-container,
+#vg_chat_toggle,
+[class*="vg-widget"],
+[id*="vg_chat"],
+[class*="widget-controls"],
+button[class*="vg-"],
+div[class*="vg-"][class*="widget"] {
   position: fixed !important;
   right: 20px !important;
   bottom: 20px !important;
@@ -59,6 +65,7 @@
   top: auto !important;
   transform: none !important;
   margin: 0 !important;
+  z-index: 99999 !important;
 }
 
 .vg-modal,

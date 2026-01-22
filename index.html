@@ -23,6 +23,27 @@
     <meta name="twitter:title" content="RecklessBear | Premium Custom Sportswear">
     <meta name="twitter:description" content="RecklessBear designs and manufactures elite custom sportswear for schools, teams, and athletes in South Africa. From concept to creation — Do it Reckless.">
     <meta name="twitter:image" content="https://res.cloudinary.com/dnlgohkcc/image/upload/v1768799688/reckless_logo_r910n4.png">
+    <style>
+      /* Force chatbot widget to bottom-right - inline styles for maximum priority */
+      .vg-widget-controls-container,
+      #vg_chat_toggle,
+      [class*="vg-widget"],
+      [id*="vg_chat"],
+      [class*="widget-controls"] {
+        position: fixed !important;
+        right: 20px !important;
+        bottom: 20px !important;
+        left: auto !important;
+        top: auto !important;
+        transform: none !important;
+        margin: 0 !important;
+        z-index: 99999 !important;
+      }
+      #VG_OVERLAY_CONTAINER,
+      #VG_ROOT_INNER {
+        position: static !important;
+      }
+    </style>
   </head>
   <body class="bg-black">
     <div id="root"></div>
@@ -47,33 +68,80 @@
         VG_SCRIPT.onload = function() {
           // Force widget to bottom-right after it loads
           function fixWidgetPosition() {
-            var widgetContainer = document.querySelector('.vg-widget-controls-container');
-            if (widgetContainer) {
-              widgetContainer.style.setProperty('position', 'fixed', 'important');
-              widgetContainer.style.setProperty('right', '20px', 'important');
-              widgetContainer.style.setProperty('bottom', '20px', 'important');
-              widgetContainer.style.setProperty('left', 'auto', 'important');
-              widgetContainer.style.setProperty('top', 'auto', 'important');
-              widgetContainer.style.setProperty('transform', 'none', 'important');
-              widgetContainer.style.setProperty('margin', '0', 'important');
-            }
+            // Try multiple selectors to find the widget
+            var selectors = [
+              '.vg-widget-controls-container',
+              '#vg_chat_toggle',
+              '[class*="vg-widget"]',
+              '[id*="vg_chat"]',
+              '[class*="widget-controls"]',
+              'button[class*="vg-"]',
+              'div[class*="vg-"][class*="widget"]'
+            ];
+            
+            selectors.forEach(function(selector) {
+              try {
+                var elements = document.querySelectorAll(selector);
+                elements.forEach(function(el) {
+                  if (el && el.offsetParent !== null) { // Only fix visible elements
+                    el.style.setProperty('position', 'fixed', 'important');
+                    el.style.setProperty('right', '20px', 'important');
+                    el.style.setProperty('bottom', '20px', 'important');
+                    el.style.setProperty('left', 'auto', 'important');
+                    el.style.setProperty('top', 'auto', 'important');
+                    el.style.setProperty('transform', 'none', 'important');
+                    el.style.setProperty('margin', '0', 'important');
+                    el.style.setProperty('z-index', '99999', 'important');
+                  }
+                });
+              } catch(e) {}
+            });
           }
-          // Fix immediately and also watch for when widget appears
+          
+          // Fix immediately and repeatedly
           fixWidgetPosition();
+          setTimeout(fixWidgetPosition, 50);
           setTimeout(fixWidgetPosition, 100);
+          setTimeout(fixWidgetPosition, 250);
           setTimeout(fixWidgetPosition, 500);
           setTimeout(fixWidgetPosition, 1000);
+          setTimeout(fixWidgetPosition, 2000);
+          
+          // Continuous fix every 500ms
+          var fixInterval = setInterval(fixWidgetPosition, 500);
+          
           // Watch for widget being added
           var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
               mutation.addedNodes.forEach(function(node) {
-                if (node.nodeType === 1 && (node.classList.contains('vg-widget-controls-container') || node.querySelector('.vg-widget-controls-container'))) {
-                  fixWidgetPosition();
+                if (node.nodeType === 1) {
+                  if (node.classList && (
+                    node.classList.contains('vg-widget-controls-container') ||
+                    node.id === 'vg_chat_toggle' ||
+                    node.className.includes('vg-widget') ||
+                    node.id.includes('vg_chat')
+                  )) {
+                    fixWidgetPosition();
+                  }
+                  // Also check children
+                  var widget = node.querySelector && (
+                    node.querySelector('.vg-widget-controls-container') ||
+                    node.querySelector('#vg_chat_toggle') ||
+                    node.querySelector('[class*="vg-widget"]')
+                  );
+                  if (widget) {
+                    fixWidgetPosition();
+                  }
                 }
               });
             });
           });
           observer.observe(document.body, { childList: true, subtree: true });
+          
+          // Stop interval after 30 seconds to prevent performance issues
+          setTimeout(function() {
+            clearInterval(fixInterval);
+          }, 30000);
         };
         document.body.appendChild(VG_SCRIPT);
       })();
