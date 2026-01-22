@@ -247,8 +247,71 @@
             });
           }
           
+          // Fix modal content zoom/scale
+          function fixModalZoom() {
+            var modalSelectors = [
+              '.vg-chat-overlay-container',
+              '#vg-mother-container',
+              '.vg-chat-view-container'
+            ];
+            
+            modalSelectors.forEach(function(selector) {
+              try {
+                var modals = document.querySelectorAll(selector);
+                modals.forEach(function(modal) {
+                  if (modal) {
+                    var rect = modal.getBoundingClientRect();
+                    if (rect.width > 200 || rect.height > 200) {
+                      // Remove scale from modal itself
+                      var computedStyle = window.getComputedStyle(modal);
+                      var transform = computedStyle.transform;
+                      if (transform && transform !== 'none' && !transform.includes('translate')) {
+                        modal.style.setProperty('transform', 'translate(-50%, -50%)', 'important');
+                      }
+                      
+                      // Fix all children - remove scale and ensure proper sizing
+                      var allChildren = modal.querySelectorAll('*');
+                      allChildren.forEach(function(child) {
+                        if (child && child.nodeType === 1) {
+                          var childStyle = window.getComputedStyle(child);
+                          var childTransform = childStyle.transform;
+                          var childScale = childStyle.scale;
+                          var childZoom = childStyle.zoom;
+                          
+                          // Remove any scale transforms
+                          if (childTransform && childTransform !== 'none' && childTransform.includes('scale')) {
+                            child.style.setProperty('transform', 'none', 'important');
+                          }
+                          if (childScale && childScale !== '1' && childScale !== 'none') {
+                            child.style.setProperty('scale', '1', 'important');
+                          }
+                          if (childZoom && childZoom !== '1' && childZoom !== 'normal') {
+                            child.style.setProperty('zoom', '1', 'important');
+                          }
+                          
+                          // Ensure children don't exceed parent
+                          var childRect = child.getBoundingClientRect();
+                          if (childRect.width > rect.width * 1.1 || childRect.height > rect.height * 1.1) {
+                            child.style.setProperty('width', '100%', 'important');
+                            child.style.setProperty('max-width', '100%', 'important');
+                            child.style.setProperty('height', 'auto', 'important');
+                            child.style.setProperty('max-height', '100%', 'important');
+                            child.style.setProperty('box-sizing', 'border-box', 'important');
+                          }
+                        }
+                      });
+                    }
+                  }
+                });
+              } catch(e) {}
+            });
+          }
+          
           // Fix modal position continuously
-          var modalFixInterval = setInterval(fixModalPosition, 300);
+          var modalFixInterval = setInterval(function() {
+            fixModalPosition();
+            fixModalZoom();
+          }, 300);
           
           // Also fix when modal elements are added
           var modalObserver = new MutationObserver(function(mutations) {
