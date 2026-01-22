@@ -206,6 +206,35 @@
                                         el.style.setProperty('pointer-events', 'none', 'important');
                                     });
                                 }
+                                // Fix tabs immediately when they're added
+                                var tabText = (node.textContent || '').trim();
+                                if (/(Home|Chats|FAQ)/i.test(tabText) && node.nodeType === 1) {
+                                    var tabRect = node.getBoundingClientRect();
+                                    if (tabRect.width > 150) {
+                                        node.style.setProperty('max-width', '120px', 'important');
+                                        node.style.setProperty('width', 'auto', 'important');
+                                        node.style.setProperty('flex-shrink', '1', 'important');
+                                        node.style.setProperty('flex-grow', '0', 'important');
+                                        node.style.setProperty('min-width', '0', 'important');
+                                    }
+                                    // Also fix parent if it's a flex container
+                                    var tabParent = node.parentElement;
+                                    if (tabParent) {
+                                        var parentStyles = window.getComputedStyle(tabParent);
+                                        if (parentStyles.display === 'flex' || parentStyles.display === 'inline-flex') {
+                                            tabParent.style.setProperty('justify-content', 'flex-start', 'important');
+                                            tabParent.style.setProperty('gap', '8px', 'important');
+                                            // Fix all siblings
+                                            Array.from(tabParent.children).forEach(function(sibling) {
+                                                if (sibling && sibling.nodeType === 1) {
+                                                    sibling.style.setProperty('max-width', '120px', 'important');
+                                                    sibling.style.setProperty('flex', '0 1 auto', 'important');
+                                                    sibling.style.setProperty('min-width', '0', 'important');
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
                                 var widgetControls = node.querySelectorAll && node.querySelectorAll('.vg-widget-controls-container');
                                 if (widgetControls && widgetControls.length > 0) {
                                     widgetControls.forEach(function(el) {
@@ -283,103 +312,387 @@
                         } catch(e) {}
                     }
                     // Fix modal positioning - ensure it's centered and 90% of screen
-                    // Try multiple selectors to find the modal (more targeted approach)
                     try {
+                        var isMobile = window.innerWidth <= 768;
+                        var modalSize = isMobile ? '95vw' : '90vw';
+                        var modalHeight = isMobile ? '95vh' : '90vh';
+                        var viewportWidth = window.innerWidth;
+                        var viewportHeight = window.innerHeight;
+                        
+                        // First, fix VG_ROOT_INNER to be full screen container when chat is open
+                        var vgRoot = document.getElementById('VG_ROOT_INNER');
+                        if (vgRoot) {
+                            var rootRect = vgRoot.getBoundingClientRect();
+                            var rootStyles = window.getComputedStyle(vgRoot);
+                            var rootChildren = Array.from(vgRoot.children);
+                            var hasLargeChild = false;
+                            var largeChildren = [];
+                            
+                            // Check if any child is large (chat interface is open)
+                            rootChildren.forEach(function(child) {
+                                if (child && child.nodeType === 1) {
+                                    try {
+                                        var childRect = child.getBoundingClientRect();
+                                        if (childRect.width > viewportWidth * 0.3 || childRect.height > viewportHeight * 0.3) {
+                                            hasLargeChild = true;
+                                            largeChildren.push({
+                                                element: child,
+                                                width: childRect.width,
+                                                height: childRect.height,
+                                                className: child.className,
+                                                id: child.id
+                                            });
+                                        }
+                                    } catch(e) {}
+                                }
+                            });
+                            
+                            // #region agent log
+                            if (doExpensiveChecks && (hasLargeChild || rootChildren.length > 0)) {
+                                fetch('http://127.0.0.1:7243/ingest/9793638b-77c2-456e-8b49-35341883b34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.html:285',message:'VG_ROOT_INNER check',data:{hasLargeChild:hasLargeChild,childrenCount:rootChildren.length,rootRect:{width:rootRect.width,height:rootRect.height,top:rootRect.top,left:rootRect.left},rootStyles:{position:rootStyles.position,display:rootStyles.display},largeChildren:largeChildren},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H'})}).catch(()=>{});
+                            }
+                            // #endregion
+                            
+                            // If chat is open (has large child), make VG_ROOT_INNER full screen and centered
+                            if (hasLargeChild) {
+                                vgRoot.style.setProperty('position', 'fixed', 'important');
+                                vgRoot.style.setProperty('top', '0', 'important');
+                                vgRoot.style.setProperty('left', '0', 'important');
+                                vgRoot.style.setProperty('right', '0', 'important');
+                                vgRoot.style.setProperty('bottom', '0', 'important');
+                                vgRoot.style.setProperty('width', '100vw', 'important');
+                                vgRoot.style.setProperty('height', '100vh', 'important');
+                                vgRoot.style.setProperty('margin', '0', 'important');
+                                vgRoot.style.setProperty('padding', '0', 'important');
+                                vgRoot.style.setProperty('z-index', '999999', 'important');
+                                vgRoot.style.setProperty('display', 'flex', 'important');
+                                vgRoot.style.setProperty('align-items', 'center', 'important');
+                                vgRoot.style.setProperty('justify-content', 'center', 'important');
+                                
+                                // Fix all large children to be 90% of screen
+                                rootChildren.forEach(function(child) {
+                                    if (child && child.nodeType === 1) {
+                                        try {
+                                            var childRect = child.getBoundingClientRect();
+                                            if (childRect.width > viewportWidth * 0.3 || childRect.height > viewportHeight * 0.3) {
+                                                child.style.setProperty('position', 'relative', 'important');
+                                                child.style.setProperty('width', modalSize, 'important');
+                                                child.style.setProperty('height', modalHeight, 'important');
+                                                child.style.setProperty('max-width', modalSize, 'important');
+                                                child.style.setProperty('max-height', modalHeight, 'important');
+                                                child.style.setProperty('margin', 'auto', 'important');
+                                                child.style.setProperty('top', 'auto', 'important');
+                                                child.style.setProperty('left', 'auto', 'important');
+                                                child.style.setProperty('right', 'auto', 'important');
+                                                child.style.setProperty('bottom', 'auto', 'important');
+                                                child.style.setProperty('transform', 'none', 'important');
+                                                // #region agent log
+                                                if (doExpensiveChecks) {
+                                                    fetch('http://127.0.0.1:7243/ingest/9793638b-77c2-456e-8b49-35341883b34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.html:320',message:'Fixed large child modal',data:{width:childRect.width,height:childRect.height,className:child.className,id:child.id,modalSize:modalSize},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H'})}).catch(()=>{});
+                                                }
+                                                // #endregion
+                                            }
+                                        } catch(e) {}
+                                    }
+                                });
+                            } else {
+                                // Chat is closed, reset VG_ROOT_INNER to original position
+                                vgRoot.style.removeProperty('top');
+                                vgRoot.style.removeProperty('left');
+                                vgRoot.style.removeProperty('right');
+                                vgRoot.style.removeProperty('bottom');
+                                vgRoot.style.removeProperty('width');
+                                vgRoot.style.removeProperty('height');
+                                vgRoot.style.removeProperty('display');
+                                vgRoot.style.removeProperty('align-items');
+                                vgRoot.style.removeProperty('justify-content');
+                            }
+                        }
+                        
+                        // Also try standard modal selectors
                         var modalSelectors = [
                             '[data-vg-modal="true"]',
                             '.vg-modal',
                             '.vg-modal-container',
                             '[class*="vg-modal"]'
                         ];
-                        var modals = [];
                         modalSelectors.forEach(function(selector) {
                             try {
                                 var found = document.querySelectorAll(selector);
-                                found.forEach(function(el) { 
-                                    if (el && el.nodeType === 1) modals.push(el); 
+                                found.forEach(function(modal) {
+                                    if (modal && modal.nodeType === 1) {
+                                        try {
+                                            var rect = modal.getBoundingClientRect();
+                                            if ((rect.width > viewportWidth * 0.3 || rect.height > viewportHeight * 0.3) &&
+                                                modal.tagName !== 'BODY' && modal.tagName !== 'HTML' &&
+                                                modal.id !== 'root' && !modal.id.includes('VG_OVERLAY')) {
+                                                var parent = modal.parentElement;
+                                                if (parent && parent.id !== 'root' && parent.tagName !== 'BODY' && parent.tagName !== 'HTML') {
+                                                    parent.style.setProperty('position', 'fixed', 'important');
+                                                    parent.style.setProperty('top', '0', 'important');
+                                                    parent.style.setProperty('left', '0', 'important');
+                                                    parent.style.setProperty('right', '0', 'important');
+                                                    parent.style.setProperty('bottom', '0', 'important');
+                                                    parent.style.setProperty('width', '100vw', 'important');
+                                                    parent.style.setProperty('height', '100vh', 'important');
+                                                    parent.style.setProperty('display', 'flex', 'important');
+                                                    parent.style.setProperty('align-items', 'center', 'important');
+                                                    parent.style.setProperty('justify-content', 'center', 'important');
+                                                }
+                                                modal.style.setProperty('position', 'relative', 'important');
+                                                modal.style.setProperty('width', modalSize, 'important');
+                                                modal.style.setProperty('height', modalHeight, 'important');
+                                                modal.style.setProperty('max-width', modalSize, 'important');
+                                                modal.style.setProperty('max-height', modalHeight, 'important');
+                                                modal.style.setProperty('margin', 'auto', 'important');
+                                            }
+                                        } catch(e) {}
+                                    }
                                 });
-                            } catch(e) {
-                                // Silently ignore selector errors
-                            }
-                        });
-                        // Check VG_ROOT_INNER children (more targeted)
-                        try {
-                            var vgRoot = document.getElementById('VG_ROOT_INNER');
-                            if (vgRoot) {
-                                var rootChildren = vgRoot.querySelectorAll('div[class*="modal"], div[style*="position: fixed"], div[style*="position:fixed"]');
-                                rootChildren.forEach(function(el) {
-                                    if (el && el.nodeType === 1) modals.push(el);
-                                });
-                            }
-                        } catch(e) {}
-                        // Remove duplicates
-                        modals = Array.from(new Set(modals));
-                        // Only process modals that exist and are valid
-                        modals.forEach(function(modal) {
-                            if (!modal || modal.nodeType !== 1) return;
-                            try {
-                                var styles = window.getComputedStyle(modal);
-                                var rect = modal.getBoundingClientRect();
-                                var isMobile = window.innerWidth <= 768;
-                                var modalSize = isMobile ? '95vw' : '90vw';
-                                var modalHeight = isMobile ? '95vh' : '90vh';
-                                var viewportWidth = window.innerWidth;
-                                var viewportHeight = window.innerHeight;
-                                // Only fix if it's actually large (likely the modal) and not the root/body
-                                if ((rect.width > viewportWidth * 0.3 || rect.height > viewportHeight * 0.3) &&
-                                    modal.tagName !== 'BODY' && modal.tagName !== 'HTML' &&
-                                    modal.id !== 'root' && !modal.id.includes('VG_OVERLAY')) {
-                                    // Force full screen container (for centering)
-                                    modal.style.setProperty('position', 'fixed', 'important');
-                                    modal.style.setProperty('top', '0', 'important');
-                                    modal.style.setProperty('left', '0', 'important');
-                                    modal.style.setProperty('right', '0', 'important');
-                                    modal.style.setProperty('bottom', '0', 'important');
-                                    modal.style.setProperty('width', '100vw', 'important');
-                                    modal.style.setProperty('height', '100vh', 'important');
-                                    modal.style.setProperty('margin', '0', 'important');
-                                    modal.style.setProperty('padding', '0', 'important');
-                                    modal.style.setProperty('z-index', '999999', 'important');
-                                    modal.style.setProperty('display', 'flex', 'important');
-                                    modal.style.setProperty('align-items', 'center', 'important');
-                                    modal.style.setProperty('justify-content', 'center', 'important');
-                                    // Fix modal content to be 90% of screen - try first child only
-                                    try {
-                                        var modalContent = modal.firstElementChild;
-                                        if (modalContent && modalContent.nodeType === 1) {
-                                            modalContent.style.setProperty('width', modalSize, 'important');
-                                            modalContent.style.setProperty('height', modalHeight, 'important');
-                                            modalContent.style.setProperty('max-width', modalSize, 'important');
-                                            modalContent.style.setProperty('max-height', modalHeight, 'important');
-                                            modalContent.style.setProperty('margin', 'auto', 'important');
-                                            modalContent.style.setProperty('position', 'relative', 'important');
-                                        }
-                                    } catch(e) {}
-                                }
-                            } catch(e) {
-                                // Silently ignore errors for individual modals
-                            }
+                            } catch(e) {}
                         });
                     } catch(e) {
                         // Silently ignore all modal fixing errors to prevent page crash
                     }
-                    // Fix widget controls container
+                    // Fix tab navigation elements - prevent them from stretching too wide
+                    // Run this every iteration when modal is open (not just expensive checks)
+                    try {
+                        var vgRoot = document.getElementById('VG_ROOT_INNER');
+                        if (vgRoot) {
+                            var rootRect = vgRoot.getBoundingClientRect();
+                            // Check if modal is open - look for any visible children with significant size
+                            var modalIsOpen = false;
+                            var rootChildren = Array.from(vgRoot.children);
+                            var visibleChildren = [];
+                            
+                            rootChildren.forEach(function(child) {
+                                if (child && child.nodeType === 1) {
+                                    try {
+                                        var childRect = child.getBoundingClientRect();
+                                        var childStyles = window.getComputedStyle(child);
+                                        if (childRect.width > 50 || childRect.height > 50) {
+                                            modalIsOpen = true;
+                                            visibleChildren.push({
+                                                width: childRect.width,
+                                                height: childRect.height,
+                                                className: child.className.substring(0, 150),
+                                                id: child.id,
+                                                display: childStyles.display,
+                                                position: childStyles.position
+                                            });
+                                        }
+                                    } catch(e) {}
+                                }
+                            });
+                            
+                            // #region agent log
+                            if (doExpensiveChecks) {
+                                fetch('http://127.0.0.1:7243/ingest/9793638b-77c2-456e-8b49-35341883b34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.html:428',message:'Modal open check',data:{modalIsOpen:modalIsOpen,rootRect:{width:rootRect.width,height:rootRect.height,top:rootRect.top,left:rootRect.left},visibleChildren:visibleChildren.slice(0,5)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'J'})}).catch(()=>{});
+                            }
+                            // #endregion
+                            
+                            if (modalIsOpen) {
+                                // First, fix modal container sizing if it's too small
+                                var chatOverlay = vgRoot.querySelector('.vg-chat-overlay-container');
+                                if (chatOverlay) {
+                                    var overlayRect = chatOverlay.getBoundingClientRect();
+                                    if (overlayRect.width < viewportWidth * 0.8) {
+                                        chatOverlay.style.setProperty('width', modalSize, 'important');
+                                        chatOverlay.style.setProperty('max-width', modalSize, 'important');
+                                    }
+                                }
+                                var motherContainer = document.getElementById('vg-mother-container');
+                                if (motherContainer) {
+                                    var motherRect = motherContainer.getBoundingClientRect();
+                                    if (motherRect.width < viewportWidth * 0.8) {
+                                        motherContainer.style.setProperty('width', modalSize, 'important');
+                                        motherContainer.style.setProperty('max-width', modalSize, 'important');
+                                    }
+                                }
+                                
+                                // Find all elements that might be tabs - search for text content first
+                                var allElements = vgRoot.querySelectorAll('*');
+                                var tabElements = [];
+                                var wideElements = [];
+                                var fixedCount = 0;
+                                var tabContainers = [];
+                                
+                                // First pass: Find elements containing "Home", "Chats", or "FAQ" text
+                                allElements.forEach(function(el) {
+                                    if (el && el.nodeType === 1) {
+                                        try {
+                                            var text = (el.textContent || '').trim();
+                                            var rect = el.getBoundingClientRect();
+                                            
+                                            // Check if this element or its children contain tab text
+                                            var hasTabText = /^(Home|Chats|FAQ)$/i.test(text) || 
+                                                           (text.length < 20 && /(Home|Chats|FAQ)/i.test(text));
+                                            
+                                            if (hasTabText && rect.width > 100) {
+                                                // Found a tab element
+                                                var parent = el.parentElement;
+                                                var grandparent = parent ? parent.parentElement : null;
+                                                
+                                                // Find the tab container (usually a flex container with 3 children)
+                                                var container = parent;
+                                                if (container && container.children.length >= 2) {
+                                                    // Check if siblings also have tab text
+                                                    var siblingsWithTabs = 0;
+                                                    Array.from(container.children).forEach(function(sibling) {
+                                                        var siblingText = (sibling.textContent || '').trim();
+                                                        if (/(Home|Chats|FAQ)/i.test(siblingText)) {
+                                                            siblingsWithTabs++;
+                                                        }
+                                                    });
+                                                    
+                                                    if (siblingsWithTabs >= 2) {
+                                                        tabContainers.push(container);
+                                                    }
+                                                }
+                                                
+                                                // Constrain this tab element
+                                                if (rect.width > 150) {
+                                                    el.style.setProperty('max-width', '120px', 'important');
+                                                    el.style.setProperty('width', 'auto', 'important');
+                                                    el.style.setProperty('flex-shrink', '1', 'important');
+                                                    el.style.setProperty('flex-grow', '0', 'important');
+                                                    el.style.setProperty('flex-basis', 'auto', 'important');
+                                                    el.style.setProperty('min-width', '0', 'important');
+                                                    fixedCount++;
+                                                    tabElements.push({
+                                                        width: rect.width,
+                                                        text: text.substring(0, 20),
+                                                        className: el.className.substring(0, 100)
+                                                    });
+                                                }
+                                            }
+                                        } catch(e) {}
+                                    }
+                                });
+                                
+                                // Second pass: Fix tab containers (flex containers with tabs)
+                                tabContainers.forEach(function(container) {
+                                    try {
+                                        var containerStyles = window.getComputedStyle(container);
+                                        if (containerStyles.display === 'flex' || containerStyles.display === 'inline-flex') {
+                                            container.style.setProperty('max-width', '100%', 'important');
+                                            container.style.setProperty('width', '100%', 'important');
+                                            container.style.setProperty('overflow', 'hidden', 'important');
+                                            container.style.setProperty('justify-content', 'flex-start', 'important');
+                                            container.style.setProperty('gap', '8px', 'important');
+                                            
+                                            // Constrain all children equally
+                                            var children = Array.from(container.children);
+                                            children.forEach(function(child) {
+                                                if (child && child.nodeType === 1) {
+                                                    child.style.setProperty('flex', '0 1 auto', 'important');
+                                                    child.style.setProperty('max-width', '120px', 'important');
+                                                    child.style.setProperty('min-width', '0', 'important');
+                                                    child.style.setProperty('width', 'auto', 'important');
+                                                }
+                                            });
+                                        }
+                                    } catch(e) {}
+                                });
+                                
+                                // Third pass: Find any wide flex children that might be tabs
+                                allElements.forEach(function(el) {
+                                    if (el && el.nodeType === 1) {
+                                        try {
+                                            var rect = el.getBoundingClientRect();
+                                            var styles = window.getComputedStyle(el);
+                                            var parent = el.parentElement;
+                                            
+                                            // If element is in a flex container and is unusually wide
+                                            if (parent && rect.width > 200 && rect.width < viewportWidth * 0.5) {
+                                                var parentStyles = window.getComputedStyle(parent);
+                                                if ((parentStyles.display === 'flex' || parentStyles.display === 'inline-flex') && 
+                                                    parent.children.length >= 2 && parent.children.length <= 5) {
+                                                    // Likely a tab in a navigation container
+                                                    el.style.setProperty('max-width', '120px', 'important');
+                                                    el.style.setProperty('flex', '0 1 auto', 'important');
+                                                    el.style.setProperty('min-width', '0', 'important');
+                                                    wideElements.push({
+                                                        width: rect.width,
+                                                        className: el.className.substring(0, 100)
+                                                    });
+                                                }
+                                            }
+                                        } catch(e) {}
+                                    }
+                                });
+                                
+                                // #region agent log
+                                if (doExpensiveChecks) {
+                                    // Log comprehensive DOM structure when modal is open
+                                    var allWideElements = [];
+                                    allElements.forEach(function(el) {
+                                        if (el && el.nodeType === 1) {
+                                            try {
+                                                var rect = el.getBoundingClientRect();
+                                                if (rect.width > 150 || rect.height > 150) {
+                                                    var text = (el.textContent || '').trim().substring(0, 50);
+                                                    allWideElements.push({
+                                                        width: rect.width,
+                                                        height: rect.height,
+                                                        className: el.className.substring(0, 150),
+                                                        text: text,
+                                                        tagName: el.tagName,
+                                                        id: el.id
+                                                    });
+                                                }
+                                            } catch(e) {}
+                                        }
+                                    });
+                                    fetch('http://127.0.0.1:7243/ingest/9793638b-77c2-456e-8b49-35341883b34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.html:510',message:'Tab fixing results',data:{wideElementsCount:wideElements.length,tabElementsCount:tabElements.length,fixedCount:fixedCount,modalIsOpen:modalIsOpen,allWideElements:allWideElements.slice(0,10)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'I'})}).catch(()=>{});
+                                }
+                                // #endregion
+                            }
+                        }
+                    } catch(e) {}
+                    // Fix widget controls container - prevent squishing
                     try {
                         var widgetControls = document.querySelectorAll('.vg-widget-controls-container');
                         widgetControls.forEach(function(el) {
                             var rect = el.getBoundingClientRect();
-                            if (rect.width > 100 || rect.height > 100) {
-                                el.style.setProperty('width', 'auto', 'important');
-                                el.style.setProperty('max-width', '80px', 'important');
-                                el.style.setProperty('height', 'auto', 'important');
-                                el.style.setProperty('max-height', '80px', 'important');
-                                el.style.setProperty('position', 'fixed', 'important');
-                                el.style.setProperty('bottom', '20px', 'important');
-                                el.style.setProperty('right', '20px', 'important');
-                                el.style.setProperty('top', 'auto', 'important');
-                                el.style.setProperty('left', 'auto', 'important');
+                            var styles = window.getComputedStyle(el);
+                            // Always ensure proper sizing - don't just check if too large
+                            el.style.setProperty('width', 'auto', 'important');
+                            el.style.setProperty('min-width', '64px', 'important');
+                            el.style.setProperty('max-width', '80px', 'important');
+                            el.style.setProperty('height', 'auto', 'important');
+                            el.style.setProperty('min-height', '64px', 'important');
+                            el.style.setProperty('max-height', '80px', 'important');
+                            el.style.setProperty('aspect-ratio', '1', 'important');
+                            el.style.setProperty('position', 'fixed', 'important');
+                            el.style.setProperty('bottom', '20px', 'important');
+                            el.style.setProperty('right', '20px', 'important');
+                            el.style.setProperty('top', 'auto', 'important');
+                            el.style.setProperty('left', 'auto', 'important');
+                            // #region agent log
+                            if (doExpensiveChecks) {
+                                fetch('http://127.0.0.1:7243/ingest/9793638b-77c2-456e-8b49-35341883b34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.html:519',message:'Fixed widget controls',data:{width:rect.width,height:rect.height,computedWidth:styles.width,computedHeight:styles.height},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'K'})}).catch(()=>{});
                             }
+                            // #endregion
                         });
+                        // Also fix the actual button inside
+                        var chatToggle = document.getElementById('vg_chat_toggle');
+                        if (chatToggle) {
+                            var toggleRect = chatToggle.getBoundingClientRect();
+                            var toggleStyles = window.getComputedStyle(chatToggle);
+                            chatToggle.style.setProperty('width', '64px', 'important');
+                            chatToggle.style.setProperty('height', '64px', 'important');
+                            chatToggle.style.setProperty('min-width', '64px', 'important');
+                            chatToggle.style.setProperty('min-height', '64px', 'important');
+                            chatToggle.style.setProperty('max-width', '64px', 'important');
+                            chatToggle.style.setProperty('max-height', '64px', 'important');
+                            chatToggle.style.setProperty('aspect-ratio', '1', 'important');
+                            // #region agent log
+                            if (doExpensiveChecks) {
+                                fetch('http://127.0.0.1:7243/ingest/9793638b-77c2-456e-8b49-35341883b34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.html:540',message:'Fixed chat toggle button',data:{width:toggleRect.width,height:toggleRect.height,computedWidth:toggleStyles.width,computedHeight:toggleStyles.height},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'K'})}).catch(()=>{});
+                            }
+                            // #endregion
+                        }
                     } catch(e) {}
                 }, 500); // Check every 500ms (reduced frequency to prevent freeze)
                 // Removed expensive DOM state checks that were causing page to freeze
