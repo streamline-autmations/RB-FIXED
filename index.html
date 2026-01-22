@@ -118,19 +118,30 @@
           max-height: 95vh !important;
         }
       }
+      /* Hide chatbot containers to prevent black screen overlay */
+      #VG_OVERLAY_CONTAINER,
+      #VG_ROOT_INNER,
+      .vg-chat-overlay-container,
+      #vg-mother-container {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
     </style>
   </head>
   <body class="bg-black">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- Convocore chatbot -->
-    <div id="VG_OVERLAY_CONTAINER">
+    <!-- Convocore chatbot - DISABLED TO PREVENT BLACK SCREEN OVERLAY -->
+    <!-- <div id="VG_OVERLAY_CONTAINER">
         <!-- Here is where CONVOCORE renders the widget. -->
-    </div>
+    <!-- </div> -->
 
     <!-- Remove 'defer' if you want widget to load faster (Will affect website loading) -->
-    <script defer>
+    <!-- CHATBOT SCRIPT DISABLED - COMMENTED OUT TO PREVENT BLACK SCREEN OVERLAY -->
+    <!-- <script defer>
         (function() {
             window.VG_CONFIG = {
                 ID: "6BhLW2avFF69X0ydpkZ3", // YOUR AGENT ID
@@ -703,6 +714,7 @@
             fetch('http://127.0.0.1:7243/ingest/9793638b-77c2-456e-8b49-35341883b34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.html:100',message:'Script appended to body',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
             // #endregion
         })()
-    </script>
+    </script> -->
+    <!-- END OF DISABLED CHATBOT SCRIPT -->
   </body>
 </html>
