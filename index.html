@@ -43,6 +43,31 @@
       #VG_ROOT_INNER {
         position: static !important;
       }
+      /* Force modal to be centered and 90% width when open */
+      .vg-chat-overlay-container,
+      #vg-mother-container,
+      .vg-chat-view-container {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 90vw !important;
+        height: 90vh !important;
+        max-width: 90vw !important;
+        max-height: 90vh !important;
+        margin: 0 !important;
+        z-index: 999999 !important;
+      }
+      @media (max-width: 768px) {
+        .vg-chat-overlay-container,
+        #vg-mother-container,
+        .vg-chat-view-container {
+          width: 95vw !important;
+          height: 95vh !important;
+          max-width: 95vw !important;
+          max-height: 95vh !important;
+        }
+      }
     </style>
   </head>
   <body class="bg-black">
@@ -142,6 +167,85 @@
           setTimeout(function() {
             clearInterval(fixInterval);
           }, 30000);
+          
+          // Fix modal positioning when it opens
+          function fixModalPosition() {
+            var viewportWidth = window.innerWidth;
+            var viewportHeight = window.innerHeight;
+            var isMobile = viewportWidth <= 768;
+            var modalWidth = isMobile ? '95vw' : '90vw';
+            var modalHeight = isMobile ? '95vh' : '90vh';
+            
+            // Find modal containers
+            var modalSelectors = [
+              '.vg-chat-overlay-container',
+              '#vg-mother-container',
+              '.vg-chat-view-container',
+              '[class*="chat-overlay"]',
+              '[id*="mother-container"]'
+            ];
+            
+            modalSelectors.forEach(function(selector) {
+              try {
+                var modals = document.querySelectorAll(selector);
+                modals.forEach(function(modal) {
+                  if (modal) {
+                    var rect = modal.getBoundingClientRect();
+                    // Only fix if modal is visible and reasonably sized (chat is open)
+                    if (rect.width > 200 || rect.height > 200) {
+                      modal.style.setProperty('position', 'fixed', 'important');
+                      modal.style.setProperty('top', '50%', 'important');
+                      modal.style.setProperty('left', '50%', 'important');
+                      modal.style.setProperty('transform', 'translate(-50%, -50%)', 'important');
+                      modal.style.setProperty('width', modalWidth, 'important');
+                      modal.style.setProperty('height', modalHeight, 'important');
+                      modal.style.setProperty('max-width', modalWidth, 'important');
+                      modal.style.setProperty('max-height', modalHeight, 'important');
+                      modal.style.setProperty('margin', '0', 'important');
+                      modal.style.setProperty('z-index', '999999', 'important');
+                      modal.style.setProperty('right', 'auto', 'important');
+                      modal.style.setProperty('bottom', 'auto', 'important');
+                    }
+                  }
+                });
+              } catch(e) {}
+            });
+          }
+          
+          // Fix modal position continuously
+          var modalFixInterval = setInterval(fixModalPosition, 300);
+          
+          // Also fix when modal elements are added
+          var modalObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+              mutation.addedNodes.forEach(function(node) {
+                if (node.nodeType === 1) {
+                  if (node.classList && (
+                    node.classList.contains('vg-chat-overlay-container') ||
+                    node.id === 'vg-mother-container' ||
+                    node.classList.contains('vg-chat-view-container') ||
+                    node.className.includes('chat-overlay')
+                  )) {
+                    setTimeout(fixModalPosition, 50);
+                    setTimeout(fixModalPosition, 200);
+                    setTimeout(fixModalPosition, 500);
+                  }
+                  // Check children
+                  var modal = node.querySelector && (
+                    node.querySelector('.vg-chat-overlay-container') ||
+                    node.querySelector('#vg-mother-container') ||
+                    node.querySelector('.vg-chat-view-container')
+                  );
+                  if (modal) {
+                    setTimeout(fixModalPosition, 50);
+                    setTimeout(fixModalPosition, 200);
+                    setTimeout(fixModalPosition, 500);
+                  }
+                }
+              });
+            });
+          });
+          modalObserver.observe(document.body, { childList: true, subtree: true });
         };
         document.body.appendChild(VG_SCRIPT);
       })();
