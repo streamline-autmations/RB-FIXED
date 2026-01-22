@@ -102,6 +102,8 @@
             "https://vg-bunny-cdn.b-cdn.net/vg_live_build/styles.css",
             "/convocore-overrides.css"
           ]
+          // Note: If Convocore supports containerSize or similar options, add them here
+          // containerSize: "90vw" // Example - check Convocore docs
         };
         var VG_SCRIPT = document.createElement("script");
         VG_SCRIPT.src = "https://vg-bunny-cdn.b-cdn.net/vg_live_build/vg_bundle.js";
@@ -227,28 +229,45 @@
                       var children = Array.from(modal.children);
                       children.forEach(function(child) {
                         if (child && child.nodeType === 1) {
-                          // Remove transform that might be centering (causing zoom effect)
+                          // CRITICAL: Remove transform that might be centering (causing zoom effect)
                           var currentTransform = window.getComputedStyle(child).transform;
-                          if (currentTransform && currentTransform !== 'none' && currentTransform.includes('translate')) {
-                            child.style.setProperty('transform', 'none', 'important');
+                          if (currentTransform && currentTransform !== 'none') {
+                            // Only keep translate if it's for centering the modal itself, not children
+                            if (!currentTransform.includes('translate(-50%, -50%)')) {
+                              child.style.setProperty('transform', 'none', 'important');
+                            }
                           }
                           child.style.setProperty('scale', '1', 'important');
                           child.style.setProperty('zoom', '1', 'important');
-                          // Force to 100% of parent, not viewport units
+                          // Force to 100% of parent, not viewport units - THIS IS THE KEY FIX
                           child.style.setProperty('width', '100%', 'important');
                           child.style.setProperty('height', '100%', 'important');
                           child.style.setProperty('max-width', '100%', 'important');
                           child.style.setProperty('max-height', '100%', 'important');
+                          child.style.setProperty('min-width', '0', 'important');
+                          child.style.setProperty('min-height', '0', 'important');
                           child.style.setProperty('margin', '0', 'important');
                           child.style.setProperty('position', 'relative', 'important');
                           child.style.setProperty('overflow', 'auto', 'important');
                           child.style.setProperty('box-sizing', 'border-box', 'important');
                           // Remove any viewport-based width/height classes by overriding
-                          if (child.className && (child.className.includes('w-[100vw]') || child.className.includes('vg-w-[100vw]'))) {
-                            child.style.setProperty('width', '100%', 'important');
-                          }
-                          if (child.className && (child.className.includes('h-[100dvh]') || child.className.includes('vg-h-[100dvh]'))) {
-                            child.style.setProperty('height', '100%', 'important');
+                          if (child.className) {
+                            if (child.className.includes('w-[100vw]') || child.className.includes('vg-w-[100vw]')) {
+                              child.style.setProperty('width', '100%', 'important');
+                              child.style.setProperty('max-width', '100%', 'important');
+                            }
+                            if (child.className.includes('h-[100dvh]') || child.className.includes('vg-h-[100dvh]')) {
+                              child.style.setProperty('height', '100%', 'important');
+                              child.style.setProperty('max-height', '100%', 'important');
+                            }
+                            // Target the overlay-root-container specifically
+                            if (child.className.includes('overlay-root-container')) {
+                              child.style.setProperty('width', '100%', 'important');
+                              child.style.setProperty('height', '100%', 'important');
+                              child.style.setProperty('max-width', '100%', 'important');
+                              child.style.setProperty('max-height', '100%', 'important');
+                              child.style.setProperty('transform', 'none', 'important');
+                            }
                           }
                         }
                       });

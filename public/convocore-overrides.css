@@ -1,4 +1,25 @@
 /* Convocore overrides: hide proactive notifications, size bubble/modal, constrain tabs. */
+
+/* ISOLATE CONVOCORE FROM SITE STYLES - Critical for proper sizing */
+#VG_OVERLAY_CONTAINER,
+#VG_OVERLAY_CONTAINER *,
+.vg-chat-overlay-container,
+.vg-chat-overlay-container *,
+#vg-mother-container,
+#vg-mother-container *,
+.vg-chat-view-container,
+.vg-chat-view-container * {
+  /* Reset any inherited styles that might affect sizing */
+  font-size: initial !important;
+  line-height: initial !important;
+  letter-spacing: initial !important;
+  text-transform: initial !important;
+  /* Ensure box-sizing is consistent */
+  box-sizing: border-box !important;
+  /* Prevent any inherited transforms */
+  transform-origin: center center !important;
+}
+
 .vg-proactive-notification--container,
 [class*="proactive-notification"],
 [class*="proactive"] {
@@ -124,17 +145,37 @@ div[class*="vg-"][class*="widget"] {
   overflow: auto !important;
 }
 
-/* Override specific Tailwind width classes */
+/* Override specific Tailwind width classes - CRITICAL FIX */
+/* These classes force 100vw/100dvh which causes zoom when inside 90vw container */
 [class*="vg-w-[100vw]"],
-[class*="w-[100vw]"] {
+[class*="w-[100vw]"],
+.vg-w-\[100vw\] {
   width: 100% !important;
   max-width: 100% !important;
+  min-width: 0 !important;
 }
 
 [class*="vg-h-[100dvh]"],
-[class*="h-[100dvh]"] {
+[class*="h-[100dvh]"],
+.vg-h-\[100dvh\] {
   height: 100% !important;
   max-height: 100% !important;
+  min-height: 0 !important;
+}
+
+/* Target the specific overlay root container that Convocore uses */
+.vg-overlay-root-container,
+[class*="overlay-root-container"] {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  transform: none !important;
+  scale: 1 !important;
+  zoom: 1 !important;
+  box-sizing: border-box !important;
 }
 
 /* Ensure content inside modal fits properly - remove any oversized children */
