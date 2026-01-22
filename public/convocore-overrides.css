@@ -33,6 +33,32 @@
   left: auto !important;
   top: auto !important;
   transform: none !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+}
+
+/* Also target any parent containers that might be positioning it incorrectly */
+#VG_OVERLAY_CONTAINER,
+#VG_ROOT_INNER {
+  position: static !important;
+}
+
+#VG_OVERLAY_CONTAINER > *,
+#VG_ROOT_INNER > * {
+  position: static !important;
+}
+
+/* Force widget button to bottom-right */
+#VG_OVERLAY_CONTAINER .vg-widget-controls-container,
+#VG_ROOT_INNER .vg-widget-controls-container,
+.vg-widget-controls-container {
+  position: fixed !important;
+  right: 20px !important;
+  bottom: 20px !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  margin: 0 !important;
 }
 
 .vg-modal,

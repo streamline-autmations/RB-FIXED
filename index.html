@@ -44,6 +44,37 @@
         var VG_SCRIPT = document.createElement("script");
         VG_SCRIPT.src = "https://vg-bunny-cdn.b-cdn.net/vg_live_build/vg_bundle.js";
         VG_SCRIPT.defer = true;
+        VG_SCRIPT.onload = function() {
+          // Force widget to bottom-right after it loads
+          function fixWidgetPosition() {
+            var widgetContainer = document.querySelector('.vg-widget-controls-container');
+            if (widgetContainer) {
+              widgetContainer.style.setProperty('position', 'fixed', 'important');
+              widgetContainer.style.setProperty('right', '20px', 'important');
+              widgetContainer.style.setProperty('bottom', '20px', 'important');
+              widgetContainer.style.setProperty('left', 'auto', 'important');
+              widgetContainer.style.setProperty('top', 'auto', 'important');
+              widgetContainer.style.setProperty('transform', 'none', 'important');
+              widgetContainer.style.setProperty('margin', '0', 'important');
+            }
+          }
+          // Fix immediately and also watch for when widget appears
+          fixWidgetPosition();
+          setTimeout(fixWidgetPosition, 100);
+          setTimeout(fixWidgetPosition, 500);
+          setTimeout(fixWidgetPosition, 1000);
+          // Watch for widget being added
+          var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+              mutation.addedNodes.forEach(function(node) {
+                if (node.nodeType === 1 && (node.classList.contains('vg-widget-controls-container') || node.querySelector('.vg-widget-controls-container'))) {
+                  fixWidgetPosition();
+                }
+              });
+            });
+          });
+          observer.observe(document.body, { childList: true, subtree: true });
+        };
         document.body.appendChild(VG_SCRIPT);
       })();
     </script>
