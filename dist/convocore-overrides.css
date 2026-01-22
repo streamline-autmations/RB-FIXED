@@ -1,0 +1,19 @@
+/* Fix: CONVOCORE widget elements were stretching to 1518×732 (viewport-sized)
+   because of CSS conflicts. Force compact sizes so the bubble and proactive
+   notification stay in the bottom-right corner. */
+#VG_OVERLAY_CONTAINER .vg-proactive-notification--container {
+  width: auto !important;
+  min-width: unset !important;
+  max-width: 280px !important;
+  height: auto !important;
+  min-height: unset !important;
+  max-height: 140px !important;
+}
+#VG_OVERLAY_CONTAINER .vg-widget-controls-container {
+  width: auto !important;
+  min-width: unset !important;
+  max-width: 80px !important;
+  height: auto !important;
+  min-height: unset !important;
+  max-height: 80px !important;
+}

@@ -24,13 +24,108 @@
     <meta name="twitter:description" content="RecklessBear designs and manufactures elite custom sportswear for schools, teams, and athletes in South Africa. From concept to creation — Do it Reckless.">
     <meta name="twitter:image" content="https://res.cloudinary.com/dnlgohkcc/image/upload/v1768799688/reckless_logo_r910n4.png">
     
+    <!-- Force hide proactive notification with inline styles (highest priority) -->
+    <style>
+      /* Completely hide proactive notification - it keeps expanding to viewport size */
+      .vg-proactive-notification--container,
+      div.vg-proactive-notification--container,
+      [class*="proactive-notification"],
+      [class*="proactive"],
+      div[class*="bg-primary"][class*="rounded"],
+      div[class*="vg-bg-primary"][class*="vg-rounded"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        pointer-events: none !important;
+        position: absolute !important;
+        left: -9999px !important;
+        max-width: 0 !important;
+        max-height: 0 !important;
+      }
+      /* Hide any large red elements that might be the proactive notification */
+      div[style*="background-color: rgb(255, 0, 0)"],
+      div[style*="background-color:rgb(255,0,0)"],
+      div[style*="background-color:#ff0000"],
+      div[style*="background-color:#f00"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        pointer-events: none !important;
+      }
+      /* Fix widget controls container - prevent it from expanding to viewport size */
+      .vg-widget-controls-container {
+        width: auto !important;
+        max-width: 80px !important;
+        height: auto !important;
+        max-height: 80px !important;
+        position: fixed !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+      }
+      /* Ensure modal opens 90% of screen and centered when modalMode is true */
+      [data-vg-modal="true"],
+      .vg-modal,
+      .vg-modal-container,
+      [class*="vg-modal"],
+      div[class*="modal"] {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        z-index: 999999 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      /* Ensure modal content is 90% of screen, centered, and responsive */
+      [data-vg-modal="true"] > *,
+      .vg-modal > *,
+      .vg-modal-container > *,
+      [data-vg-modal="true"] > * > *,
+      .vg-modal > * > *,
+      .vg-modal-container > * > * {
+        width: 90vw !important;
+        height: 90vh !important;
+        max-width: 90vw !important;
+        max-height: 90vh !important;
+        margin: auto !important;
+        position: relative !important;
+      }
+      /* Mobile responsive - use 95% on small screens */
+      @media (max-width: 768px) {
+        [data-vg-modal="true"] > *,
+        .vg-modal > *,
+        .vg-modal-container > *,
+        [data-vg-modal="true"] > * > *,
+        .vg-modal > * > *,
+        .vg-modal-container > * > * {
+          width: 95vw !important;
+          height: 95vh !important;
+          max-width: 95vw !important;
+          max-height: 95vh !important;
+        }
+      }
+    </style>
   </head>
   <body class="bg-black">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
     <!-- Convocore chatbot -->
-    <div style="width: 0; height: 0;" id="VG_OVERLAY_CONTAINER">
+    <div id="VG_OVERLAY_CONTAINER">
         <!-- Here is where CONVOCORE renders the widget. -->
     </div>
 
@@ -41,7 +136,7 @@
                 ID: "6BhLW2avFF69X0ydpkZ3", // YOUR AGENT ID
                 region: 'na', // YOUR ACCOUNT REGION 
                 render: 'bottom-right', // can be 'bottom-left' or 'bottom-right'
-                modalMode: true, // Set this to 'true' to open the widget in modal mode
+                modalMode: true, // Opens chat in modal (full screen) when bubble button is clicked
                 stylesheets: [
                     // Base CONVOCORE CSS
                     "https://vg-bunny-cdn.b-cdn.net/vg_live_build/styles.css",
@@ -59,10 +154,241 @@
                 // userID: 'USER_ID', // If you want to use your own user_id
                 // autostart: true, // Whether to autostart the chatbot with the proactive message
             }
+            // Removed logging to prevent performance issues
             var VG_SCRIPT = document.createElement("script");
             VG_SCRIPT.src = "https://vg-bunny-cdn.b-cdn.net/vg_live_build/vg_bundle.js";
             VG_SCRIPT.defer = true; // Remove 'defer' if you want widget to load faster (Will affect website loading)
+            // Removed logging to prevent performance issues
+            VG_SCRIPT.onerror = function(e) {
+                // Removed logging to prevent performance issues
+            };
+            VG_SCRIPT.onload = function() {
+                // Removed logging to prevent performance issues
+                // Watch for widget elements being added and fix their styles immediately
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        mutation.addedNodes.forEach(function(node) {
+                            if (node.nodeType === 1) { // Element node
+                                // Hide proactive notification completely - it keeps expanding
+                                if (node.className && typeof node.className === 'string' && node.className.includes('proactive-notification')) {
+                                    node.style.setProperty('display', 'none', 'important');
+                                    node.style.setProperty('visibility', 'hidden', 'important');
+                                    node.style.setProperty('opacity', '0', 'important');
+                                    node.style.setProperty('width', '0', 'important');
+                                    node.style.setProperty('height', '0', 'important');
+                                    node.style.setProperty('pointer-events', 'none', 'important');
+                                    // #region agent log
+                                    fetch('http://127.0.0.1:7243/ingest/9793638b-77c2-456e-8b49-35341883b34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.html:78',message:'Hid proactive notification via observer',data:{className:node.className},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
+                                    // #endregion
+                                }
+                                // Fix widget controls container with !important
+                                if (node.className && typeof node.className === 'string' && node.className.includes('vg-widget-controls-container')) {
+                                    node.style.setProperty('width', 'auto', 'important');
+                                    node.style.setProperty('max-width', '80px', 'important');
+                                    node.style.setProperty('height', 'auto', 'important');
+                                    node.style.setProperty('max-height', '80px', 'important');
+                                    node.style.setProperty('position', 'fixed', 'important');
+                                    node.style.setProperty('bottom', '20px', 'important');
+                                    node.style.setProperty('right', '20px', 'important');
+                                    node.style.setProperty('top', 'auto', 'important');
+                                    node.style.setProperty('left', 'auto', 'important');
+                                    // Removed logging to prevent performance issues
+                                }
+                                // Also check children - hide proactive notifications
+                                var proactiveNotifs = node.querySelectorAll && node.querySelectorAll('.vg-proactive-notification--container, [class*="proactive-notification"]');
+                                if (proactiveNotifs && proactiveNotifs.length > 0) {
+                                    proactiveNotifs.forEach(function(el) {
+                                        el.style.setProperty('display', 'none', 'important');
+                                        el.style.setProperty('visibility', 'hidden', 'important');
+                                        el.style.setProperty('opacity', '0', 'important');
+                                        el.style.setProperty('width', '0', 'important');
+                                        el.style.setProperty('height', '0', 'important');
+                                        el.style.setProperty('pointer-events', 'none', 'important');
+                                    });
+                                }
+                                var widgetControls = node.querySelectorAll && node.querySelectorAll('.vg-widget-controls-container');
+                                if (widgetControls && widgetControls.length > 0) {
+                                    widgetControls.forEach(function(el) {
+                                        el.style.setProperty('width', 'auto', 'important');
+                                        el.style.setProperty('max-width', '80px', 'important');
+                                        el.style.setProperty('height', 'auto', 'important');
+                                        el.style.setProperty('max-height', '80px', 'important');
+                                        el.style.setProperty('position', 'fixed', 'important');
+                                        el.style.setProperty('bottom', '20px', 'important');
+                                        el.style.setProperty('right', '20px', 'important');
+                                    });
+                                }
+                            }
+                        });
+                    });
+                });
+                observer.observe(document.body, { childList: true, subtree: true });
+                // Removed logging to prevent performance issues
+                // Continuously hide proactive notification and fix modal - optimized to prevent page freeze
+                var checkCount = 0;
+                setInterval(function() {
+                    checkCount++;
+                    // Only do expensive checks every 10 iterations (1 second) to prevent freeze
+                    var doExpensiveChecks = (checkCount % 10 === 0);
+                    
+                    // Always hide proactive notifications (lightweight)
+                    try {
+                        var proactiveNotifs = document.querySelectorAll('.vg-proactive-notification--container, [class*="proactive-notification"], [class*="proactive"]');
+                        proactiveNotifs.forEach(function(el) {
+                            el.style.setProperty('display', 'none', 'important');
+                            el.style.setProperty('visibility', 'hidden', 'important');
+                            el.style.setProperty('opacity', '0', 'important');
+                            el.style.setProperty('width', '0', 'important');
+                            el.style.setProperty('height', '0', 'important');
+                            el.style.setProperty('pointer-events', 'none', 'important');
+                            el.style.setProperty('position', 'absolute', 'important');
+                            el.style.setProperty('left', '-9999px', 'important');
+                        });
+                    } catch(e) {}
+                    
+                    // Only do expensive red element checks occasionally
+                    if (doExpensiveChecks) {
+                        try {
+                            // Only check within VG_OVERLAY_CONTAINER to limit scope
+                            var container = document.getElementById('VG_OVERLAY_CONTAINER');
+                            if (container) {
+                                var containerDivs = container.querySelectorAll('div');
+                                containerDivs.forEach(function(el) {
+                                    try {
+                                        var styles = window.getComputedStyle(el);
+                                        var bgColor = styles.backgroundColor;
+                                        var rect = el.getBoundingClientRect();
+                                        var isRed = bgColor && (
+                                            bgColor.includes('255, 0, 0') || 
+                                            bgColor.includes('rgb(255, 0, 0)') || 
+                                            bgColor.includes('rgb(255,0,0)') ||
+                                            bgColor.includes('rgba(255, 0, 0') ||
+                                            bgColor.includes('rgba(255,0,0') ||
+                                            bgColor.includes('#ff0000') || 
+                                            bgColor.includes('#f00')
+                                        );
+                                        var isLarge = rect.width > 200 || rect.height > 200;
+                                        var isVisible = styles.display !== 'none' && styles.visibility !== 'hidden' && parseFloat(styles.opacity) > 0 && rect.width > 0 && rect.height > 0;
+                                        if (isRed && isLarge && isVisible && !el.id.includes('chat_toggle') && !el.className.includes('button') && !el.className.includes('bubble') && !el.className.includes('vg-widget-controls')) {
+                                            el.style.setProperty('display', 'none', 'important');
+                                            el.style.setProperty('visibility', 'hidden', 'important');
+                                            el.style.setProperty('opacity', '0', 'important');
+                                            el.style.setProperty('width', '0', 'important');
+                                            el.style.setProperty('height', '0', 'important');
+                                            el.style.setProperty('pointer-events', 'none', 'important');
+                                        }
+                                    } catch(e) {}
+                                });
+                            }
+                        } catch(e) {}
+                    }
+                    // Fix modal positioning - ensure it's centered and 90% of screen
+                    // Try multiple selectors to find the modal (more targeted approach)
+                    try {
+                        var modalSelectors = [
+                            '[data-vg-modal="true"]',
+                            '.vg-modal',
+                            '.vg-modal-container',
+                            '[class*="vg-modal"]'
+                        ];
+                        var modals = [];
+                        modalSelectors.forEach(function(selector) {
+                            try {
+                                var found = document.querySelectorAll(selector);
+                                found.forEach(function(el) { 
+                                    if (el && el.nodeType === 1) modals.push(el); 
+                                });
+                            } catch(e) {
+                                // Silently ignore selector errors
+                            }
+                        });
+                        // Check VG_ROOT_INNER children (more targeted)
+                        try {
+                            var vgRoot = document.getElementById('VG_ROOT_INNER');
+                            if (vgRoot) {
+                                var rootChildren = vgRoot.querySelectorAll('div[class*="modal"], div[style*="position: fixed"], div[style*="position:fixed"]');
+                                rootChildren.forEach(function(el) {
+                                    if (el && el.nodeType === 1) modals.push(el);
+                                });
+                            }
+                        } catch(e) {}
+                        // Remove duplicates
+                        modals = Array.from(new Set(modals));
+                        // Only process modals that exist and are valid
+                        modals.forEach(function(modal) {
+                            if (!modal || modal.nodeType !== 1) return;
+                            try {
+                                var styles = window.getComputedStyle(modal);
+                                var rect = modal.getBoundingClientRect();
+                                var isMobile = window.innerWidth <= 768;
+                                var modalSize = isMobile ? '95vw' : '90vw';
+                                var modalHeight = isMobile ? '95vh' : '90vh';
+                                var viewportWidth = window.innerWidth;
+                                var viewportHeight = window.innerHeight;
+                                // Only fix if it's actually large (likely the modal) and not the root/body
+                                if ((rect.width > viewportWidth * 0.3 || rect.height > viewportHeight * 0.3) &&
+                                    modal.tagName !== 'BODY' && modal.tagName !== 'HTML' &&
+                                    modal.id !== 'root' && !modal.id.includes('VG_OVERLAY')) {
+                                    // Force full screen container (for centering)
+                                    modal.style.setProperty('position', 'fixed', 'important');
+                                    modal.style.setProperty('top', '0', 'important');
+                                    modal.style.setProperty('left', '0', 'important');
+                                    modal.style.setProperty('right', '0', 'important');
+                                    modal.style.setProperty('bottom', '0', 'important');
+                                    modal.style.setProperty('width', '100vw', 'important');
+                                    modal.style.setProperty('height', '100vh', 'important');
+                                    modal.style.setProperty('margin', '0', 'important');
+                                    modal.style.setProperty('padding', '0', 'important');
+                                    modal.style.setProperty('z-index', '999999', 'important');
+                                    modal.style.setProperty('display', 'flex', 'important');
+                                    modal.style.setProperty('align-items', 'center', 'important');
+                                    modal.style.setProperty('justify-content', 'center', 'important');
+                                    // Fix modal content to be 90% of screen - try first child only
+                                    try {
+                                        var modalContent = modal.firstElementChild;
+                                        if (modalContent && modalContent.nodeType === 1) {
+                                            modalContent.style.setProperty('width', modalSize, 'important');
+                                            modalContent.style.setProperty('height', modalHeight, 'important');
+                                            modalContent.style.setProperty('max-width', modalSize, 'important');
+                                            modalContent.style.setProperty('max-height', modalHeight, 'important');
+                                            modalContent.style.setProperty('margin', 'auto', 'important');
+                                            modalContent.style.setProperty('position', 'relative', 'important');
+                                        }
+                                    } catch(e) {}
+                                }
+                            } catch(e) {
+                                // Silently ignore errors for individual modals
+                            }
+                        });
+                    } catch(e) {
+                        // Silently ignore all modal fixing errors to prevent page crash
+                    }
+                    // Fix widget controls container
+                    try {
+                        var widgetControls = document.querySelectorAll('.vg-widget-controls-container');
+                        widgetControls.forEach(function(el) {
+                            var rect = el.getBoundingClientRect();
+                            if (rect.width > 100 || rect.height > 100) {
+                                el.style.setProperty('width', 'auto', 'important');
+                                el.style.setProperty('max-width', '80px', 'important');
+                                el.style.setProperty('height', 'auto', 'important');
+                                el.style.setProperty('max-height', '80px', 'important');
+                                el.style.setProperty('position', 'fixed', 'important');
+                                el.style.setProperty('bottom', '20px', 'important');
+                                el.style.setProperty('right', '20px', 'important');
+                                el.style.setProperty('top', 'auto', 'important');
+                                el.style.setProperty('left', 'auto', 'important');
+                            }
+                        });
+                    } catch(e) {}
+                }, 500); // Check every 500ms (reduced frequency to prevent freeze)
+                // Removed expensive DOM state checks that were causing page to freeze
+                // The setInterval above handles all necessary checks efficiently
+            };
             document.body.appendChild(VG_SCRIPT);
+            // #region agent log
+            fetch('http://127.0.0.1:7243/ingest/9793638b-77c2-456e-8b49-35341883b34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.html:100',message:'Script appended to body',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+            // #endregion
         })()
     </script>
   </body>
