@@ -13,6 +13,7 @@ import ContactPage from './pages/ContactPage';
 import ProductsPage from './pages/ProductsPage';
 import TrackOrderPage from './pages/TrackOrderPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import ChatbotTestPage from './pages/ChatbotTestPage';
 import allProducts from './data/productsData';
 import RugbyKitsPage from './pages/products/RugbyKitsPage';
 import RugbyJerseysPage from './pages/products/RugbyJerseysPage';
@@ -109,6 +110,7 @@ import CategoryPage from './pages/CategoryPage';
 import SubcategoryPage from './pages/SubcategoryPage';
 import GenericProductPage from './pages/products/GenericProductPage';
 import BaseCataloguePage from './components/shared/BaseCataloguePage';
+import ConvocoreWidgetMount from './components/ConvocoreWidgetMount';
 
 // --- PADEL IMPORTS ---
 import PadelShortSleevePage from './pages/products/PadelShortSleevePage';
@@ -137,6 +139,7 @@ function App() {
               <Route path="/track-order" element={<TrackOrderPage />} />
               <Route path="/products" element={<ProductsPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+              <Route path="/chatbot-test" element={<ChatbotTestPage />} />
 
               {/* --- ADDED: ALL YOUR SPECIFIC PRODUCT PAGE ROUTES --- */}
               {/* This block was missing, causing the product card links to break. */}
@@ -236,6 +239,7 @@ function App() {
             </Routes>
           </AnimatePresence>
         </main>
+        <ConvocoreWidgetMount />
         <Footer />
       </div>
     </Router>

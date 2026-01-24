@@ -27,25 +27,5 @@
   <body class="bg-black">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-
-    <div id="VG_OVERLAY_CONTAINER" style="width: 0; height: 0;"></div>
-    <script>
-      (function() {
-        window.VG_CONFIG = {
-          ID: "6BhLW2avFF69X0ydpkZ3",
-          region: "na",
-          render: "bottom-right",
-          modalMode: true,
-          stylesheets: [
-            "https://vg-bunny-cdn.b-cdn.net/vg_live_build/styles.css",
-            "/convocore-overrides.css"
-          ]
-        };
-        var VG_SCRIPT = document.createElement("script");
-        VG_SCRIPT.src = "https://vg-bunny-cdn.b-cdn.net/vg_live_build/vg_bundle.js";
-        VG_SCRIPT.defer = true;
-        document.body.appendChild(VG_SCRIPT);
-      })();
-    </script>
   </body>
 </html>

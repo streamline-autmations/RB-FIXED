@@ -1,0 +1,101 @@
+/* Convocore overrides: hide proactive notifications, size bubble/modal, constrain tabs. */
+.vg-proactive-notification--container,
+[class*="proactive-notification"],
+[class*="proactive"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+.vg-widget-controls-container,
+#vg_chat_toggle,
+.vg-widget-controls-container button {
+  width: 64px !important;
+  height: 64px !important;
+  min-width: 64px !important;
+  min-height: 64px !important;
+  max-width: 80px !important;
+  max-height: 80px !important;
+}
+
+.vg-widget-controls-container {
+  position: fixed !important;
+  right: 20px !important;
+  bottom: 20px !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+}
+
+.vg-modal,
+.vg-modal-container,
+[class*="vg-modal"] {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 999999 !important;
+}
+
+.vg-modal > *,
+.vg-modal-container > *,
+[class*="vg-modal"] > *,
+.vg-modal > * > *,
+.vg-modal-container > * > *,
+[class*="vg-modal"] > * > * {
+  width: 90vw !important;
+  height: 90vh !important;
+  max-width: 90vw !important;
+  max-height: 90vh !important;
+  margin: auto !important;
+  position: relative !important;
+}
+
+@media (max-width: 768px) {
+  .vg-modal > *,
+  .vg-modal-container > *,
+  [class*="vg-modal"] > *,
+  .vg-modal > * > *,
+  .vg-modal-container > * > *,
+  [class*="vg-modal"] > * > * {
+    width: 95vw !important;
+    height: 95vh !important;
+    max-width: 95vw !important;
+    max-height: 95vh !important;
+  }
+}
+
+.vg-tabs,
+[class*="tabs"] {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
+.vg-tabs > *,
+[class*="tabs"] > *,
+.vg-tabs [role="tab"],
+[class*="tabs"] [role="tab"],
+.vg-tabs button,
+[class*="tabs"] button {
+  max-width: 160px !important;
+  width: auto !important;
+  min-width: 0 !important;
+  flex: 0 1 auto !important;
+}
