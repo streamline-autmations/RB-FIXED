@@ -37,7 +37,7 @@ export default function ConvocoreIframeWidget() {
       ) : null}
 
       {open ? (
-        <div className="fixed z-[1000000] inset-0 md:inset-10">
+        <div className="fixed z-[1000000] inset-0 md:inset-6">
           <div className="w-full h-full md:rounded-2xl overflow-hidden border border-white/10 bg-black shadow-2xl flex flex-col">
             <div className="h-12 flex items-center justify-between px-4 border-b border-white/10 bg-black">
               <div className="text-white font-semibold">Chat</div>
