@@ -62,8 +62,8 @@ const ContactForm: React.FC = () => {
           p(cal, ar);
         };
       })(window, "https://app.cal.com/embed/embed.js", "init");
-      Cal("init", "appointment-with-recklessbear", { origin: "https://app.cal.com" });
-      Cal.ns["appointment-with-recklessbear"]("ui", { "hideEventTypeDetails": false, "layout": "month_view" });
+      Cal("init", "consultation", { origin: "https://app.cal.com" });
+      Cal.ns["consultation"]("ui", { "hideEventTypeDetails": false, "layout": "month_view" });
     `;
     document.head.appendChild(script);
   }, []);
@@ -116,8 +116,8 @@ const ContactForm: React.FC = () => {
     setActiveView('call');
     if (window.Cal) {
       // Update Cal.com with lead_id
-      const calUrl = `https://cal.com/reckless-bear-demo/appointment-with-recklessbear?metadata[lead_id]=${leadId}`;
-      window.Cal.ns["appointment-with-recklessbear"]("ui", {
+      const calUrl = `https://cal.com/reckless-bear/consultation?metadata[lead_id]=${leadId}`;
+      window.Cal.ns["consultation"]("ui", {
         "hideEventTypeDetails": false,
         "layout": "month_view"
       });
@@ -165,8 +165,8 @@ const ContactForm: React.FC = () => {
           
           <button
             onClick={handleBookCall}
-            data-cal-link={`reckless-bear-demo/appointment-with-recklessbear?metadata[lead_id]=${leadId}`}
-            data-cal-namespace="appointment-with-recklessbear"
+            data-cal-link={`reckless-bear/consultation?metadata[lead_id]=${leadId}`}
+            data-cal-namespace="consultation"
             data-cal-config='{"layout":"month_view"}'
             className={`flex-1 px-6 py-4 font-bebas text-lg tracking-wider transition-all duration-300 rounded-md ${
               activeView === 'call'
@@ -244,12 +244,12 @@ const ContactForm: React.FC = () => {
             <p className="text-rb-gray-400 text-sm">
               If the calendar doesn't open, you can also book directly at:{' '}
               <a 
-                href={`https://cal.com/reckless-bear-demo/appointment-with-recklessbear?metadata[lead_id]=${leadId}`}
+                href={`https://cal.com/reckless-bear/consultation?metadata[lead_id]=${leadId}`}
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-rb-red hover:text-rb-white transition-colors"
               >
-                cal.com/reckless-bear-demo/appointment-with-recklessbear
+                cal.com/reckless-bear/consultation
               </a>
             </p>
           </div>
