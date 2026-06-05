@@ -70,11 +70,6 @@ const Footer: React.FC = () => {
                 <a href="mailto:etienne@recklessbear.co.za" className="flex items-center text-rb-gray-400 hover:text-rb-red transition-colors duration-200"><Mail size={18} className="mr-2" /> etienne@recklessbear.co.za</a>
               </div>
               <div className="space-y-2 pt-3 border-t border-rb-gray-800">
-                <p className="text-rb-gray-300 font-medium">Janco Tiedt</p>
-                <a href="tel:0766890383" className="flex items-center text-rb-gray-400 hover:text-rb-red transition-colors duration-200"><Phone size={18} className="mr-2" /> 076 689 0383</a>
-                <a href="mailto:janco@recklessbear.co.za" className="flex items-center text-rb-gray-400 hover:text-rb-red transition-colors duration-200"><Mail size={18} className="mr-2" /> janco@recklessbear.co.za</a>
-              </div>
-              <div className="space-y-2 pt-3 border-t border-rb-gray-800">
                 <p className="text-rb-gray-300 font-medium">Zander Steyn</p>
                 <a href="tel:0823841522" className="flex items-center text-rb-gray-400 hover:text-rb-red transition-colors duration-200"><Phone size={18} className="mr-2" /> 082 384 1522</a>
                 <a href="mailto:zander@recklessbear.co.za" className="flex items-center text-rb-gray-400 hover:text-rb-red transition-colors duration-200"><Mail size={18} className="mr-2" /> zander@recklessbear.co.za</a>
