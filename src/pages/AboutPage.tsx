@@ -119,7 +119,7 @@ const AboutPage: React.FC = () => {
             </p>
           </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
                 name: 'Etienne Viljoen',
@@ -134,13 +134,6 @@ const AboutPage: React.FC = () => {
                 email: 'alicia@recklessbear.co.za',
                 phone: '076 123 4567',
                 image: '/alicia-profile.JPG'
-              },
-              {
-                name: 'Janco Tiedt',
-                position: 'Director',
-                email: 'janco@recklessbear.co.za',
-                phone: '076 689 0383',
-                image: '/janco-profile.JPG'
               },
               {
                 name: 'Zander Steyn',
