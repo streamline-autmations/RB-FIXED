@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 type ConvocoreMode = 'popup' | 'full-width' | 'modal' | 'iframe';
 
-const AGENT_ID = '6BhLW2avFF69X0ydpkZ3';
+const AGENT_ID = 'v1U2AzmexG0DXitJjDIH';
 const REGION: 'na' | 'eu' = 'na';
 
 function useModeFromQuery(): ConvocoreMode {
@@ -61,7 +61,7 @@ function removeExistingConvocoreScript() {
 
 function loadConvocoreScript(config: Record<string, unknown>) {
   removeExistingConvocoreScript();
-  (window as any).VG_CONFIG = config;
+  (window as unknown as { VG_CONFIG: Record<string, unknown> }).VG_CONFIG = config;
   const script = document.createElement('script');
   script.id = 'convocore_vg_bundle';
   script.src = 'https://vg-bunny-cdn.b-cdn.net/vg_live_build/vg_bundle.js';

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 // Official Convocore (Voiceglow) widget embed. This renders the real widget
 // (UI Engine, buttons, popup) rather than a hand-rolled iframe.
-const AGENT_ID = '3TsqkeBzc0cXT6NBwcAW';
+const AGENT_ID = 'v1U2AzmexG0DXitJjDIH';
 const REGION = 'na';
 const BUNDLE_ID = 'vg-convocore-bundle';
 
@@ -40,7 +40,14 @@ export default function ConvocoreIframeWidget() {
       render: 'bottom-right',
       stylesheets: ['https://cdn.convocore.ai/vg_live_build/styles.css'],
       // Ties each conversation to the visitor's funnel lead_id.
-      ...(leadId ? { userID: leadId } : {}),
+      // userID identifies the conversation owner; vf_variables makes the same
+      // value available to the agent's custom `lead_id` variable.
+      ...(leadId
+        ? {
+            userID: leadId,
+            vf_variables: { lead_id: leadId },
+          }
+        : {}),
     };
 
     const script = document.createElement('script');
