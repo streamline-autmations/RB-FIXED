@@ -82,7 +82,7 @@ const Footer: React.FC = () => {
         <div className="border-t border-rb-gray-800 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center">
           <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
             <p className="text-rb-gray-500 text-sm">© {currentYear} RecklessBear. All rights reserved.</p>
-            <p className="text-rb-gray-500 text-sm">Designed by <a href="https://streamline-automations.co.za/" target="_blank" rel="noopener noreferrer" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Streamline Automations</a></p>
+            <p className="text-rb-gray-500 text-sm">Designed by <a href="https://streamline-automations.co.za/?utm_source=recklessbear&utm_medium=referral&utm_campaign=designed_by_footer" target="_blank" rel="noopener noreferrer" className="text-rb-gray-400 hover:text-rb-red transition-colors duration-200">Streamline Automations</a></p>
           </div>
           <div className="mt-4 md:mt-0">
             <Link to="/privacy-policy" className="text-sm text-rb-gray-500 hover:text-rb-white transition-colors duration-200 mr-6">Privacy Policy</Link>
